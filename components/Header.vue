@@ -10,7 +10,7 @@
         <a href="/index" class="hover:text-gray-200">ผู้สนับสนุน</a>
         <a href="/settings" class="hover:text-gray-200">คู่มือ</a>
         <a href="/pm25" class="hover:text-gray-200">ร่วมสนับสนุน</a>
-        <a href="/list" class="hover:text-gray-200">ติดต่อเรา</a>
+        <a href="/ColorSetting" class="hover:text-gray-200">ติดต่อเรา</a>
       </nav>
     </div>
   </header>
