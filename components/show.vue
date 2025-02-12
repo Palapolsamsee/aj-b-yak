@@ -28,13 +28,14 @@
               <div class="text-lg font-semibold">{{ device.place }}</div>
               <div class="text-gray-500 text-sm">{{ device.timestamp }}</div>
             </div>
+            
           </div>
+
           <div>
             <i class="far fa-heart text-gray-400 text-xl"></i>
           </div>
         </div>
-        <div class="mt-4">
-          <div class="flex justify-between items-center">
+        <div class="mt-4"> justify-between items-center">
             <!-- <div class="text-gray-500">Average</div> -->
             <div class="text-gray-500">Trend {{ device.trend }}</div>
           </div>
