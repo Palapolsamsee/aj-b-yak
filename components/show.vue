@@ -1,6 +1,5 @@
 <template>
   <div class="container mx-auto p-4">
-
     <!-- ช่องค้นหา -->
     <div class="mb-4">
       <input v-model="searchQuery" placeholder="ค้นหาสถานที่" class="w-full px-3 py-2 border rounded-lg" />
@@ -86,11 +85,7 @@
       </div>
     </div>
   </div>
-
-
-
 </template>
-
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
@@ -140,7 +135,7 @@ const selectDevice = (device: Device) => {
 
 onMounted(async () => {
   try {
-    const apikey = 'blank';
+    const apikey = 'https://yakkaw.mfu.ac.th/api/yakkaw/devices';
     const response = await fetch(apikey);
 
     if (!response.ok) {

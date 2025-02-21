@@ -1,0 +1,4 @@
+<template>
+    <mapza/>
+    <!-- <support/> -->
+</template>
