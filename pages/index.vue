@@ -5,6 +5,7 @@
   <charts />
   <show />
   <Footer />
+  <ContactForm />
 
 </template>
 
