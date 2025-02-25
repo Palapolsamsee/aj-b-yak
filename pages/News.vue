@@ -1,0 +1,6 @@
+
+<template>
+  <news />
+
+</template>
+
