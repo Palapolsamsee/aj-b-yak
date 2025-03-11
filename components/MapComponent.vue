@@ -1,5 +1,5 @@
 <script setup>  
-import { onMounted, ref } from "vue";  
+import { onMounted, ref } from "vue";
 
 const isClient = ref(false);  
 let L = null;  
@@ -56,7 +56,7 @@ onMounted(async () => {
         return;  
       }  
 
-      // Dynamic import of Leaflet  
+      // Dynamic import of Leaflet s
       const leaflet = await import("leaflet");  
       await import("leaflet/dist/leaflet.css");  
       L = leaflet.default;  
