@@ -1,4 +1,4 @@
 <template>
-<ContactForm />
+    <Header />
+    <ContactForm />
 </template>
-
