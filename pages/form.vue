@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const items = ref([]);
 const newItem = ref({ model_id: '', model: '', address: '' });

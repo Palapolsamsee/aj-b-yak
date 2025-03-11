@@ -1,4 +1,5 @@
 <template>
+    <Header />
     <div class="container">
         <h1>ร่วมสนับสนุน</h1>
         <div class="support-text">
