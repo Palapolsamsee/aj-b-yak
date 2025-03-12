@@ -67,7 +67,7 @@ const submitForm = () => {
 
       <!-- Image Section (Right Side) -->
       <div class="w-full md:w-1/2 flex justify-center items-center">
-        <img :src="yakkawImage" alt="ติดต่อเรา" class="rounded-lg w-full">
+        <img src="/assets/images/yakkaw_nouse.jpg" alt="ติดต่อเรา" class="rounded-lg w-full">
       </div>
 
     </div>
