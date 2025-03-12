@@ -28,7 +28,7 @@
     </div>
     <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- card of page -->
-      <div v-for="device in filteredDevices" :key="device.dvid" class="bg-white rounded-xl shadow-md p-6 cursor-pointer transition-transform duration-300 ease-in-out 
+      <div v-for="device in filteredDevices.slice(0,9)" :key="device.dvid" class="bg-white rounded-xl shadow-md p-6 cursor-pointer transition-transform duration-300 ease-in-out 
         hover:shadow-xl hover:-translate-y-1 hover:scale-105" @click="selectDevice(device)">
         <div class="flex items-center justify-between">
           <div class="text-base md:text-lg font-semibold">{{ device.place }}</div>
@@ -91,9 +91,6 @@
       </div>
     </div>
   </div>
-
-
-
 </template>
 
 
@@ -146,7 +143,7 @@ const selectDevice = (device: Device) => {
 
 onMounted(async () => {
   try {
-    const apikey = 'blank';
+    const apikey = 'https://yakkaw.mfu.ac.th/api/yakkaw/devices';
     const response = await fetch(apikey);
 
     if (!response.ok) {
