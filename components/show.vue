@@ -146,7 +146,7 @@ const selectDevice = (device: Device) => {
 
 onMounted(async () => {
   try {
-    const apikey = 'blank';
+    const apikey = 'https://yakkaw.mfu.ac.th/api/yakkaw/devices';
     const response = await fetch(apikey);
 
     if (!response.ok) {
