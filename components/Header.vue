@@ -11,9 +11,9 @@
         <div class="relative">
           <button class="menu-button" @click="toggleMenu">☰</button>
           <div class="dropdown-menu" v-if="isMenuOpen">
-            <a href="/MainPage">หน้าแรก</a>
-            <a href="/MapPage">แผนที่ยักษ์ขาว</a>
-            <a href="/News">ข่าว</a>
+            <a href="">หน้าแรก</a>
+            <a href="MapPage">แผนที่ยักษ์ขาว</a>
+            <a href="News">ข่าว</a>
             <a href="ColorSetting">ตั้งค่าสี</a>
             <a href="Regis">ซื้อเครื่อง</a>
             <a href="ContactPage">ติดต่อเรา</a>
@@ -83,51 +83,51 @@ const isDropdownOpen = ref(false);
 
 <script>
 export default {
-  data() {
-    return {
-      isMenuOpen: false,
+    data() {
+        return {
+            isMenuOpen: false,
+        }
+      },
+      methods: {
+        toggleMenu() {
+            this.isMenuOpen = !this.isMenuOpen;
+        },
     }
-  },
-  methods: {
-    toggleMenu() {
-      this.isMenuOpen = !this.isMenuOpen;
-    },
   }
-}
 
 </script>
 <style scoped>
 /* Customize header styles if needed */
 .menu-button {
-  font-size: 30px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: white;
-  padding: 10px;
+    font-size: 30px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+    padding: 10px;
 }
 
 .dropdown-menu {
-  position: absolute;
-  top: 40px;
-  right: 0;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  width: 150px;
-  display: flex;
-  flex-direction: column;
-  z-index: 1000;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
 }
 
 .dropdown-menu a {
-  padding: 10px;
-  text-decoration: none;
-  color: black;
-  font-size: 16px;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+    font-size: 16px;
 }
 
 .dropdown-menu a:hover {
-  background: #f0f0f0;
+    background: #f0f0f0;
 }
 </style>

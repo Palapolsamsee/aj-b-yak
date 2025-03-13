@@ -11,9 +11,9 @@
                     <div class="relative">
                         <button class="menu-button" @click="toggleMenu">☰</button>
                         <div class="dropdown-menu" v-if="isMenuOpen">
-                            <a href="/MainPage">หน้าแรก</a>
-                            <a href="/MapPage">แผนที่ยักษ์ขาว</a>
-                            <a href="/News">ข่าว</a>
+                            <a href="MainPage">หน้าแรก</a>
+                            <a href="MapPage">แผนที่ยักษ์ขาว</a>
+                            <a href="News">ข่าว</a>
                             <a href="ColorSetting">ตั้งค่าสี</a>
                             <a href="Regis">ซื้อเครื่อง</a>
                             <a href="ContactPage">ติดต่อเรา</a>
@@ -34,12 +34,14 @@
         <div id="banner" class="banner" v-if="showBanner">
             <h3 class="banner-title">คุณภาพอากาศใน <span class="location-name">{{ selectedLocation.place }}</span></h3>
             <div class="air-quality">
-                <img class="weather-icon" src="/assets/images/yakkaw_yellow_icon.png" alt="yakkaw yellow">
+                <img class="weather-icon" :src="selectedLocation.weatherIcon" alt="weather icon">
                 <span class="pm25-value">{{ selectedLocation.pm25 }}</span>
-                <span class="air-quality-status">ปานกลาง</span>
+                <span class="air-quality-status" :style="{ color: getStatusColor(selectedLocation.airQualityStatus) }">
+                    {{ selectedLocation.airQualityStatus }}
+                </span>
             </div>
             <div class="air-details">
-                <div class="detail-item">PM2.5: <strong>{{ selectedLocation.pm25 }} µg/m³</strong></div>
+                <!-- <div class="detail-item">PM2.5: <strong>{{ selectedLocation.pm25 }} µg/m³</strong></div> -->
                 <!-- <img class="temp-icon" src="/assets/images/weather_img.png" alt="temp icon"> -->
                 <span class="detail-item">
                     Temperature: {{ selectedLocation.temperature }}° | Humidity: {{ selectedLocation.humidity }}%
@@ -97,7 +99,7 @@ export default {
         },
         async fetchData() {
             try {
-                const response = await fetch('blank');
+                const response = await fetch('https://yakkaw.mfu.ac.th/api/yakkaw/devices');
                 if (!response.ok) {
                     throw new Error('ไม่สามารถโหลดข้อมูลได้');
                 }
@@ -106,18 +108,21 @@ export default {
                 // Filter out inactive devices and those missing important values
                 this.devices = resData.response.filter(device =>
                     device.status.toLowerCase() !== 'inactive' &&  // Exclude inactive status
-                    device.pm25 != null && device.pm25 !== '' &&  // Ensure PM2.5 has a valid value
+                    device.pm25 != null && device.pm25 !== 0 &&   // Ensure PM2.5 has a valid value
                     device.humidity != null && device.humidity !== '' &&  // Ensure humidity is valid
-                    device.temperature != null && device.temperature !== '' // Ensure temperature is valid
+                    device.temperature != null && device.temperature !== '' && // Ensure temperature is valid
+                    device.updatetime != null &&  // Ensure updatetime is valid
+                    device.deviceid != null &&  // Ensure deviceid is valid
+                    device.timestamp != null &&  // Ensure timestamp is valid
+                    device.ddate != null && device.ddate !== '' // Ensure ddate is valid
                 );
             } catch (error) {
                 console.error('เกิดข้อผิดพลาด:', error);
             }
-        }
-        ,
+        },
         loadGoogleMaps() {
             const script = document.createElement('script');
-            script.src = `blank`;
+            script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD9TDjlJEO60ksYuV2mCk-j6R2lHjrjx6k&callback=initMap`;
             script.async = true;
             script.defer = true;
             window.initMap = this.initMap;
@@ -133,6 +138,7 @@ export default {
                 const marker = new google.maps.Marker({
                     position: { lat: device.latitude, lng: device.longitude },
                     map: this.map,
+                    icon: this.createCustomMarker(device.pm25),
                     title: device.place
                 });
 
@@ -148,13 +154,73 @@ export default {
                 });
             });
         },
+        createCustomMarker(pm25) {
+            const color = this.getMarkerColor(pm25);
+            const canvas = document.createElement('canvas');
+            const size = 30; // Size of the marker
+            canvas.width = size;
+            canvas.height = size;
+            const context = canvas.getContext('2d');
+
+            // Draw circle
+            context.beginPath();
+            context.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI);
+            context.fillStyle = color;
+            context.fill();
+
+            // Draw text
+            context.fillStyle = 'white';
+            context.font = 'bold 13px Sarabun';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillText(pm25, size / 2, size / 2);
+
+            return {
+                url: canvas.toDataURL(),
+                scaledSize: new google.maps.Size(size, size)
+            };
+        },
+        getMarkerColor(pm25) {
+            if (pm25 <= 25) {
+                return 'blue';
+            } else if (pm25 <= 37) {
+                return 'green';
+            } else if (pm25 <= 50) {
+                return '#FFD700';
+            } else if (pm25 <= 90) {
+                return 'orange';
+            } else {
+                return 'red';
+            }
+        },
         updateBanner(device) {
+            let airQualityStatus = '';
+            let weatherIcon = '';
+
+            if (device.pm25 <= 25) {
+                airQualityStatus = 'ดีมาก';
+                weatherIcon = '/assets/images/yyakkaw_blue_icon.png';
+            } else if (device.pm25 <= 37) {
+                airQualityStatus = 'ดี';
+                weatherIcon = '/assets/images/yyakkaw_green_icon.png';
+            } else if (device.pm25 <= 50) {
+                airQualityStatus = 'ปานกลาง';
+                weatherIcon = '/assets/images/yyakkaw_yellow_icon.png';
+            } else if (device.pm25 <= 90) {
+                airQualityStatus = 'แย่';
+                weatherIcon = '/assets/images/yyakkaw_orange_icon.png';
+            } else {
+                airQualityStatus = 'อันตราย';
+                weatherIcon = '/assets/images/yyakkaw_red_icon.png';
+            }
+
             this.selectedLocation = {
                 place: device.place,
                 pm25: device.pm25,
                 temperature: device.temperature,
                 humidity: device.humidity,
-                /* windSpeed: device.windSpeed */
+                airQualityStatus: airQualityStatus,
+                weatherIcon: weatherIcon
             };
             this.showBanner = true;
         },
@@ -169,6 +235,22 @@ export default {
                 this.showBanner = true;
             } else {
                 alert('ไม่พบสถานที่ที่ค้นหา');
+            }
+        },
+        getStatusColor(status) {
+            switch (status) {
+                case 'ดีมาก':
+                    return 'blue';
+                case 'ดี':
+                    return 'green';
+                case 'ปานกลาง':
+                    return '#FFD700';
+                case 'แย่':
+                    return 'orange';
+                case 'อันตราย':
+                    return 'red';
+                default:
+                    return 'black';
             }
         }
     }
