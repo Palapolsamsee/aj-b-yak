@@ -31,14 +31,14 @@
             <i class="fas fa-wind text-blue-500 text-3xl md:text-5xl mr-2"></i>
             <div>
               <p class="text-sm md:text-lg text-gray-600">PM 10</p>
-              <p class="text-lg md:text-2xl font-bold text-gray-800">{{ device.pm10 }} µg/m³</p>
+              <p class="text-lg md:text-2xl font-bold text-gray-800">{{ device.ddate }} µg/m³</p>
             </div>
           </div>
           <div class="flex items-center">
             <i class="fas fa-tint text-blue-500 text-3xl md:text-5xl mr-2"></i>
             <div>
               <p class="text-sm md:text-lg text-gray-600">Humidity</p>
-              <p class="text-lg md:text-2xl font-bold text-gray-800">{{ device.humidity }}%</p>
+              <p class="text-lg md:text-2xl font-bold text-gray-800">{{ device.dtime }}</p>
             </div>
           </div>
         </div>
@@ -48,6 +48,7 @@
       <!-- <div class="flex justify-center mt-6">
         <NuxtLink to="/" class="text-blue-500 text-xl">🔙 กลับหน้าแรก</NuxtLink>
       </div> -->
+
     </div>
   </div>
 </template>
