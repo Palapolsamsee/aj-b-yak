@@ -117,7 +117,7 @@ export default {
         ,
         loadGoogleMaps() {
             const script = document.createElement('script');
-            script.src = `blank`;
+            script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD9TDjlJEO60ksYuV2mCk-j6R2lHjrjx6k&callback=initMap`;
             script.async = true;
             script.defer = true;
             window.initMap = this.initMap;
