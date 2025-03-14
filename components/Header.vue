@@ -16,6 +16,7 @@
             <a href="News">ข่าว</a>
             <a href="ColorSetting">ตั้งค่าสี</a>
             <a href="Regis">ซื้อเครื่อง</a>
+            <a href="SponPage">ผู้สนับสนุน</a>
             <a href="ContactPage">ติดต่อเรา</a>
           </div>
         </div>
