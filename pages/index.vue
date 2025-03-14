@@ -6,7 +6,6 @@ import Sponsors from '~/components/Sponsors.vue';
 
 <template>
   <Header />
-  <charts />
   <show />
   <Sponsors />
   <Footer />

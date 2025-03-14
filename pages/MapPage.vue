@@ -1,5 +1,6 @@
 
 <template>
     <Mapza/>
+    <show/>
 </template>
 
