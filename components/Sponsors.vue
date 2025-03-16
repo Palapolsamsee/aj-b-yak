@@ -5,7 +5,7 @@
       <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
         <div v-for="(sponsor, index) in sponsors" :key="index" class="supporter-item text-center">
           <img :src="sponsor.image" class="w-full h-auto object-contain mx-auto" alt="Sponsor Logo" />
-          <p class="mt-2 text-sm font-medium text-black">{{ sponsor.name }}</p> <!-- เปลี่ยน text-white เป็น text-black -->
+          <p class="mt-2 text-sm font-medium text-black">{{ sponsor.name }}</p>
         </div>
       </div>
     </div>
@@ -15,29 +15,23 @@
 <script setup>
 import { ref } from 'vue';
 
-import Yakkaw_icon from '@/assets/images/sponsors/Yakkaw_icon.png';
-import RMUTL_CR from '@/assets/images/sponsors/RMUTL_CR.png';
-import ChiangRaiRajabhat from '@/assets/images/sponsors/ChiangRaiRajabhat.webp';
-import MFU_Logo from '@/assets/images/sponsors/MFU_Logo.png';
-import ClassroomLogo from '@/assets/images/sponsors/ClassroomLogo.jpeg';
-import ThaiHealthFoundation from '@/assets/images/sponsors/ThaiHealthFoundation.png';
-import SETLogo from '@/assets/images/sponsors/SETLogo.jpg';
-import SrithatLogo from '@/assets/images/sponsors/SrithatLogo.png';
-import AISLogo from '@/assets/images/sponsors/AISLogo.webp';
-import FulfillSocial from '@/assets/images/sponsors/FulfillSocial.jpg';
-
 const sponsors = ref([
-  { image: Yakkaw_icon, name: 'สมาคมยักษ์ขาว' },
-  { image: RMUTL_CR, name: 'มหาวิทยาลัยเทคโนโลยีราชมงคลล้านนาเชียงราย' },
-  { image: ChiangRaiRajabhat, name: 'มหาวิทยาลัยราชภัฎเชียงราย' },
-  { image: MFU_Logo, name: 'มหาวิทยาลัยแม่ฟ้าหลวง' },
-  { image: ClassroomLogo, name: 'ห้องเรียนสู้ฝุ่น' },
-  { image: ThaiHealthFoundation, name: 'สำนักงานกองทุนสนับสนุนการสร้างเสริมสุขภาพ (สสส.)' },
-  { image: SETLogo, name: 'ตลาดหลักทรัพย์แห่งประเทศไทย' },
-  { image: SrithatLogo, name: 'เทศบาลตำบลศรีธาตุ' },
-  { image: AISLogo, name: 'AIS NB-IoT' },
-  { image: FulfillSocial, name: 'ห้างหุ้นส่วนจำกัด เติมเต็มวิสาหกิจเพื่อสังคม' },
+  { image: 'https://yakkaw.mfu.ac.th/img/gallery/1.jpg', name: 'สมาคมยักษ์ขาว' },
+  { image: 'https://upload.wikimedia.org/wikipedia/th/0/02/LANNAcolor.png', name: 'มหาวิทยาลัยเทคโนโลยีราชมงคลล้านนาเชียงราย' },
+  { image: 'https://upload.wikimedia.org/wikipedia/th/thumb/7/72/%E0%B8%A3%E0%B8%B2%E0%B8%8A%E0%B8%A0%E0%B8%B1%E0%B8%8F%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B8%A3%E0%B8%B2%E0%B8%A2.png/255px-%E0%B8%A3%E0%B8%B2%E0%B8%8A%E0%B8%A0%E0%B8%B1%E0%B8%8F%E0%B9%80%E0%B8%8A%E0%B8%B5%E0%B8%A2%E0%B8%87%E0%B8%A3%E0%B8%B2%E0%B8%A2.png', name: 'มหาวิทยาลัยราชภัฎเชียงราย' },
+  { image: 'https://upload.wikimedia.org/wikipedia/th/d/da/%E0%B8%AA%E0%B8%B1%E0%B8%8D%E0%B8%A5%E0%B8%B1%E0%B8%81%E0%B8%A9%E0%B8%93%E0%B9%8C%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%88%E0%B8%B3%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%A7%E0%B8%B4%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%A5%E0%B8%B1%E0%B8%A2%E0%B9%81%E0%B8%A1%E0%B9%88%E0%B8%9F%E0%B9%89%E0%B8%B2%E0%B8%AB%E0%B8%A5%E0%B8%A7%E0%B8%87.png', name: 'มหาวิทยาลัยแม่ฟ้าหลวง' },
+  { image: 'https://scontent.fbkk5-1.fna.fbcdn.net/v/t39.30808-6/318538620_576304597834323_1976464744004569559_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=yFzBKqZ7JU8Q7kNvgGPfvuG&_nc_oc=AdjzfeirhUV-gE8B8YzGQrIMwSvzjMtSa_mgV5wNnYiI9x9fI5IXnwatnEJyhtGqm3JuKBg6tEIWfIr631M-GOFu&_nc_zt=23&_nc_ht=scontent.fbkk5-1.fna&_nc_gid=f-vbLP7QIcZidnq3tGh4dQ&oh=00_AYHH6-XcfW1-yy92bSALaTq9ObX2sAEb1jdn4Yjx2zTkKQ&oe=67DC765C',
+  name: 'ศูนย์วิจัยปัญญาประดิษฐ์และเทคโนโลยี'}, 
+  { image: 'https://cen-ffh.mfu.ac.th/fileadmin/MFUTemplateStandard/Assets/images/logo/logo_CEN-FFH.png', name: 'ศูนย์ศึกษา วิจัยและปฏิบัติการเพื่อลดปัญหาการเกิดไฟป่า หมอกควันในประเทศไทยและในภูมิภาค' }, 
+  { image: 'https://childimpact.s3.ap-southeast-1.amazonaws.com/campaign-img/campaign-1-1.jpg', name: 'ห้องเรียนสู้ฝุ่น' },
+  { image: 'https://ird.rmutp.ac.th/wp-content/uploads/%E0%B8%82%E0%B8%99%E0%B8%B2%E0%B8%94-5057-1.png', name: 'สำนักงานกองทุนสนับสนุนการสร้างเสริมสุขภาพ (สสส.)' },
+  { image: 'https://thaipublica.org/wp-content/uploads/2022/11/logo-set-1000x600-1.jpg', name: 'ตลาดหลักทรัพย์แห่งประเทศไทย' },
+  { image: 'https://www.srithat-ud.go.th/index/add_file/rPNgLItFri24523.png', name: 'เทศบาลตำบลศรีธาตุ' },
+  { image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFohZP9a0qrVv-C7uQrdASgFLTjmUtKM2hB87Lf8lUEbiZO1MF_sRmmojvw1ZD3SYwHUU&usqp=CAU', name: 'AIS NB-IoT' },
+  { image: 'https://scontent.fbkk5-6.fna.fbcdn.net/v/t39.30808-1/339581923_239027631937303_7551303411814658283_n.jpg?stp=c97.0.1186.1186a_dst-jpg_s200x200_tt6&_nc_cat=102&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=apNHxWNPFQ8Q7kNvgG5H8BY&_nc_oc=Adi55bqjD8vLpSOqhxXORRGfZ6E09-2gbGD9YXTMncjvXre4fBFm29Bosv78hxBseBn9Na3k0JQ9f6mNuyCuLULZ&_nc_zt=24&_nc_ht=scontent.fbkk5-6.fna&_nc_gid=vheHR87I1qDizoJBiyeVMA&oh=00_AYFBA5cInDtufumFqPPNEZFjb4W6kT7LqafXTW-ZnIJJTw&oe=67DC787C', name: 'ห้างหุ้นส่วนจำกัด เติมเต็มวิสาหกิจเพื่อสังคม' },
 ]);
+console.log(sponsors.value);
+
 </script>
 
 <style scoped>
