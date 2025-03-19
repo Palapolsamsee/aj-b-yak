@@ -69,10 +69,6 @@
         </div>
             </div> -->
 
-
-        <div class="footer text-center">
-            <img src="/assets/images/yakkaw_dust_measure.jpg" alt="Air Quality Alert Levels" class="mx-auto">
-        </div>
     </div>
 </template>
 

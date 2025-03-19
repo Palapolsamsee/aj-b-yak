@@ -21,14 +21,10 @@
                     {{ feature.text }}
                 </p>
                 <div class="price">{{ pkg.price }} บาท</div>
-                <button class="support-button">สนับสนุน</button>
+                <button class="support-button" @click="supportPackage(pkg)">สนับสนุน</button>
             </div>
         </div>
     </div>
-
-<!--     <div class="footer">
-        สมาคมยักษ์ขาว | ยักษ์ขาวเพื่อสิ่งแวดล้อมที่ดีกว่า
-    </div> -->
 </template>
 
 <script setup>
@@ -67,7 +63,29 @@ const packages = [
         ]
     }
 ];
+
+const LINE_NOTIFY_TOKEN = "YOUR_LINE_NOTIFY_TOKEN_HERE"; // ใส่ LINE Notify Token ของคุณ
+
+const supportPackage = async (pkg) => {
+    const message = `📢 มีผู้สนับสนุนเครื่องวัดฝุ่น 🎉\n\nแพ็กเกจ: ${pkg.name}\nราคา: ${pkg.price} บาท\n\n📌 ขอบคุณสำหรับการสนับสนุน!`;
+
+    try {
+        await fetch("https://notify-api.line.me/api/notify", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": `Bearer ${LINE_NOTIFY_TOKEN}`
+            },
+            body: new URLSearchParams({ message })
+        });
+        alert("ส่งข้อมูลการสนับสนุนไปยัง LINE แล้ว!");
+    } catch (error) {
+        console.error("ส่งข้อมูลไป LINE ไม่สำเร็จ", error);
+        alert("เกิดข้อผิดพลาดในการส่งข้อมูลไป LINE");
+    }
+};
 </script>
+
 
 <style>
 body {

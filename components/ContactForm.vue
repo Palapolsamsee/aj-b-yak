@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 
-// ✅ โหลดรูปจาก assets ให้ถูกต้อง
+// โหลดรูปจาก assets ให้ถูกต้อง
 const yakkawImage = new URL('/assets/images/yakkaw_nouse.jpg', import.meta.url).href;
 
 const formData = ref({
