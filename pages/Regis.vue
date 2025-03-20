@@ -21,14 +21,10 @@
                     {{ feature.text }}
                 </p>
                 <div class="price">{{ pkg.price }} บาท</div>
-                <button class="support-button">สนับสนุน</button>
+                <button class="support-button" @click="supportPackage(pkg)">สนับสนุน</button>
             </div>
         </div>
     </div>
-
-<!--     <div class="footer">
-        สมาคมยักษ์ขาว | ยักษ์ขาวเพื่อสิ่งแวดล้อมที่ดีกว่า
-    </div> -->
 </template>
 
 <script setup>
@@ -67,7 +63,54 @@ const packages = [
         ]
     }
 ];
+
+const accessToken = "3Ok9sDtpWsj1PEwlQLs99NNV8ts4WS+mTUNbryXZLwveWhJYu5Zxy2KKM7OCFChWIR3LsG4dWYePq6XegKqn5b9/GuZzzCVbXXhyQ4Oi8CIFFKVr48q/Nq0amToB2OhXmHpZscds/MX4Hgj1hgb0IAdB04t89/1O/w1cDnyilFU=";  // ใส่ Channel Access Token ใหม่
+const userId = "blank";  // ใช้ User ID หรือ Group ID ของ LINE OA
+
+const sendMessageToLine = async (messageText) => {
+    const message = {
+        type: "text",
+        text: messageText
+    };
+
+    try {
+        const response = await fetch("https://api.line.me/v2/bot/message/push", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${"3Ok9sDtpWsj1PEwlQLs99NNV8ts4WS+mTUNbryXZLwveWhJYu5Zxy2KKM7OCFChWIR3LsG4dWYePq6XegKqn5b9/GuZzzCVbXXhyQ4Oi8CIFFKVr48q/Nq0amToB2OhXmHpZscds/MX4Hgj1hgb0IAdB04t89/1O/w1cDnyilFU="}` // ใส่ Channel Access Token ของคุณ
+            },
+            body: JSON.stringify({
+                to: "blank", // ส่งข้อความไปที่ User หรือ Group ของ LINE OA
+                messages: [message]
+            })
+        });
+
+        const responseData = await response.json();
+        if (response.ok) {
+            console.log("ข้อความถูกส่งไปยัง LINE OA เรียบร้อยแล้ว!");
+            alert("การสั่งซื้อถูกส่งไปยัง LINE OA เรียบร้อย!");
+        } else {
+            console.error("ไม่สามารถส่งข้อความได้", responseData);
+            alert(`เกิดข้อผิดพลาด: ${responseData.error.message}`);
+        }
+    } catch (error) {
+        console.error("เกิดข้อผิดพลาดในการส่งข้อความ", error);
+        alert("เกิดข้อผิดพลาดในการส่งข้อความไป LINE");
+    }
+};
+
+const supportPackage = (pkg) => {
+    const messageText = `📢 ลูกค้าสนใจสนับสนุนเครื่องวัดฝุ่น 🎉\n\nแพ็กเกจ: ${pkg.name}\nราคา: ${pkg.price} บาท\n\n📌 ขอบคุณสำหรับการสนับสนุน!`;
+
+    // ส่งข้อความไป LINE OA
+    sendMessageToLine(messageText);
+
+    // ลิงก์เชื่อมต่อไปยัง LINE OA
+    window.location.href = "https://line.me/R/ti/p/@606phsmk";
+};
 </script>
+
 
 <style>
 body {
@@ -169,15 +212,6 @@ h1 {
 .package .support-button:hover {
     background: #d92041;
 }
-
-/* .footer {
-    text-align: center;
-    margin-top: 40px;
-    padding: 20px;
-    background: #f02a51;
-    color: #fff;
-    font-size: 14px;
-} */
 
 .grey-text {
     color: #b8b6b6;
