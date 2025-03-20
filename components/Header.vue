@@ -21,7 +21,7 @@
   <header class="block md:hidden bg-slate-900 text-white p-4 shadow-lg">
     <div class="container mx-auto max-w-screen-xl flex justify-between items-center">
       <h1 class="text-2xl font-bold">
-        ยักษ์ ขาว <span class="text-red-500">วัด ฝุ่น</span>
+        <span class="text-white">ยักษ์ขาว</span> <span class="text-red-500">วัดฝุ่น</span>
       </h1>
       <!-- Hamburger Menu -->
       <div class="relative">

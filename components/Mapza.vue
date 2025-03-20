@@ -1,13 +1,15 @@
 <template>
     <Header />
+    <!-- <div style="background-color: white;"> -->
     <div>
-        <div class="search-container" style="text-align: center; align-items: center; justify-content: center; margin-top: 100px;">
+        <div class="search-container"
+            style="text-align: center; align-items: center; justify-content: center; margin-top: 100px;">
             <span style="font-size: 22px; font-weight: bold; margin-right: 250px;">สำรวจคุณภาพอากาศ</span>
             <input type="text" class="search-input" placeholder="ค้นหาสถานที่..." v-model="searchTerm"
                 @keyup.enter="searchLocation" />
             <button class="search-button" @click="searchLocation">ค้นหา</button>
         </div>
-        
+
         <div class="map-container" style="max-width: 1200px; margin: 0 auto;">
             <div ref="mapContainer" id="map" style="height: 500px; width: 100%;"></div>
         </div>
@@ -61,11 +63,8 @@
         </div>
             </div> -->
 
-
-        <div class="footer text-center" style="max-width: 1200px; margin: 0 auto;">
-            <img src="/assets/images/yakkaw_dust_measure.jpg" alt="Air Quality Alert Levels" class="mx-auto">
-        </div>
     </div>
+    <!-- </div> -->
 </template>
 
 <script>
@@ -194,9 +193,8 @@ export default {
             const color = this.getMarkerColor(pm25);
             const size = 50;
             const circleSize = 30;
-            const arrowCircleSize = 18; // Outer circle for arrow
-            const arrowLength = 12; // Arrow shaft length
-            const arrowHeadSize = 6; // Arrowhead size
+            const arrowCircleSize = 22; // Outer circle for arrow
+
 
             const canvas = document.createElement('canvas');
             canvas.width = size;
@@ -232,26 +230,58 @@ export default {
             context.lineWidth = 2;
             context.stroke();
 
-            // Draw the arrow shaft (↗ direction)
-            context.strokeStyle = 'black';
-            context.lineWidth = 3;
-            context.beginPath();
-            context.moveTo(arrowBaseX - arrowLength / 2, arrowBaseY + arrowLength / 2);
-            context.lineTo(arrowBaseX + arrowLength / 2, arrowBaseY - arrowLength / 2);
-            context.stroke();
+            // แทนที่ createArrowSVG() ด้วยวิธีนี้:
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, "svg");
+            svg.setAttribute("width", arrowCircleSize);
+            svg.setAttribute("height", arrowCircleSize);
+            svg.setAttribute("viewBox", "0 0 24 24");
 
-            // Draw the arrowhead
-            context.beginPath();
-            context.moveTo(arrowBaseX + arrowLength / 2, arrowBaseY - arrowLength / 2); // Tip of arrow
-            context.lineTo(arrowBaseX + arrowLength / 2 - arrowHeadSize, arrowBaseY - arrowLength / 2 + arrowHeadSize / 2); // Left side
-            context.lineTo(arrowBaseX + arrowLength / 2 - arrowHeadSize, arrowBaseY - arrowLength / 2 - arrowHeadSize / 2); // Right side
-            context.closePath();
-            context.fillStyle = 'black';
-            context.fill();
+            // สร้าง <path> สำหรับลูกศร ↗
+            let path = document.createElementNS(svgNS, "path");
+            path.setAttribute("d", "M5 19L19 5M19 5V15M19 5H9");
+            path.setAttribute("stroke", "red");
+            path.setAttribute("stroke-width", "2");
+            path.setAttribute("stroke-linecap", "round");
+            path.setAttribute("stroke-linejoin", "round");
+
+            // ใส่ path ลงใน svg
+            svg.appendChild(path);
+
+            // สร้าง foreignObject เพื่อใส่ SVG ลงใน canvas
+            const foreignObject = document.createElementNS(svgNS, "foreignObject");
+            foreignObject.setAttribute("x", arrowBaseX - arrowCircleSize / 2);
+            foreignObject.setAttribute("y", arrowBaseY - arrowCircleSize / 2);
+            foreignObject.setAttribute("width", arrowCircleSize);
+            foreignObject.setAttribute("height", arrowCircleSize);
+            
+
+            // เพิ่ม SVG ลงใน foreignObject
+            foreignObject.appendChild(svg);
+
+            // สร้าง XMLSerializer เพื่อแปลงเป็น Data URL
+            const serializer = new XMLSerializer();
+            const svgString = serializer.serializeToString(svg);
+            const svgDataUrl = "data:image/svg+xml;utf8," + encodeURIComponent(svgString);
+
+
+            // โหลด SVG เป็น image เพื่อนำมาวาดบน canvas
+            const testImg = document.createElement("img");
+            testImg.src = svgDataUrl;
+            document.body.appendChild(testImg);
+
+            const img = new Image();
+            img.onload = function () {
+                context.drawImage(img, size / 2, size / 2, arrowCircleSize, arrowCircleSize);
+
+            };
+            // โหลดภาพหลังจากที่ canvas วาดเสร็จ
+            setTimeout(() => {
+                img.src = svgDataUrl;
+            }, 50);
 
             return canvas.toDataURL();
-        }
-        ,
+        },
 
         getMarkerColor(pm25) {
             if (pm25 <= 25) {
@@ -555,5 +585,11 @@ export default {
 
 .dropdown-menu a:hover {
     background: #f0f0f0;
+}
+
+svg {
+    width: 100px;
+    height: 100px;
+    background-color: red;
 }
 </style>
