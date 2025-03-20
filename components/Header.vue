@@ -1,135 +1,132 @@
-<!-- components/Header.vue -->
 <template>
-  <div class="hidden md:block">
-    <div class="bg-slate-900 text-white p-4">
-      <div class="container mx-auto flex justify-between items-center">
-        <h1 class="text-2xl font-bold">
-          ยักษ์ขาว <span class="text-red-500">วัดฝุ่น</span>
-        </h1>
-
-        <!-- Hamburger Menu -->
-        <div class="relative">
-          <button class="menu-button" @click="toggleMenu">☰</button>
-          <div class="dropdown-menu" v-if="isMenuOpen">
-            <a href="">หน้าแรก</a>
-            <a href="MapPage">แผนที่ยักษ์ขาว</a>
-            <a href="News">ข่าว</a>
-            <a href="ColorSetting">ตั้งค่าสี</a>
-            <a href="Regis">ซื้อเครื่อง</a>
-            <a href="SponPage">ผู้สนับสนุน</a>
-            <a href="ContactPage">ติดต่อเรา</a>
-            <a href="Footer">เกี่ยวกับเรา</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- <div class="hidden md:block">
-    <header class="bg-slate-900 text-white p-4">
-    <div class="container mx-auto flex justify-between items-center">
-      <h1 class="text-xl font-bold">
-  ยักษ์ขาว <span class="text-red-500 space-x-10">วัดฝุ่น </span> 
-  <span class ="space-x-10"> <a href="/index" class="hover:text-gray-200">ผู้สนับสนุน</a> <a href="/settings" class="hover:text-gray-200">คู่มือ</a> 
-    <a href="/pm25" class="hover:text-gray-200"> ร่วมสนับสนุน</a> <a href="/list" class="hover:text-gray-200">ติดต่อเรา</a>  </span>
-</h1>
-      <nav>
-        <ul class="space-x-6">
-           <a href="/index" class="hover:text-gray-200">ผู้สนับสนุน</a> 
-           <a href="/settings" class="hover:text-gray-200">คู่มือ</a> 
-           <a href="/pm25" class="hover:text-gray-200">ร่วมสนับสนุน</a> 
-           <a href="/list" class="hover:text-gray-200">ติดต่อเรา</a> 
-        </ul>
+  <!-- Desktop Header -->
+  <header class="hidden md:flex fixed top-0 left-0 w-full bg-slate-900 text-white h-20 md:h-24 p-2 shadow-lg z-50 backdrop-blur-md items-center">
+    <div class="container mx-auto max-w-screen-xl flex items-center justify-between">
+      <!-- โลโก้ -->
+      <h1 class="text-5xl font-bold">
+        <span class="text-white">ยักษ์ขาว</span> <span class="text-red-500">วัดฝุ่น</span>
+      </h1>
+      <!-- เมนู -->
+      <nav class="flex gap-4 md:gap-6">
+        <NuxtLink v-for="item in menuItems" :key="item.path" :to="item.path" class="nav-item" :class="{ 'active': activePage === item.path }">
+          {{ item.name }}
+        </NuxtLink>
       </nav>
     </div>
   </header>
-</div> -->
 
-
-  <div class="block md:hidden">
-    <!-- เนื้อหาสำหรับ mobile เท่านั้น -->
-    <header class="bg-slate-900 text-white p-4">
-      <div class="container mx-auto flex justify-between items-center">
-        <h1 class="text-xl font-bold">PM2.5 Monitoring</h1>
-        <nav class="relative">
-          <button @click="isDropdownOpen = !isDropdownOpen"
-            class="flex items-center space-x-2 focus:outline-none hover:text-gray-200">
-            <span>Menu</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clip-rule="evenodd" />
-            </svg>
-          </button>
-          <!-- Dropdown menu -->
-          <ul v-show="isDropdownOpen"
-            class="absolute right-0 mt-2 bg-white text-black shadow-lg rounded-lg overflow-hidden">
-            <li><a href="/index" class="block px-4 py-2 hover:text-gray-200">Home</a></li>
-            <li><a href="/settings" class="block px-4 py-2 hover:text-gray-200">Setting</a></li>
-            <li><a href="/pm25" class="block px-4 py-2 hover:text-gray-200">Add PM</a></li>
-            <li><a href="/list" class="block px-4 py-2 hover:text-gray-200">List</a></li>
-          </ul>
-        </nav>
+  <!-- Mobile Header -->
+  <header class="block md:hidden bg-slate-900 text-white p-4 shadow-lg">
+    <div class="container mx-auto max-w-screen-xl flex justify-between items-center">
+      <h1 class="text-2xl font-bold">
+        ยักษ์ ขาว <span class="text-red-500">วัด ฝุ่น</span>
+      </h1>
+      <!-- Hamburger Menu -->
+      <div class="relative">
+        <button class="menu-button p-2 rounded-lg text-2xl" :class="{ 'active': isMenuOpen }" @click="toggleMenu">☰</button>
+        <div class="dropdown-menu" v-if="isMenuOpen">
+          <NuxtLink v-for="item in menuItems" :key="item.path" :to="item.path" class="dropdown-item" :class="{ 'active': activePage === item.path }">
+            {{ item.name }}
+          </NuxtLink>
+        </div>
       </div>
-    </header>
-
-
-  </div>
-
+    </div>
+  </header>
 </template>
-
-<script setup>
-import { ref } from "vue";
-const isDropdownOpen = ref(false);
-</script>
-
-<script>
-export default {
-    data() {
-        return {
-            isMenuOpen: false,
-        }
-      },
-      methods: {
-        toggleMenu() {
-            this.isMenuOpen = !this.isMenuOpen;
-        },
-    }
+  
+  <script setup>
+  import { ref, computed } from "vue";
+  import { useRoute } from "vue-router";
+  
+  const isMenuOpen = ref(false);
+  const route = useRoute(); // ดึงข้อมูล route ปัจจุบัน
+  const activePage = computed(() => route.path); // ทำให้ reactive
+  
+  const menuItems = [
+    { name: "หน้าแรก", path: "/" },
+    { name: "แผนที่ยักษ์ขาว", path: "/MapPage" },
+    { name: "ข่าว", path: "/News" },
+    { name: "ตั้งค่าสี", path: "/ColorSetting" },
+    { name: "ร่วมสนับสนุน", path: "/Regis" },
+    { name: "ผู้สนับสนุน", path: "/SponPage" },
+    { name: "ติดต่อเรา", path: "/ContactPage" }
+  ];
+  
+  const toggleMenu = () => {
+    isMenuOpen.value = !isMenuOpen.value;
+  };
+  
+  onMounted(() => {
+    activePage.value = window.location.pathname;
+  });
+  </script>
+  
+  <style scoped>
+  
+  .nav-item {
+    padding: 10px 16px;
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    position: relative;
+    transition: color 0.3s ease-in-out;
   }
-
-</script>
-<style scoped>
-/* Customize header styles if needed */
-.menu-button {
-    font-size: 30px;
+  
+  .nav-item::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 2px;
+    width: 100%;
+    height: 3px;
+    background: #e53e3e;
+    transform: scaleX(0);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .nav-item:hover::after, 
+  .nav-item.active::after {
+    transform: scaleX(1);
+  }
+  
+  .menu-button {
+    font-size: 28px;
     background: none;
     border: none;
     cursor: pointer;
     color: white;
-    padding: 10px;
-}
-
-.dropdown-menu {
+    padding: 8px;
+    transition: color 0.3s ease;
+  }
+  .menu-button.active {
+    color: #e53e3e;
+  }
+  
+  .dropdown-menu {
     position: absolute;
-    top: 40px;
-    right: 0;
+    top: 48px;
+    right: 10px;
     background: white;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 150px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 200px;
     display: flex;
     flex-direction: column;
     z-index: 1000;
-}
-
-.dropdown-menu a {
-    padding: 10px;
+    padding: 10px 0;
+  }
+  
+  .dropdown-item {
+    padding: 10px 18px;
     text-decoration: none;
     color: black;
     font-size: 16px;
-}
-
-.dropdown-menu a:hover {
-    background: #f0f0f0;
-}
-</style>
+    transition: background 0.3s ease;
+  }
+  
+  .dropdown-item:hover, .dropdown-item.active {
+    background: #e53e3e;
+    color: white;
+  }
+  
+  </style>
