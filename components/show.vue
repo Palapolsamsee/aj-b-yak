@@ -1,15 +1,21 @@
 <template>
   <div class="section-header text-center mt-8">
-  <h2 class="text-4xl font-bold mb-6">แบบรายงานสถานการณ์คุณภาพอากาศ</h2>
-</div>
+    <h2 class="text-4xl font-bold mb-6">แบบรายงานสถานการณ์คุณภาพอากาศ</h2>
+  </div>
+
   <!-- แสดงวันที่ -->
   <div class="text-black text-2xl font-bold mb-6 text-center mt-8">
     วันที่ {{ currentDate }}
-    <button @click="refreshDate" class="ml-4 bg-transparent text-gray-400 p-3 rounded-full hover:text-gray-800 transition-all">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400 hover:text-gray-800" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-      <path d="M12 2v6l4-4-4-4v3a9 9 0 1 0 9 9" />
-    </svg>
-  </button>
+    <button 
+      @click="refreshDate" 
+      class="ml-4 bg-transparent text-gray-400 p-3 rounded-full hover:text-gray-800 transition-all"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="23 4 23 10 17 10"></polyline>
+        <polyline points="1 20 1 14 7 14"></polyline>
+        <path d="M3.51 9a9 9 0 1 1 2.13 9.36"></path>
+      </svg>
+    </button>
   </div>
   
   <div class="max-w-7xl min-h-[80vh] bg-white mx-auto p-6 rounded-lg shadow-lg">
@@ -185,7 +191,7 @@ const selectedDevice = ref<Device | null>(null);
 const { colorRanges } = useColorSettings();
 
 const getColor = (value: number | undefined) => {
-  if (value === undefined) return '#808080'; // กรณีไม่มีค่า PM2.5
+  if (value === null) return '#808080'; // กรณีไม่มีค่า PM2.5
   const range = colorRanges.value.find(range => value >= range.min && value <= range.max);
   return range ? range.color : '#808080'; // ถ้าไม่พบค่า, ให้ใช้สีเทา
 };

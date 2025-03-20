@@ -64,25 +64,50 @@ const packages = [
     }
 ];
 
-const LINE_NOTIFY_TOKEN = "YOUR_LINE_NOTIFY_TOKEN_HERE"; // ใส่ LINE Notify Token ของคุณ
+const accessToken = "3Ok9sDtpWsj1PEwlQLs99NNV8ts4WS+mTUNbryXZLwveWhJYu5Zxy2KKM7OCFChWIR3LsG4dWYePq6XegKqn5b9/GuZzzCVbXXhyQ4Oi8CIFFKVr48q/Nq0amToB2OhXmHpZscds/MX4Hgj1hgb0IAdB04t89/1O/w1cDnyilFU=";  // ใส่ Channel Access Token ใหม่
+const userId = "blank";  // ใช้ User ID หรือ Group ID ของ LINE OA
 
-const supportPackage = async (pkg) => {
-    const message = `📢 มีผู้สนับสนุนเครื่องวัดฝุ่น 🎉\n\nแพ็กเกจ: ${pkg.name}\nราคา: ${pkg.price} บาท\n\n📌 ขอบคุณสำหรับการสนับสนุน!`;
+const sendMessageToLine = async (messageText) => {
+    const message = {
+        type: "text",
+        text: messageText
+    };
 
     try {
-        await fetch("https://notify-api.line.me/api/notify", {
+        const response = await fetch("https://api.line.me/v2/bot/message/push", {
             method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Authorization": `Bearer ${LINE_NOTIFY_TOKEN}`
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${"3Ok9sDtpWsj1PEwlQLs99NNV8ts4WS+mTUNbryXZLwveWhJYu5Zxy2KKM7OCFChWIR3LsG4dWYePq6XegKqn5b9/GuZzzCVbXXhyQ4Oi8CIFFKVr48q/Nq0amToB2OhXmHpZscds/MX4Hgj1hgb0IAdB04t89/1O/w1cDnyilFU="}` // ใส่ Channel Access Token ของคุณ
             },
-            body: new URLSearchParams({ message })
+            body: JSON.stringify({
+                to: "blank", // ส่งข้อความไปที่ User หรือ Group ของ LINE OA
+                messages: [message]
+            })
         });
-        alert("ส่งข้อมูลการสนับสนุนไปยัง LINE แล้ว!");
+
+        const responseData = await response.json();
+        if (response.ok) {
+            console.log("ข้อความถูกส่งไปยัง LINE OA เรียบร้อยแล้ว!");
+            alert("การสั่งซื้อถูกส่งไปยัง LINE OA เรียบร้อย!");
+        } else {
+            console.error("ไม่สามารถส่งข้อความได้", responseData);
+            alert(`เกิดข้อผิดพลาด: ${responseData.error.message}`);
+        }
     } catch (error) {
-        console.error("ส่งข้อมูลไป LINE ไม่สำเร็จ", error);
-        alert("เกิดข้อผิดพลาดในการส่งข้อมูลไป LINE");
+        console.error("เกิดข้อผิดพลาดในการส่งข้อความ", error);
+        alert("เกิดข้อผิดพลาดในการส่งข้อความไป LINE");
     }
+};
+
+const supportPackage = (pkg) => {
+    const messageText = `📢 ลูกค้าสนใจสนับสนุนเครื่องวัดฝุ่น 🎉\n\nแพ็กเกจ: ${pkg.name}\nราคา: ${pkg.price} บาท\n\n📌 ขอบคุณสำหรับการสนับสนุน!`;
+
+    // ส่งข้อความไป LINE OA
+    sendMessageToLine(messageText);
+
+    // ลิงก์เชื่อมต่อไปยัง LINE OA
+    window.location.href = "https://line.me/R/ti/p/@606phsmk";
 };
 </script>
 
@@ -187,15 +212,6 @@ h1 {
 .package .support-button:hover {
     background: #d92041;
 }
-
-/* .footer {
-    text-align: center;
-    margin-top: 40px;
-    padding: 20px;
-    background: #f02a51;
-    color: #fff;
-    font-size: 14px;
-} */
 
 .grey-text {
     color: #b8b6b6;
