@@ -18,6 +18,7 @@
             <a href="Regis">ซื้อเครื่อง</a>
             <a href="SponPage">ผู้สนับสนุน</a>
             <a href="ContactPage">ติดต่อเรา</a>
+            <a href="Footer">เกี่ยวกับเรา</a>
           </div>
         </div>
       </div>
