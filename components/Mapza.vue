@@ -1,51 +1,43 @@
 <template>
+    <Header />
     <div>
-        <div class="hidden md:block">
-            <div class="bg-slate-900 text-white p-4">
-                <div class="container mx-auto flex justify-between items-center">
-                    <h1 class="text-2xl font-bold">
-                        ยักษ์ขาว <span class="text-red-500">วัดฝุ่น</span>
-                    </h1>
-
-                    <!-- Hamburger Menu -->
-                    <div class="relative">
-                        <button class="menu-button" @click="toggleMenu">☰</button>
-                        <div class="dropdown-menu" v-if="isMenuOpen">
-                            <a href="MainPage">หน้าแรก</a>
-                            <a href="MapPage">แผนที่ยักษ์ขาว</a>
-                            <a href="News">ข่าว</a>
-                            <a href="ColorSetting">ตั้งค่าสี</a>
-                            <a href="Regis">ซื้อเครื่อง</a>
-                            <a href="ContactPage">ติดต่อเรา</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="search-container">
-                    <input type="text" class="search-input" placeholder="ค้นหาสถานที่..." v-model="searchTerm"
-                        @keyup.enter="searchLocation" />
-                    <button class="search-button" @click="searchLocation">ค้นหา</button>
-                </div>
-            </div>
+        <div class="search-container" style="text-align: center; align-items: center; justify-content: center; margin-top: 100px;">
+            <span style="font-size: 22px; font-weight: bold; margin-right: 250px;">สำรวจคุณภาพอากาศ</span>
+            <input type="text" class="search-input" placeholder="ค้นหาสถานที่..." v-model="searchTerm"
+                @keyup.enter="searchLocation" />
+            <button class="search-button" @click="searchLocation">ค้นหา</button>
         </div>
-
-        <div ref="mapContainer" id="map"></div>
+        
+        <div class="map-container" style="max-width: 1200px; margin: 0 auto;">
+            <div ref="mapContainer" id="map" style="height: 500px; width: 100%;"></div>
+        </div>
 
         <div id="banner" class="banner" v-if="showBanner">
             <h3 class="banner-title">คุณภาพอากาศใน <span class="location-name">{{ selectedLocation.place }}</span></h3>
             <div class="air-quality">
                 <img class="weather-icon" :src="selectedLocation.weatherIcon" alt="weather icon">
                 <span class="pm25-value">{{ selectedLocation.pm25 }}</span>
-                <span class="air-quality-status" :style="{ color: getStatusColor(selectedLocation.airQualityStatus) }">
+                <span style="font-size: 18px; font-weight: bold; font-family: 'Sarabun', sans-serif;"
+                    class="air-quality-status" :style="{ color: getStatusColor(selectedLocation.airQualityStatus) }">
                     {{ selectedLocation.airQualityStatus }}
                 </span>
             </div>
             <div class="air-details">
-                <!-- <div class="detail-item">PM2.5: <strong>{{ selectedLocation.pm25 }} µg/m³</strong></div> -->
-                <!-- <img class="temp-icon" src="/assets/images/weather_img.png" alt="temp icon"> -->
-                <span class="detail-item">
-                    Temperature: {{ selectedLocation.temperature }}° | Humidity: {{ selectedLocation.humidity }}%
-                    <!-- {{ selectedLocation.windSpeed }} km/h -->
+                <span class="detail-item"
+                    style="display: flex; align-items: center; justify-content: center; gap: 20px; padding: 5px 10px; border-radius: 15px;">
+                    <div style="display: flex; align-items: center;">
+                        <img src="/assets/images/temperature_icon.png" alt="Temperature" class="temp-icon"
+                            style="width: 24px; height: 24px; margin-right: 5px;">
+                        <span style="font-size: 16px;">{{ selectedLocation.temperature }}°C</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <img src="/assets/images/humidity_icon.png" alt="Humidity" class="humidity-icon"
+                            style="width: 22px; height: 22px; margin-right: 5px;">
+                        <span style="font-size: 16px;">{{ selectedLocation.humidity }}%</span>
+                    </div>
+                </span>
+                <span class="detail-item" style="display: block; text-align: center;  font-size: 12px; color: #666;">
+                    อัพเดทล่าสุด: {{ selectedLocation.updateTime }}
                 </span>
             </div>
         </div>
@@ -70,7 +62,7 @@
             </div> -->
 
 
-        <div class="footer text-center">
+        <div class="footer text-center" style="max-width: 1200px; margin: 0 auto;">
             <img src="/assets/images/yakkaw_dust_measure.jpg" alt="Air Quality Alert Levels" class="mx-auto">
         </div>
     </div>
@@ -86,12 +78,21 @@ export default {
             searchTerm: '',
             selectedLocation: {},
             showBanner: false,
-            devices: []
+            devices: [],
+            previousPm25Values: new Map(),
+            lastUpdateTime: null
         };
     },
     async mounted() {
         await this.fetchData();
         this.loadGoogleMaps();
+
+        // Fetch data every 30 seconds (adjust as needed)
+        this.interval = setInterval(this.fetchData, 30000);
+    },
+    beforeUnmount() {
+        // Clear interval when the component is destroyed to prevent memory leaks
+        clearInterval(this.interval);
     },
     methods: {
         toggleMenu() {
@@ -105,90 +106,162 @@ export default {
                 }
                 const resData = await response.json();
 
-                // Filter out inactive devices and those missing important values
+                const today = new Date().toISOString().split('T')[0];
+
                 this.devices = resData.response.filter(device =>
-                    device.status.toLowerCase() !== 'inactive' &&  // Exclude inactive status
-                    device.pm25 != null && device.pm25 !== 0 &&   // Ensure PM2.5 has a valid value
-                    device.humidity != null && device.humidity !== '' &&  // Ensure humidity is valid
-                    device.temperature != null && device.temperature !== '' && // Ensure temperature is valid
-                    device.updatetime != null &&  // Ensure updatetime is valid
-                    device.deviceid != null &&  // Ensure deviceid is valid
-                    device.timestamp != null &&  // Ensure timestamp is valid
-                    device.ddate != null && device.ddate !== '' // Ensure ddate is valid
+                    device.status && device.status.toLowerCase() === 'active' &&
+                    device.av6h !== '' &&
+                    device.av3h !== '' &&
+                    device.av1h !== '' &&
+                    device.aqi !== '' &&
+                    device.pm25 !== null && device.pm25 !== '' &&
+                    device.humidity !== null && device.humidity !== '' &&
+                    device.temperature !== null && device.temperature !== '' &&
+                    device.ddate === today &&
+                    device.pm25_6h !== null && device.pm25_6h !== 0
                 );
+
+                // Update last update time from the first device
+                if (this.devices.length > 0) {
+                    this.lastUpdateTime = new Date(this.devices[0].updatetime * 1000).toLocaleString('th-TH');
+                }
+
+                // Update previous PM2.5 values
+                this.devices.forEach(device => {
+                    const previousPm25 = this.previousPm25Values.get(device.deviceid) || device.pm25;
+                    this.previousPm25Values.set(device.deviceid, device.pm25);
+
+                    // Update marker with new PM2.5 and previous value
+                    const marker = this.markers.get(device.deviceid);
+                    if (marker) {
+                        marker.setIcon(this.createCustomMarker(device.pm25, previousPm25));
+                    }
+                });
             } catch (error) {
                 console.error('เกิดข้อผิดพลาด:', error);
             }
         },
         loadGoogleMaps() {
-            const script = document.createElement('script');
-            script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD9TDjlJEO60ksYuV2mCk-j6R2lHjrjx6k&callback=initMap`;
-            script.async = true;
-            script.defer = true;
-            window.initMap = this.initMap;
-            document.head.appendChild(script);
+            // Check if the Google Maps script already exists
+            if (typeof google === 'undefined') {
+                const script = document.createElement('script');
+                script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD9TDjlJEO60ksYuV2mCk-j6R2lHjrjx6k&callback=initMap`;
+                script.async = true;
+                script.defer = true;
+                window.initMap = this.initMap;  // Directly assign the method
+                document.head.appendChild(script);
+            } else {
+                this.initMap(); // If already loaded, initialize immediately
+            }
         },
         initMap() {
+            // Check if the map container exists
+            if (!this.$refs.mapContainer) {
+                console.error('Map container not found!');
+                return;
+            }
+
+            // Initialize Google Maps
             this.map = new google.maps.Map(this.$refs.mapContainer, {
-                center: { lat: 13.7563, lng: 100.5018 },
+                center: { lat: 13.7563, lng: 100.5018 }, // Default location (Bangkok)
                 zoom: 6
             });
 
-            this.devices.forEach(device => {
-                const marker = new google.maps.Marker({
-                    position: { lat: device.latitude, lng: device.longitude },
-                    map: this.map,
-                    icon: this.createCustomMarker(device.pm25),
-                    title: device.place
-                });
+            // Place markers if devices are available
+            if (this.devices.length > 0) {
+                this.devices.forEach(device => {
+                    const marker = new google.maps.Marker({
+                        position: { lat: device.latitude, lng: device.longitude },
+                        map: this.map,
+                        icon: this.createCustomMarker(device.pm25, this.previousPm25Values.get(device.deviceid) || device.pm25),
+                        title: device.place
+                    });
 
-                this.markers.set(device.dvid, marker);
+                    this.markers.set(device.deviceid, marker);
 
-                marker.addListener('mouseover', () => {
-                    this.updateBanner(device);
-                    this.showBanner = true;
-                });
+                    marker.addListener('mouseover', () => {
+                        this.updateBanner(device);
+                        this.showBanner = true;
+                    });
 
-                marker.addListener('mouseout', () => {
-                    this.showBanner = false;
+                    marker.addListener('mouseout', () => {
+                        this.showBanner = false;
+                    });
                 });
-            });
+            }
         },
-        createCustomMarker(pm25) {
+        createCustomMarker(pm25, pm25Prev) {
             const color = this.getMarkerColor(pm25);
+            const size = 50;
+            const circleSize = 30;
+            const arrowCircleSize = 18; // Outer circle for arrow
+            const arrowLength = 12; // Arrow shaft length
+            const arrowHeadSize = 6; // Arrowhead size
+
             const canvas = document.createElement('canvas');
-            const size = 30; // Size of the marker
             canvas.width = size;
             canvas.height = size;
             const context = canvas.getContext('2d');
 
-            // Draw circle
+            // Draw the main PM2.5 circle marker
             context.beginPath();
-            context.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI);
+            context.arc(size / 2 - 5, size / 2, circleSize / 2, 0, 2 * Math.PI);
             context.fillStyle = color;
             context.fill();
 
-            // Draw text
+            // Draw PM2.5 value in the center
             context.fillStyle = 'white';
-            context.font = 'bold 13px Sarabun';
+            context.strokeStyle = 'black';
+            context.lineWidth = 1;
+            context.stroke();
+            context.font = 'bold 20px "Angsana New"';
             context.textAlign = 'center';
             context.textBaseline = 'middle';
-            context.fillText(pm25, size / 2, size / 2);
+            context.fillText(pm25, size / 2 - 5, size / 2);
 
-            return {
-                url: canvas.toDataURL(),
-                scaledSize: new google.maps.Size(size, size)
-            };
-        },
+            // Calculate arrow position
+            const arrowBaseX = size - arrowCircleSize / 2 - 2;
+            const arrowBaseY = arrowCircleSize / 2 + 2;
+
+            // Draw outer circle for the arrow
+            context.beginPath();
+            context.arc(arrowBaseX, arrowBaseY, arrowCircleSize / 2, 0, 2 * Math.PI);
+            context.fillStyle = 'white';
+            context.fill();
+            context.strokeStyle = 'black';
+            context.lineWidth = 2;
+            context.stroke();
+
+            // Draw the arrow shaft (↗ direction)
+            context.strokeStyle = 'black';
+            context.lineWidth = 3;
+            context.beginPath();
+            context.moveTo(arrowBaseX - arrowLength / 2, arrowBaseY + arrowLength / 2);
+            context.lineTo(arrowBaseX + arrowLength / 2, arrowBaseY - arrowLength / 2);
+            context.stroke();
+
+            // Draw the arrowhead
+            context.beginPath();
+            context.moveTo(arrowBaseX + arrowLength / 2, arrowBaseY - arrowLength / 2); // Tip of arrow
+            context.lineTo(arrowBaseX + arrowLength / 2 - arrowHeadSize, arrowBaseY - arrowLength / 2 + arrowHeadSize / 2); // Left side
+            context.lineTo(arrowBaseX + arrowLength / 2 - arrowHeadSize, arrowBaseY - arrowLength / 2 - arrowHeadSize / 2); // Right side
+            context.closePath();
+            context.fillStyle = 'black';
+            context.fill();
+
+            return canvas.toDataURL();
+        }
+        ,
+
         getMarkerColor(pm25) {
             if (pm25 <= 25) {
-                return 'blue';
+                return '#30b2fc';
             } else if (pm25 <= 37) {
-                return 'green';
+                return '#6dd951';
             } else if (pm25 <= 50) {
-                return '#FFD700';
+                return '#e9db51';
             } else if (pm25 <= 90) {
-                return 'orange';
+                return '#efa628';
             } else {
                 return 'red';
             }
@@ -220,7 +293,8 @@ export default {
                 temperature: device.temperature,
                 humidity: device.humidity,
                 airQualityStatus: airQualityStatus,
-                weatherIcon: weatherIcon
+                weatherIcon: weatherIcon,
+                updateTime: this.lastUpdateTime
             };
             this.showBanner = true;
         },
@@ -240,13 +314,13 @@ export default {
         getStatusColor(status) {
             switch (status) {
                 case 'ดีมาก':
-                    return 'blue';
+                    return '#30b2fc';
                 case 'ดี':
-                    return 'green';
+                    return '#6dd951';
                 case 'ปานกลาง':
-                    return '#FFD700';
+                    return '#e9db51';
                 case 'แย่':
-                    return 'orange';
+                    return '#efa628';
                 case 'อันตราย':
                     return 'red';
                 default:
@@ -254,7 +328,7 @@ export default {
             }
         }
     }
-};
+}
 </script>
 <style scoped>
 .header {
@@ -275,35 +349,53 @@ export default {
     font-size: 24px;
     font-weight: bold;
     color: #333;
-    font-family: 'Sarabun', sans-serif;
+    font-family: 'Angsana New', sans-serif;
 }
 
 .search-container {
+    color: white;
     display: flex;
-    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #070d22;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .search-input {
-    padding: 8px 15px;
-    border: 1px solid #000000;
+    padding: 12px 20px;
+    border: 1px solid #ccc;
     border-radius: 20px;
-    width: 250px;
-    font-size: 14px;
-    color: #000000
+    width: 50%;
+    max-width: 800px;
+    font-size: 16px;
+    color: #333;
+    margin-right: 10px;
 }
 
 .search-button {
-    padding: 8px 20px;
-    background: #f02a51;
+    padding: 12px 25px;
+    background: #e53e3e;
     color: white;
     border: none;
     border-radius: 20px;
     cursor: pointer;
+    font-size: 16px;
+}
+
+.search-input::placeholder {
+    color: #999;
+    font-style: italic;
 }
 
 #map {
     height: 100vh;
-    margin-top: 10px;
+    margin-top: 0px;
     /*   WHITE SPACE BETWEEN HEADER AND MAP
     margin: 0;
     padding: 0; */
@@ -318,7 +410,7 @@ export default {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     width: 250px;
     z-index: 1000;
-    font-family: Arial, sans-serif;
+    font-family: "Sarabun", sans-serif;
     line-height: 1.5;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -334,7 +426,7 @@ export default {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     width: 250px;
     z-index: 1000;
-    font-family: Arial, sans-serif;
+    font-family: "Sarabun", sans-serif;
     line-height: 1.5;
     transition: opacity 0.3s ease;
     pointer-events: auto;
