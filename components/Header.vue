@@ -1,20 +1,20 @@
 <template>
- <header class="hidden md:flex fixed top-0 left-0 w-full bg-slate-900 text-white h-20 md:h-24 p-2 shadow-lg z-50 backdrop-blur-md items-center">
-  <div class="container mx-auto max-w-screen-xl flex items-center justify-between">
-    <!-- โลโก้ -->
-    <h1 class="text-5xl font-bold">
-      <span class="text-white">ยักษ์ขาว</span> <span class="text-red-500">วัดฝุ่น</span>
-    </h1>
-    <!-- เมนู -->
-    <nav class="flex gap-4 md:gap-6">
-      <NuxtLink v-for="item in menuItems" :key="item.path" :to="item.path" class="nav-item" :class="{ 'active': activePage === item.path }">
-        {{ item.name }}
-      </NuxtLink>
-    </nav>
-  </div>
-</header>
+  <!-- Desktop Header -->
+  <header class="hidden md:flex fixed top-0 left-0 w-full bg-slate-900 text-white h-20 md:h-24 p-2 shadow-lg z-50 backdrop-blur-md items-center">
+    <div class="container mx-auto max-w-screen-xl flex items-center justify-between">
+      <!-- โลโก้ -->
+      <h1 class="text-5xl font-bold">
+        <span class="text-white">ยักษ์ขาว</span> <span class="text-red-500">วัดฝุ่น</span>
+      </h1>
+      <!-- เมนู -->
+      <nav class="flex gap-4 md:gap-6">
+        <NuxtLink v-for="item in menuItems" :key="item.path" :to="item.path" class="nav-item" :class="{ 'active': activePage === item.path }">
+          {{ item.name }}
+        </NuxtLink>
+      </nav>
+    </div>
+  </header>
 
-  
   <!-- Mobile Header -->
   <header class="block md:hidden bg-slate-900 text-white p-4 shadow-lg">
     <div class="container mx-auto max-w-screen-xl flex justify-between items-center">
@@ -25,14 +25,14 @@
       <div class="relative">
         <button class="menu-button p-2 rounded-lg text-2xl" :class="{ 'active': isMenuOpen }" @click="toggleMenu">☰</button>
         <div class="dropdown-menu" v-if="isMenuOpen">
-          <a v-for="item in menuItems" :key="item.path" :href="item.path" class="dropdown-item" :class="{ 'active': activePage === item.path }">
+          <NuxtLink v-for="item in menuItems" :key="item.path" :to="item.path" class="dropdown-item" :class="{ 'active': activePage === item.path }">
             {{ item.name }}
-          </a>
+          </NuxtLink>
         </div>
       </div>
     </div>
   </header>
-  </template>
+</template>
   
   <script setup>
   import { ref, computed } from "vue";
