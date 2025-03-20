@@ -10,13 +10,18 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@line/bot-sdk": "^9.7.1",
     "@nuxt/http": "^0.6.4",
     "@nuxtjs/leaflet": "^1.2.4",
+    "body-parser": "^1.20.3",
     "chart.js": "^4.4.6",
     "dayjs": "^1.11.13",
     "echarts": "^5.6.0",
+    "express": "^4.21.2",
+    "font-awesome": "^4.7.0",
     "leaflet": "^1.9.4",
     "nuxt": "^3.14.159",
+    "unicons": "^0.0.3",
     "vue": "latest",
     "vue-router": "latest"
   },
