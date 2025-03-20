@@ -1,104 +1,84 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue';
 
-// URL ของ Strapi
-const STRAPI_URL = 'http://localhost:1338'
+// URL ของ API ข่าว
+const API_URL = 'http://localhost:8080/news';
 
-// ดึงข้อมูลข่าวจาก API พร้อม populate รูปภาพ
-const { data, error, pending } = await useFetch(`${STRAPI_URL}/api/nameofnews?populate=image`)
-
-// Debug: แสดงข้อมูลที่ดึงมาจาก API
-console.log("Fetched data:", data.value)
+// ดึงข้อมูลข่าวจาก API
+const { data, error, pending } = await useFetch(`${API_URL}`);
+console.log("-------------kuymoon");
+console.log(data.value); // ตรวจสอบข้อมูล
 
 // เรียงลำดับข่าวตามวันที่ล่าสุด
 const news = computed(() => {
   return data.value?.data
-    ? [...data.value.data].sort((a, b) => {
-        if (!a.createdAt || !b.createdAt) return 0
-        return new Date(b.createdAt) - new Date(a.createdAt)
-      })
-    : []
-})
+    ? [...data.value.data].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    : [];
+});
 
-// ฟังก์ชันสร้าง URL เต็มของรูป โดยรับ object ของรูป (ในที่นี้ใช้รูปแรกจาก array)
-const getImageUrl = (imageObj) => {
-  if (!imageObj) return ''
-  return `${STRAPI_URL}${imageObj.url}`
-}
+// ฟังก์ชันสร้าง URL เต็มของรูป
+const getImageUrl = (imageObj) => imageObj ? `${API_URL}${imageObj.url}` : '';
+
+// ข้อมูล Facebook Pages
+const facebookPages = [
+  "https://www.facebook.com/p/%E0%B8%AB%E0%B9%89%E0%B8%AD%E0%B8%87%E0%B9%80%E0%B8%A3%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B8%AA%E0%B8%B9%E0%B8%9D%E0%B8%B8%E0%B9%88%E0%B8%99-100063582878340/?locale=th_TH",
+  "https://www.facebook.com/profile.php?id=100064516369084"
+];
+
+// โหลด Facebook SDK
+const loadFacebookSDK = () => {
+  if (!window.FB) {
+    const script = document.createElement('script');
+    script.src = "https://connect.facebook.net/th_TH/sdk.js#xfbml=1&version=v22.0";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => window.FB && window.FB.XFBML.parse();
+    document.body.appendChild(script);
+  } else {
+    window.FB.XFBML.parse();
+  }
+};
+
+onMounted(loadFacebookSDK);
 </script>
 
 <template>
   <div class="container">
     <h1>ข่าวล่าสุด</h1>
-
-    <!-- แสดงสถานะการโหลด -->
     <p v-if="pending">กำลังโหลดข้อมูล...</p>
-    <!-- แสดงข้อผิดพลาด -->
     <p v-else-if="error">เกิดข้อผิดพลาด: {{ error.message }}</p>
-    <!-- ถ้าไม่มีข่าว -->
     <p v-else-if="!news.length">ไม่มีข้อมูลข่าว</p>
-    <!-- แสดงข่าว -->
     <ul v-else>
       <li v-for="item in news" :key="item.id">
-        <!-- ตรวจสอบว่ามีรูปภาพใน array และแสดงรูปแรก -->
-        <img 
-          v-if="item.image && item.image.length > 0"
-          :src="getImageUrl(item.image[0])" 
-          alt="News Image" 
-          class="news-image" 
-        />
+        <img v-if="item.image" :src="getImageUrl(item.image)" alt="News Image" class="news-image" />
         <div class="news-text">
           <h3>{{ item.title }}</h3>
-          <p>📅 {{ formatDate(item.createdAt) }}</p>
-          <p>
-            <a :href="item.URL" target="_blank">อ่านเพิ่มเติม</a>
-          </p>
+          <p>📅 {{ new Date(item.createdAt).toLocaleDateString('th-TH') }}</p>
+          <p><a :href="item.URL" target="_blank">อ่านเพิ่มเติม</a></p>
         </div>
       </li>
     </ul>
+    
+    <!-- Facebook Feed ด้านล่าง -->
+    <div class="facebook-section">
+      <h2>Facebook Feed</h2>
+      <div v-for="(page, index) in facebookPages" :key="index" class="fb-page"
+           :data-href="page" data-tabs="timeline" data-width="340" data-height="500"
+           data-small-header="false" data-adapt-container-width="true"
+           data-hide-cover="false" data-show-facepile="true"></div>
+    </div>
   </div>
 </template>
 
-<script>
-export default {
-  methods: {
-    formatDate(dateString) {
-      const date = new Date(dateString)
-      return date.toLocaleDateString('th-TH', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      })
-    }
-  }
-}
-</script>
-
 <style scoped>
-
 .container {
-  max-width: 1200px; 
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
-  
 }
 
-h1 {
-  font-size: 40px;      /* ปรับขนาดข่าวล่าสุด*/
-  font-weight: bold;    /* ตัวหนา */
+h1, h2 {
   text-align: center;
-  background-color: #fff;
-  color: #000;
-  padding: 10px 20px;
-  border-radius: 10px;
-  width: fit-content;
-  margin: 0 auto;
-}
-
-li h3 {
-  font-size: 25px;      /* ขนาดหัวข้อข่าว */
-  font-weight: bold;    /* ตัวหนา */
-  margin: 0;
 }
 
 ul {
@@ -106,37 +86,25 @@ ul {
   padding: 0;
 }
 
-
 li {
   background-color: #e8eaec;
   padding: 15px;
   margin-bottom: 10px;
   border-radius: 5px;
-  text-align: left;
-  border-bottom: 1px solid #ccc;
   display: flex;
-  align-items: flex-start; /* เดิมเป็น center */
-  gap: 30px; /* เพิ่มระยะห่างระหว่างรูปกับข้อความ */
+  align-items: flex-start;
+  gap: 30px;
 }
 
-
 .news-image {
-  width: 300px;   
-  height: 200px;  
+  width: 300px;
+  height: 200px;
   object-fit: cover;
   border-radius: 5px;
 }
 
-
-.news-text p {
-  line-height: 2; /* ปรับค่า line-height */
-}
-
-
-a {
-  color: blue;
-  text-decoration: none;
-  font-size: 16px;
- 
+.facebook-section {
+  margin-top: 40px;
+  text-align: center;
 }
 </style>
