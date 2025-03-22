@@ -79,10 +79,15 @@ export default {
             devices: [],
             previousPm25Values: new Map(),
             lastUpdateTime: null,
-            
+            colorRanges: [],
+
         };
     },
     async mounted() {
+        const { colorRanges } = useColorSettings(); // Get colorRanges
+        this.colorRanges = colorRanges.value; // Assign to component data
+
+
         await this.fetchData();
         this.loadGoogleMaps();
 
@@ -261,33 +266,35 @@ export default {
             return canvas.toDataURL();
         },
 
+
         getMarkerColor(pm25) {
-            if (pm25 <= 25) {
+            if (pm25 <= 15) {
                 return '#30b2fc';
-            } else if (pm25 <= 37) {
+            } else if (pm25 <= 25) {
                 return '#6dd951';
-            } else if (pm25 <= 50) {
+            } else if (pm25 <= 37.5) {
                 return '#e9db51';
-            } else if (pm25 <= 90) {
+            } else if (pm25 <= 75) {
                 return '#efa628';
             } else {
                 return 'red';
             }
         },
+
         updateBanner(device) {
             let airQualityStatus = '';
             let weatherIcon = '';
 
-            if (device.pm25 <= 25) {
+            if (device.pm25 <= 15) {
                 airQualityStatus = 'ดีมาก';
                 weatherIcon = '/assets/images/yyakkaw_blue_icon.png';
-            } else if (device.pm25 <= 37) {
+            } else if (device.pm25 <= 25) {
                 airQualityStatus = 'ดี';
                 weatherIcon = '/assets/images/yyakkaw_green_icon.png';
-            } else if (device.pm25 <= 50) {
+            } else if (device.pm25 <= 37.5) {
                 airQualityStatus = 'ปานกลาง';
                 weatherIcon = '/assets/images/yyakkaw_yellow_icon.png';
-            } else if (device.pm25 <= 90) {
+            } else if (device.pm25 <= 75) {
                 airQualityStatus = 'แย่';
                 weatherIcon = '/assets/images/yyakkaw_orange_icon.png';
             } else {

@@ -1,6 +1,6 @@
 <script setup>
 
-import { ref, computed, onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 
 // URL ของ API ข่าว
 const API_URL = 'http://localhost:8080/news';
@@ -59,14 +59,13 @@ onMounted(loadFacebookSDK);
         </div>
       </li>
     </ul>
-    
+
     <!-- Facebook Feed ด้านล่าง -->
     <div class="facebook-section">
       <h2>Facebook Feed</h2>
-      <div v-for="(page, index) in facebookPages" :key="index" class="fb-page"
-           :data-href="page" data-tabs="timeline" data-width="340" data-height="500"
-           data-small-header="false" data-adapt-container-width="true"
-           data-hide-cover="false" data-show-facepile="true"></div>
+      <div v-for="(page, index) in facebookPages" :key="index" class="fb-page" :data-href="page" data-tabs="timeline"
+        data-width="340" data-height="500" data-small-header="false" data-adapt-container-width="true"
+        data-hide-cover="false" data-show-facepile="true"></div>
     </div>
   </div>
 </template>
@@ -78,7 +77,8 @@ onMounted(loadFacebookSDK);
   padding: 20px;
 }
 
-h1, h2 {
+h1,
+h2 {
   text-align: center;
 }
 
