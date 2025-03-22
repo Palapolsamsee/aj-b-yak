@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
     "@line/bot-sdk": "^9.7.1",
     "@nuxt/http": "^0.6.4",
     "@nuxtjs/leaflet": "^1.2.4",

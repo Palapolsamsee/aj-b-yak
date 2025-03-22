@@ -1,4 +1,5 @@
 <script setup>
+
 import { ref, computed, onMounted } from 'vue';
 
 // URL ของ API ข่าว
