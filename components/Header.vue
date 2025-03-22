@@ -1,9 +1,9 @@
 <template>
-  <header
-    class="hidden md:flex fixed top-0 left-0 w-full bg-slate-900 text-white h-20 md:h-24 p-2 shadow-lg z-50 backdrop-blur-md items-center">
+  <!-- Desktop Header -->
+  <header class="hidden md:flex fixed top-0 left-0 w-full bg-slate-900 text-white h-20 md:h-24 p-2 shadow-lg z-50 backdrop-blur-md items-center">
     <div class="container mx-auto max-w-screen-xl flex items-center justify-between">
       <!-- โลโก้ -->
-      <h1 class="text-3xl font-bold">
+      <h1 class="text-4xl font-bold">
         <span class="text-white">ยักษ์ขาว</span> <span class="text-red-500">วัดฝุ่น</span>
       </h1>
       <!-- เมนู -->
@@ -16,7 +16,6 @@
     </div>
   </header>
 
-
   <!-- Mobile Header -->
   <header class="block md:hidden bg-slate-900 text-white p-4 shadow-lg">
     <div class="container mx-auto max-w-screen-xl flex justify-between items-center">
@@ -28,10 +27,10 @@
         <button class="menu-button p-2 rounded-lg text-2xl" :class="{ 'active': isMenuOpen }"
           @click="toggleMenu">☰</button>
         <div class="dropdown-menu" v-if="isMenuOpen">
-          <a v-for="item in menuItems" :key="item.path" :href="item.path" class="dropdown-item"
+          <NuxtLink v-for="item in menuItems" :key="item.path" :to="item.path" class="dropdown-item"
             :class="{ 'active': activePage === item.path }">
             {{ item.name }}
-          </a>
+          </NuxtLink>
         </div>
       </div>
     </div>
@@ -39,12 +38,12 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 
 const isMenuOpen = ref(false);
-const route = useRoute(); // ดึงข้อมูล route ปัจจุบัน
-const activePage = computed(() => route.path); // ทำให้ reactive
+const route = useRoute(); 
+const activePage = computed(() => route.path);
 
 const menuItems = [
   { name: "หน้าแรก", path: "/" },
@@ -59,10 +58,6 @@ const menuItems = [
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
 };
-
-onMounted(() => {
-  activePage.value = window.location.pathname;
-});
 </script>
 
 <style scoped>
