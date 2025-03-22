@@ -8,8 +8,9 @@ import Sponsors from '~/components/Sponsors.vue';
   <Header />
   <show />
   <Sponsors />
-  <Footer />
+  
   <ContactForm />
+  <Footer />
 
 </template>
 
