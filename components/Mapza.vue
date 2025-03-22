@@ -1,5 +1,4 @@
 <template>
-    <Header />
     <!-- <div style="background-color: white;"> -->
     <div>
         <div class="search-container"
@@ -79,7 +78,8 @@ export default {
             showBanner: false,
             devices: [],
             previousPm25Values: new Map(),
-            lastUpdateTime: null
+            lastUpdateTime: null,
+            
         };
     },
     async mounted() {
@@ -133,7 +133,7 @@ export default {
                     // Update marker with new PM2.5 and previous value
                     const marker = this.markers.get(device.deviceid);
                     if (marker) {
-                        marker.setIcon(this.createCustomMarker(device.pm25, previousPm25));
+                        marker.setIcon(this.createCustomMarker(device.pm25, previousPm25, device.trend));
                     }
                 });
             } catch (error) {
@@ -172,7 +172,7 @@ export default {
                     const marker = new google.maps.Marker({
                         position: { lat: device.latitude, lng: device.longitude },
                         map: this.map,
-                        icon: this.createCustomMarker(device.pm25, this.previousPm25Values.get(device.deviceid) || device.pm25),
+                        icon: this.createCustomMarker(device.pm25, this.previousPm25Values.get(device.deviceid) || device.pm25, device.trend),
                         title: device.place
                     });
 
@@ -189,17 +189,19 @@ export default {
                 });
             }
         },
-        createCustomMarker(pm25, pm25Prev) {
+        createCustomMarker(pm25, pm25Prev, trend) {
             const color = this.getMarkerColor(pm25);
             const size = 50;
             const circleSize = 30;
-            const arrowCircleSize = 22; // Outer circle for arrow
-
+            const arrowCircleSize = 20; // Outer circle for arrow
 
             const canvas = document.createElement('canvas');
             canvas.width = size;
             canvas.height = size;
             const context = canvas.getContext('2d');
+
+            console.log('Canvas width:', canvas.width);
+            console.log('Canvas height:', canvas.height);
 
             // Draw the main PM2.5 circle marker
             context.beginPath();
@@ -230,55 +232,31 @@ export default {
             context.lineWidth = 2;
             context.stroke();
 
-            // แทนที่ createArrowSVG() ด้วยวิธีนี้:
-            const svgNS = "http://www.w3.org/2000/svg";
-            const svg = document.createElementNS(svgNS, "svg");
-            svg.setAttribute("width", arrowCircleSize);
-            svg.setAttribute("height", arrowCircleSize);
-            svg.setAttribute("viewBox", "0 0 24 24");
-
-            // สร้าง <path> สำหรับลูกศร ↗
-            let path = document.createElementNS(svgNS, "path");
-            path.setAttribute("d", "M5 19L19 5M19 5V15M19 5H9");
-            path.setAttribute("stroke", "red");
-            path.setAttribute("stroke-width", "2");
-            path.setAttribute("stroke-linecap", "round");
-            path.setAttribute("stroke-linejoin", "round");
-
-            // ใส่ path ลงใน svg
-            svg.appendChild(path);
-
-            // สร้าง foreignObject เพื่อใส่ SVG ลงใน canvas
-            const foreignObject = document.createElementNS(svgNS, "foreignObject");
-            foreignObject.setAttribute("x", arrowBaseX - arrowCircleSize / 2);
-            foreignObject.setAttribute("y", arrowBaseY - arrowCircleSize / 2);
-            foreignObject.setAttribute("width", arrowCircleSize);
-            foreignObject.setAttribute("height", arrowCircleSize);
-            
-
-            // เพิ่ม SVG ลงใน foreignObject
-            foreignObject.appendChild(svg);
-
-            // สร้าง XMLSerializer เพื่อแปลงเป็น Data URL
-            const serializer = new XMLSerializer();
-            const svgString = serializer.serializeToString(svg);
-            const svgDataUrl = "data:image/svg+xml;utf8," + encodeURIComponent(svgString);
-
-
-            // โหลด SVG เป็น image เพื่อนำมาวาดบน canvas
-            const testImg = document.createElement("img");
-            testImg.src = svgDataUrl;
-            document.body.appendChild(testImg);
-
-            const img = new Image();
-            img.onload = function () {
-                context.drawImage(img, size / 2, size / 2, arrowCircleSize, arrowCircleSize);
-
-            };
-            // โหลดภาพหลังจากที่ canvas วาดเสร็จ
-            setTimeout(() => {
-                img.src = svgDataUrl;
-            }, 50);
+            // Draw SVG arrow based on trend
+            context.beginPath();
+            if (trend === 'd') {
+                // Downward arrow
+                context.moveTo(arrowBaseX, arrowBaseY + 5); // Bottom point of the arrow
+                context.lineTo(arrowBaseX - 5, arrowBaseY - 5); // Top left
+                context.lineTo(arrowBaseX + 5, arrowBaseY - 5); // Top right
+                context.fillStyle = 'green'; // Arrow color for downward trend
+            } else if (trend === 'u') {
+                // Upward arrow
+                context.moveTo(arrowBaseX, arrowBaseY - 5); // Top point of the arrow
+                context.lineTo(arrowBaseX - 5, arrowBaseY + 5); // Bottom left
+                context.lineTo(arrowBaseX + 5, arrowBaseY + 5); // Bottom right
+                context.fillStyle = 'red'; // Arrow color for upward trend
+            } else {
+                // Neutral line
+                context.moveTo(arrowBaseX - 5, arrowBaseY); // Left
+                context.lineTo(arrowBaseX + 5, arrowBaseY); // Right
+                context.strokeStyle = 'gray'; // Line color for neutral trend
+                context.lineWidth = 2;
+                context.stroke();
+                return canvas.toDataURL();
+            }
+            context.closePath();
+            context.fill();
 
             return canvas.toDataURL();
         },
@@ -319,7 +297,7 @@ export default {
 
             this.selectedLocation = {
                 place: device.place,
-                pm25: device.pm25,
+                pm25_6h: device.pm25_6h,
                 temperature: device.temperature,
                 humidity: device.humidity,
                 airQualityStatus: airQualityStatus,

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue';
 
 // URL ของ Strapi
 const STRAPI_URL = 'http://localhost:1338'
