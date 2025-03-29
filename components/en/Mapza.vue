@@ -3,10 +3,10 @@
     <div>
         <div class="search-container"
             style="text-align: center; align-items: center; justify-content: center; margin-top: 100px;">
-            <span style="font-size: 22px; font-weight: bold; margin-right: 250px;">สำรวจคุณภาพอากาศ</span>
-            <input type="text" class="search-input" placeholder="ค้นหาสถานที่..." v-model="searchTerm"
+            <span style="font-size: 22px; font-weight: bold; margin-right: 250px;">Air quality survey</span>
+            <input type="text" class="search-input" placeholder="search location..." v-model="searchTerm"
                 @keyup.enter="searchLocation" />
-            <button class="search-button" @click="searchLocation">ค้นหา</button>
+            <button class="search-button" @click="searchLocation">Search</button>
         </div>
 
         <div class="map-container" style="max-width: 1200px; margin: 0 auto; border-radius: 10px; overflow: hidden;">
@@ -14,7 +14,7 @@
         </div>
 
         <div id="banner" class="banner" v-if="showBanner">
-            <h3 class="banner-title">คุณภาพอากาศใน <span class="location-name">{{ selectedLocation.place }}</span></h3>
+            <h3 class="banner-title">Air quality in <span class="location-name">{{ selectedLocation.place }}</span></h3>
             <div class="air-quality">
                 <img class="weather-icon" :src="selectedLocation.weatherIcon" alt="weather icon">
                 <span class="pm25-marker">{{ selectedLocation.pm25_marker }}</span>
@@ -38,7 +38,7 @@
                     </div>
                 </span>
                 <span class="detail-item" style="display: block; text-align: center;  font-size: 12px; color: #666;">
-                    อัพเดทล่าสุด: {{ selectedLocation.updateTime }}
+                    Lasted update: {{ selectedLocation.updateTime }}
                 </span>
             </div>
         </div>
@@ -282,15 +282,15 @@ export default {
 
         getStatusColor(status) {
             switch (status) {
-                case 'ดีมาก':
+                case 'Very good':
                     return '#30b2fc';
-                case 'ดี':
+                case 'Good':
                     return '#6dd951';
-                case 'ปานกลาง':
+                case 'Normal':
                     return '#e9db51';
-                case 'แย่':
+                case 'Bad':
                     return '#efa628';
-                case 'อันตราย':
+                case 'Dangerous':
                     return 'red';
                 default:
                     return 'black';
@@ -302,19 +302,19 @@ export default {
             let weatherIcon = '';
 
             if (device.pm25 <= 15) {
-                airQualityStatus = 'ดีมาก';
+                airQualityStatus = 'Very good';
                 weatherIcon = '/assets/images/yyakkaw_blue_icon.png';
             } else if (device.pm25 <= 25) {
-                airQualityStatus = 'ดี';
+                airQualityStatus = 'Good';
                 weatherIcon = '/assets/images/yyakkaw_green_icon.png';
             } else if (device.pm25 <= 37.5) {
-                airQualityStatus = 'ปานกลาง';
+                airQualityStatus = 'Normal';
                 weatherIcon = '/assets/images/yyakkaw_yellow_icon.png';
             } else if (device.pm25 <= 75) {
-                airQualityStatus = 'แย่';
+                airQualityStatus = 'Bad';
                 weatherIcon = '/assets/images/yyakkaw_orange_icon.png';
             } else {
-                airQualityStatus = 'อันตราย';
+                airQualityStatus = 'Dangerous';
                 weatherIcon = '/assets/images/yyakkaw_red_icon.png';
             }
 

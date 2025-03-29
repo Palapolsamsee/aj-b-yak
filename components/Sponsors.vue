@@ -1,7 +1,7 @@
 <template>
   <section id="supporters" class="bg-[#070d22] py-12 px-4 md:px-12 rounded-lg">
     <div class="container mx-auto text-center">
-      <h2 class="text-2xl font-bold mb-8 text-white">ผู้สนับสนุนโครงการ</h2>
+      <h2 class="text-2xl font-bold mb-8 text-white">Sponsored by</h2>
       <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
         <div v-for="(sponsor, index) in sponsors" :key="index" class="supporter-item text-center">
           <img :src="sponsor.image" class="w-full h-auto object-contain mx-auto" alt="Sponsor Logo" />

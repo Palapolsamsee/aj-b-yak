@@ -45,17 +45,17 @@ onMounted(loadFacebookSDK);
 
 <template>
   <div class="container">
-    <h1>ข่าวล่าสุด</h1>
-    <p v-if="pending">กำลังโหลดข้อมูล...</p>
-    <p v-else-if="error">เกิดข้อผิดพลาด: {{ error.message }}</p>
-    <p v-else-if="!news.length">ไม่มีข้อมูลข่าว</p>
+    <h1>Lasted news</h1>
+    <p v-if="pending">dowloading...</p>
+    <p v-else-if="error">error: {{ error.message }}</p>
+    <p v-else-if="!news.length">no news information</p>
     <ul v-else>
       <li v-for="item in news" :key="item.id">
         <img v-if="item.image" :src="getImageUrl(item.image)" alt="News Image" class="news-image" />
         <div class="news-text">
           <h3>{{ item.title }}</h3>
           <p>📅 {{ new Date(item.createdAt).toLocaleDateString('th-TH') }}</p>
-          <p><a :href="item.URL" target="_blank">อ่านเพิ่มเติม</a></p>
+          <p><a :href="item.URL" target="_blank">read more</a></p>
         </div>
       </li>
     </ul>

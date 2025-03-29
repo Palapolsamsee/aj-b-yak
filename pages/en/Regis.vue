@@ -1,14 +1,14 @@
 <template>
-    <Header />
+    <en-Header />
     <div class="container">
-        <h1>ร่วมสนับสนุน</h1>
+        <h1>Register</h1>
 
         <div class="bank-details">
-            <h2>สนับสนุนผ่านบัญชีธนาคาร</h2>
-            <p>ธนาคารกสิกรไทย</p>
-            <p>ชื่อบัญชี: สมาคมยักษ์ขาว</p>
-            <p>เลขที่บัญชี: 062-8-46998-9</p>
-            <p>โทรแจ้ง: 061-265-0505</p>
+            <h2>Bank account</h2>
+            <p>Kasikorn</p>
+            <p>Account name: สมาคมยักษ์ขาว</p>
+            <p>Account number: 062-8-46998-9</p>
+            <p>Phone: 061-265-0505</p>
         </div>
 
         <div class="packages">
@@ -17,8 +17,8 @@
                 <p v-for="(feature, i) in pkg.features" :key="i" :class="{ 'grey-text': !feature.included }">
                     {{ feature.text }}
                 </p>
-                <div class="price">{{ pkg.price }} บาท</div>
-                <button class="support-button" @click="supportPackage(pkg)">สนับสนุน</button>
+                <div class="price">{{ pkg.price }} Bath</div>
+                <button class="support-button" @click="supportPackage(pkg)">Register</button>
             </div>
         </div>
     </div>
@@ -27,36 +27,36 @@
 <script setup>
 const packages = [
     {
-        name: "ยักษ์ขาว #1",
+        name: "Yakkaw #1",
         price: "4,000",
         features: [
-            { text: "✔ เชื่อมต่อผ่าน WiFi", included: true },
-            { text: "✔ เชื่อมกับ แอพยักษ์ขาว", included: true },
-            { text: "✔ อแดปเตอร์", included: true },
-            { text: "✘ เชื่อมต่อ 3G/4G", included: false },
-            { text: "✘ ระบบพลังแสงอาทิตย์", included: false }
+            { text: "✔ Connect WiFi", included: true },
+            { text: "✔ Connect Yakkaw application", included: true },
+            { text: "✔ Adapter", included: true },
+            { text: "✘ Support 3G/4G", included: false },
+            { text: "✘ Solar power system", included: false }
         ]
     },
     {
         name: "ยักษ์ขาว #2",
         price: "6,000",
         features: [
-            { text: "✔ เชื่อมต่อผ่าน WiFi", included: true },
-            { text: "✔ เชื่อมกับ แอพยักษ์ขาว", included: true },
-            { text: "✔ อแดปเตอร์", included: true },
-            { text: "✔ เชื่อมต่อผ่าน 3G/4G", included: true },
-            { text: "✘ ระบบพลังแสงอาทิตย์", included: false }
+            { text: "✔ Connect WiFi ", included: true },
+            { text: "✔ Connect Yakkaw application", included: true },
+            { text: "✔ Adapter", included: true },
+            { text: "✔ Support 3G/4G", included: true },
+            { text: "✘ Solar power system", included: false }
         ]
     },
     {
         name: "ยักษ์ขาว #3",
         price: "10,000",
         features: [
-            { text: "✔ เชื่อมต่อผ่าน WiFi", included: true },
-            { text: "✔ เชื่อมกับ แอพยักษ์ขาว", included: true },
-            { text: "✔ อแดปเตอร์", included: true },
-            { text: "✔ เชื่อมต่อผ่าน 3G/4G", included: true },
-            { text: "✔ ระบบพลังแสงอาทิตย์", included: true }
+            { text: "✔ Connect WiFi", included: true },
+            { text: "✔ Connect Yakkaw application", included: true },
+            { text: "✔ Adapter", included: true },
+            { text: "✔ Support 3G/4G", included: true },
+            { text: "✔ Solar power system", included: true }
         ]
     }
 ];

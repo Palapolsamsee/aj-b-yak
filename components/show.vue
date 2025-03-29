@@ -4,6 +4,42 @@
   </div>
 
   <div class="mt-12"></div>
+
+  <div class="fixed left-0 bottom-12 mb-4 ml-4">
+    <button @click="toggleLanguage"
+      class="relative w-12 h-12 flex items-center justify-center rounded-full transition-all duration-300 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700">
+
+      <!-- Switch Languages Icon -->
+      <svg class="w-6 h-6 absolute transition-opacity duration-300 text-white scale-150"
+        :class="lang === 'th' ? 'opacity-100' : 'opacity-0'" xmlns="http://www.w3.org/2000/svg">
+        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+        <g id="SVGRepo_iconCarrier">
+          <path
+            d="M5 14L5.90909 11.3333M11 14L9.90909 11.3333M9.90909 11.3333L7.72727 6L5.90909 11.3333M9.90909 11.3333H5.90909"
+            stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path
+            d="M13 11.8462H16.5M20 11.8462H18.25M16.5 11.8462V10M16.5 11.8462H17.375H18.25M18.25 11.8462C18.0556 13.2821 16.2667 17.0154 13 18M18.8333 18C17.6667 17.3846 14.6333 15.1692 14.1667 13.6923"
+            stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        </g>
+      </svg>
+
+      <svg class="w-6 h-6 absolute transition-opacity duration-300 text-white scale-150"
+        :class="lang === 'en' ? 'opacity-100' : 'opacity-0'" xmlns="http://www.w3.org/2000/svg">
+        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+        <g id="SVGRepo_iconCarrier">
+          <path
+            d="M5 14L5.90909 11.3333M11 14L9.90909 11.3333M9.90909 11.3333L7.72727 6L5.90909 11.3333M9.90909 11.3333H5.90909"
+            stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path
+            d="M13 11.8462H16.5M20 11.8462H18.25M16.5 11.8462V10M16.5 11.8462H17.375H18.25M18.25 11.8462C18.0556 13.2821 16.2667 17.0154 13 18M18.8333 18C17.6667 17.3846 14.6333 15.1692 14.1667 13.6923"
+            stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        </g>
+      </svg>
+    </button>
+  </div>
+
   <div class="fixed left-0 bottom-0 mb-4 ml-4">
     <button @click="toggleTheme"
       class="relative w-12 h-12 flex items-center justify-center rounded-full transition-all duration-300 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700">
@@ -178,9 +214,8 @@
 
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-
-import { watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useRoute, useRouter } from "vue-router";
 
 // Declare the currentDate as a ref, not computed
 const currentDate = ref<string>('');
@@ -202,6 +237,44 @@ const refreshDate = () => {
 onMounted(() => {
   refreshDate();
 });
+
+// Language and theme setup
+const lang = ref<string>('th');
+const router = useRouter();
+const route = useRoute();
+
+
+// Toggle between languages and update route
+const toggleLanguage = () => {
+  const newLang = lang.value === 'th' ? 'en' : 'th';
+  lang.value = newLang;
+
+  // Get current path without language prefix
+  let currentPath = route.path;
+
+  // Remove existing language prefix if present
+  if (currentPath.startsWith('/en')) {
+    currentPath = currentPath.substring(3);
+  }
+
+  // Add new language prefix if needed
+  const newPath = newLang === 'en' ? `/en${currentPath}` : currentPath;
+
+  // Only navigate if the path would actually change
+  if (newPath !== route.path) {
+    router.push(newPath);
+  }
+};
+
+// Watch for route changes to update language
+watch(() => route.path, (newPath) => {
+  if (newPath.startsWith('/en')) {
+    lang.value = 'en';
+  } else {
+    lang.value = 'th';
+  }
+}, { immediate: true });
+
 
 // Set theme mode (light/dark)
 const theme = ref<string>('light');
@@ -288,7 +361,30 @@ onMounted(async () => {
 });
 </script>
 
+
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap");
+
+.container {
+  font-family: "Sarabun", sans-serif;
+  font-size: 14pt;
+  text-align: center;
+  margin: 50px;
+}
+
+nav {
+  margin-top: 20px;
+}
+
+a {
+  font-size: 14pt;
+  text-decoration: none;
+  margin: 0 10px;
+  color: #007bff;
+}
+
+
+
 /* Light Mode */
 body {
   background-color: #ffffff;
