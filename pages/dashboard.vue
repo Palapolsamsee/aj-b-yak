@@ -77,7 +77,19 @@
       <div class="charts-grid">
         <!-- PM2.5 Heatmap Calendar -->
         <div class="chart-card full-width">
-          <h3>PM2.5 Calendar Heatmap</h3>
+          <div class="chart-header">
+            <h3>PM2.5 Calendar Heatmap</h3>
+            <select 
+              v-model="selectedAddress" 
+              class="address-select"
+              @change="updateCalendarHeatmap"
+            >
+              <option value="">All Locations</option>
+              <option v-for="address in uniqueAddresses" :key="address" :value="address">
+                {{ address }}
+              </option>
+            </select>
+          </div>
           <div ref="calendarHeatmapChart" class="chart"></div>
         </div>
 
@@ -173,6 +185,12 @@ const timePeriods = [
   { label: '3 Months', value: 'three_months' },
   { label: '1 Year', value: 'one_year' }
 ];
+
+// Add new refs for address selection
+const selectedAddress = ref('');
+const uniqueAddresses = computed(() => {
+  return [...new Set(sensorData.value.map(item => item.Address))];
+});
 
 // Computed values
 const averagePM25 = computed(() => {
@@ -325,7 +343,7 @@ async function fetchData() {
     const data = await response.json();
     console.log('Received data:', data);
 
-    if (data.data) {
+    if (data.data && data.data.length > 0) {
       // Transform the data to match our expected format
       sensorData.value = data.data.map((item: any) => ({
         ID: Math.random(),
@@ -335,12 +353,16 @@ async function fetchData() {
         AQI: calculateAQI(item.avg_pm25),
         Temperature: 0,
         Humidity: 0,
-        DDate: new Date(data.current_date).toISOString().split('T')[0],
+        DDate: item.date || new Date(data.current_date).toISOString().split('T')[0],
         DTime: new Date(data.current_date).toLocaleTimeString()
       }));
-      updateCharts();
+      
+      // Update charts after a short delay to ensure DOM is ready
+      setTimeout(() => {
+        updateCharts();
+      }, 100);
     } else {
-      throw new Error('Invalid response format: missing data array');
+      throw new Error('No data available for the selected period');
     }
   } catch (err) {
     console.error('Error fetching data:', err);
@@ -360,15 +382,26 @@ function formatDate(date: string, time: string) {
 }
 
 function updateCalendarHeatmap() {
-  if (!calendarHeatmapChart.value) return;
+  if (!calendarHeatmapChart.value) {
+    console.log('Calendar heatmap chart container not found');
+    return;
+  }
   
   if (!calendarHeatmapInstance.value) {
+    console.log('Initializing calendar heatmap instance');
     calendarHeatmapInstance.value = echarts.init(calendarHeatmapChart.value);
+  }
+
+  if (!sensorData.value || sensorData.value.length === 0) {
+    console.log('No data available for calendar heatmap');
+    return;
   }
 
   // Get the date range from the selected period
   const now = new Date();
   let startDate = new Date();
+  
+  // Calculate start date based on selected period
   switch (selectedPeriod.value) {
     case 'one_week':
       startDate.setDate(now.getDate() - 7);
@@ -384,11 +417,42 @@ function updateCalendarHeatmap() {
       break;
   }
 
+  // Filter data based on selected address
+  const filteredData = selectedAddress.value
+    ? sensorData.value.filter(item => item.Address === selectedAddress.value)
+    : sensorData.value;
+
+  if (filteredData.length === 0) {
+    console.log('No data available for selected address');
+    return;
+  }
+
+  // Transform data for calendar heatmap
+  const heatmapData = filteredData.map(item => {
+    // Use the date from the API response if available, otherwise use current date
+    const date = item.DDate ? new Date(item.DDate) : new Date(data.current_date);
+    return [
+      date.getTime(),
+      0,
+      item.PM25
+    ];
+  });
+
+  console.log('Calendar heatmap data:', {
+    period: selectedPeriod.value,
+    startDate: startDate.toISOString(),
+    endDate: now.toISOString(),
+    dataPoints: heatmapData.length,
+    data: heatmapData
+  });
+
   const option = {
     title: {
       top: 30,
       left: 'center',
-      text: 'PM2.5 Calendar Heatmap'
+      text: selectedAddress.value 
+        ? `PM2.5 Calendar Heatmap - ${selectedAddress.value}`
+        : 'PM2.5 Calendar Heatmap - All Locations'
     },
     tooltip: {
       position: 'top',
@@ -423,15 +487,16 @@ function updateCalendarHeatmap() {
     series: {
       type: 'heatmap',
       coordinateSystem: 'calendar',
-      data: sensorData.value.map(item => [
-        new Date(item.DDate).getTime(),
-        0,
-        item.PM25
-      ])
+      data: heatmapData
     }
   };
 
-  calendarHeatmapInstance.value.setOption(option);
+  try {
+    calendarHeatmapInstance.value.setOption(option);
+    console.log('Calendar heatmap updated successfully');
+  } catch (e) {
+    console.error('Error updating calendar heatmap:', e);
+  }
 }
 
 function updateHeatmap() {
@@ -679,14 +744,15 @@ watch(selectedPeriod, (newPeriod, oldPeriod) => {
 // Update the onMounted hook
 onMounted(async () => {
   try {
+    console.log('Component mounted, fetching initial data');
     await fetchData();
     window.addEventListener('resize', handleResize);
     // Force a resize after a short delay to ensure proper initialization
     setTimeout(() => {
       handleResize();
     }, 100);
-  } catch (error) {
-    console.error('Error during initialization:', error);
+  } catch (err) {
+    console.error('Error during initialization:', err);
     error.value = 'Failed to initialize dashboard. Please refresh the page.';
   }
 });
@@ -929,5 +995,39 @@ tr:hover {
 .full-width {
   grid-column: 1 / -1;
   min-height: 500px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.address-select {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  min-width: 200px;
+}
+
+.address-select:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+@media (max-width: 768px) {
+  .chart-header {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+  
+  .address-select {
+    width: 100%;
+  }
 }
 </style> 

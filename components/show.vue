@@ -167,6 +167,42 @@
           class="absolute top-2 right-2 text-black hover:text-gray-600 px-3 py-1 rounded-full transition-all">✖</button>
       </div>
     </div>
+
+    <!-- Stats Modal -->
+    <div v-if="showStatsModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div class="bg-white rounded-lg shadow-xl w-[90%] max-w-4xl max-h-[90vh] overflow-hidden">
+        <!-- Modal Header -->
+        <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+          <h3 class="text-xl font-semibold text-gray-800">
+            {{ selectedDevice?.place }} - สถิติค่าฝุ่นรายสัปดาห์
+          </h3>
+          <button @click="closeStatsModal" 
+            class="text-gray-500 hover:text-gray-700 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Modal Content -->
+        <div class="p-4">
+          <!-- Loading State -->
+          <div v-if="loading" class="flex justify-center items-center h-64">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+          </div>
+
+          <!-- Error State -->
+          <div v-else-if="error" class="text-red-500 text-center py-4">
+            {{ error }}
+          </div>
+
+          <!-- Chart -->
+          <div v-else class="h-[500px] w-full">
+            <div ref="statsChartContainer" class="w-full h-full"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
 
@@ -178,7 +214,9 @@
 
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, nextTick, onUnmounted } from 'vue';
+import * as echarts from 'echarts';
+import { useColorSettings } from '@/utils/useColorSettings';
 
 import { watch } from 'vue';
 
@@ -234,7 +272,20 @@ interface Device {
   temperature?: number;
   humidity?: number;
   av1h?: number;
+  av3h?: number;
+  av6h?: number;
+  av12h?: number;
+  av24h?: number;
   trend?: string;
+  address?: string;
+  latitude?: number;
+  longitude?: number;
+}
+
+interface AirQualityData {
+  date: string;
+  pm25: number;
+  pm10: number;
 }
 
 const devices = ref<Device[]>([]);
@@ -243,6 +294,10 @@ const error = ref<string | null>(null);
 const searchQuery = ref('');
 const expandedRow = ref<string | null>(null);
 const selectedDevice = ref<Device | null>(null);
+const showStatsModal = ref(false);
+const selectedDeviceData = ref<AirQualityData[]>([]);
+const statsChartInstance = ref<echarts.ECharts | null>(null);
+const statsChartContainer = ref<HTMLElement | null>(null);
 
 // Color settings and filter function
 const { colorRanges } = useColorSettings();
@@ -286,6 +341,133 @@ onMounted(async () => {
     loading.value = false;
   }
 });
+
+// Add stats modal functions
+async function openStatsModal(device: Device) {
+  try {
+    loading.value = true;
+    const response = await fetch(`http://localhost:8080/api/airquality/one_week?address=${encodeURIComponent(device.place)}`);
+    const data = await response.json();
+    
+    if (data.data && data.data.length > 0) {
+      selectedDeviceData.value = data.data.map((item: any) => ({
+        date: item.date,
+        pm25: Math.round(item.avg_pm25),
+        pm10: Math.round(item.avg_pm10)
+      }));
+      selectedDevice.value = device;
+      showStatsModal.value = true;
+      
+      // Initialize chart after modal is shown
+      nextTick(() => {
+        initStatsChart();
+      });
+    } else {
+      throw new Error('No data available for this location');
+    }
+  } catch (err) {
+    console.error('Error fetching stats data:', err);
+    error.value = 'Failed to load statistics data';
+  } finally {
+    loading.value = false;
+  }
+}
+
+function closeStatsModal() {
+  showStatsModal.value = false;
+  selectedDevice.value = null;
+  selectedDeviceData.value = [];
+  if (statsChartInstance.value) {
+    statsChartInstance.value.dispose();
+    statsChartInstance.value = null;
+  }
+}
+
+function initStatsChart() {
+  if (!statsChartContainer.value) return;
+  
+  statsChartInstance.value = echarts.init(statsChartContainer.value);
+  
+  const option = {
+    title: {
+      text: `${selectedDevice.value?.place} - PM2.5 & PM10 Trend`,
+      left: 'center'
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross'
+      }
+    },
+    legend: {
+      data: ['PM2.5', 'PM10'],
+      bottom: 0
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '10%',
+      containLabel: true
+    },
+    xAxis: {
+      type: 'category',
+      data: selectedDeviceData.value.map(item => item.date),
+      axisLabel: {
+        rotate: 45
+      }
+    },
+    yAxis: {
+      type: 'value',
+      name: 'µg/m³'
+    },
+    series: [
+      {
+        name: 'PM2.5',
+        type: 'line',
+        data: selectedDeviceData.value.map(item => item.pm25),
+        smooth: true,
+        lineStyle: {
+          width: 3
+        },
+        itemStyle: {
+          color: '#4CAF50'
+        }
+      },
+      {
+        name: 'PM10',
+        type: 'line',
+        data: selectedDeviceData.value.map(item => item.pm10),
+        smooth: true,
+        lineStyle: {
+          width: 3
+        },
+        itemStyle: {
+          color: '#2196F3'
+        }
+      }
+    ]
+  };
+
+  statsChartInstance.value.setOption(option);
+}
+
+// Add resize handler for chart
+onMounted(() => {
+  window.addEventListener('resize', handleChartResize);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleChartResize);
+  if (statsChartInstance.value) {
+    statsChartInstance.value.dispose();
+  }
+});
+
+function handleChartResize() {
+  if (statsChartInstance.value) {
+    statsChartInstance.value.resize();
+  }
+}
 </script>
 
 <style>
