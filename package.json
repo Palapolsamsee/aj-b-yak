@@ -24,6 +24,7 @@
     "nuxt": "^3.14.159",
     "unicons": "^0.0.3",
     "vue": "latest",
+    "vue-echarts": "^7.0.3",
     "vue-router": "latest"
   },
   "devDependencies": {
