@@ -8,13 +8,15 @@ export default defineNuxtConfig({
   nitro: {
     devProxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:8080', // Backend URL
         changeOrigin: true,
         prependPath: true,
-        secure: false,
+        secure: false, // Disable SSL verification for local development
         ws: true,
         headers: {
-          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Origin': process.env.NODE_ENV === 'production' 
+            ? process.env.CORS_ORIGIN_PROD 
+            : process.env.CORS_ORIGIN || '*',
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization, Accept',
           'Access-Control-Max-Age': '86400'

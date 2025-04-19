@@ -6,13 +6,14 @@ import Sponsors from '~/components/Sponsors.vue';
   <div class="bg-gradient-to-b from-blue-50 to-blue-100 min-h-screen flex flex-col">
     <!-- Header Section -->
     <Header />
-
+    
     <!-- Main Content -->
     <main class="flex-grow">
+       <show />
       <div class="container mx-auto px-4 py-8">
         <!-- Show Component -->
         <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
-          <show />
+         
         </div>
 
         <!-- Sponsors Section -->
