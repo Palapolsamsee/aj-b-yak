@@ -16,11 +16,13 @@
     "@nuxtjs/leaflet": "^1.2.4",
     "body-parser": "^1.20.3",
     "chart.js": "^4.4.6",
+    "cors": "^2.8.5",
     "dayjs": "^1.11.13",
     "echarts": "^5.6.0",
     "express": "^4.21.2",
     "font-awesome": "^4.7.0",
     "leaflet": "^1.9.4",
+    "node-fetch": "^3.3.2",
     "nuxt": "^3.14.159",
     "unicons": "^0.0.3",
     "vue": "latest",
@@ -34,5 +36,12 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.14",
     "vite": "^5.4.14"
-  }
+  },
+  "description": "Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.",
+  "version": "1.0.0",
+  "main": "postcss.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+  
 }
