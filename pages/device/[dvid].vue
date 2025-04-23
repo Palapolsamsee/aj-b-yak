@@ -18,6 +18,7 @@
                     <!-- วันที่และเวลา -->
             <p class="text-sm text-gray-500 mt-1">{{ formattedDate }} | {{ formattedTime }}</p>
             <p class="text-gray-500 text-sm">📍สถานที่: {{ device.place }} </p>
+            <p class="text-gray-500 text-sm">Heyhey: {{ device.address }} </p>
           </div>
           
           <!-- แสดง Icon ตามค่าฝุ่น -->
