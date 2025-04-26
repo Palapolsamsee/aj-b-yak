@@ -4,6 +4,42 @@
   </div>
 
   <div class="mt-12"></div>
+
+  <div class="fixed left-0 bottom-12 mb-4 ml-4">
+    <button @click="toggleLanguage"
+      class="relative w-12 h-12 flex items-center justify-center rounded-full transition-all duration-300 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700">
+
+      <!-- Switch Languages Icon -->
+      <svg class="w-6 h-6 absolute transition-opacity duration-300 text-white scale-150"
+        :class="lang === 'th' ? 'opacity-100' : 'opacity-0'" xmlns="http://www.w3.org/2000/svg">
+        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+        <g id="SVGRepo_iconCarrier">
+          <path
+            d="M5 14L5.90909 11.3333M11 14L9.90909 11.3333M9.90909 11.3333L7.72727 6L5.90909 11.3333M9.90909 11.3333H5.90909"
+            stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path
+            d="M13 11.8462H16.5M20 11.8462H18.25M16.5 11.8462V10M16.5 11.8462H17.375H18.25M18.25 11.8462C18.0556 13.2821 16.2667 17.0154 13 18M18.8333 18C17.6667 17.3846 14.6333 15.1692 14.1667 13.6923"
+            stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        </g>
+      </svg>
+
+      <svg class="w-6 h-6 absolute transition-opacity duration-300 text-white scale-150"
+        :class="lang === 'en' ? 'opacity-100' : 'opacity-0'" xmlns="http://www.w3.org/2000/svg">
+        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+        <g id="SVGRepo_iconCarrier">
+          <path
+            d="M5 14L5.90909 11.3333M11 14L9.90909 11.3333M9.90909 11.3333L7.72727 6L5.90909 11.3333M9.90909 11.3333H5.90909"
+            stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path
+            d="M13 11.8462H16.5M20 11.8462H18.25M16.5 11.8462V10M16.5 11.8462H17.375H18.25M18.25 11.8462C18.0556 13.2821 16.2667 17.0154 13 18M18.8333 18C17.6667 17.3846 14.6333 15.1692 14.1667 13.6923"
+            stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        </g>
+      </svg>
+    </button>
+  </div>
+
   <div class="fixed left-0 bottom-0 mb-4 ml-4">
     <button @click="toggleTheme"
       class="relative w-12 h-12 flex items-center justify-center rounded-full transition-all duration-300 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700">
@@ -80,6 +116,9 @@
             <th class="px-4 py-4 text-base font-semibold">สถานที่</th>
             <th class="px-4 py-4 text-base font-semibold">PM2.5(µg/m³)</th>
             <th class="px-4 py-4 text-base font-semibold">PM10(µg/m³)</th>
+            <th class="px-4 py-4 text-base font-semibold">อุณหภูมิ(°C)</th>
+            <th class="px-4 py-4 text-base font-semibold">ความชื้น(%)</th>
+            <th class="px-4 py-4 text-base font-semibold">แนวโน้ม</th>
             <th class="px-4 py-4 text-base font-semibold">ค่าเฉลี่ย</th>
             <th class="px-4 py-4 text-base font-semibold">สถิติค่าฝุ่น</th>
           </tr>
@@ -94,6 +133,29 @@
               :style="{ backgroundColor: getColor(device.pm25) }">{{ device.pm25 }}</td>
             <td class="px-2 py-1 whitespace-nowrap font-bold text-center rounded-md"
               :style="{ backgroundColor: getColor(device.pm10) }">{{ device.pm10 }}</td>
+            <td class="px-6 py-4 text-gray-800 whitespace-nowrap">{{ device.temperature }}</td>
+            <td class="px-6 py-4 text-gray-800 whitespace-nowrap">{{ device.humidity }}</td>
+            <td class="px-6 py-4 text-gray-800 whitespace-nowrap flex justify-center items-center">
+              <span v-if="device.trend === 'd'" class="transform transition-all duration-300 hover:scale-125">
+                <svg class="w-6 h-6 text-green-500 hover:text-green-400" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 19L5 12H9L12 15L15 12H19L12 19Z" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+              <span v-else-if="device.trend === 'u'" class="transform transition-all duration-300 hover:scale-125">
+                <svg class="w-6 h-6 text-red-500 hover:text-red-400" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 5L19 12H15L12 9L9 12H5L12 5Z" stroke="currentColor" stroke-width="2" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+              <span v-else class="transform transition-all duration-300 hover:scale-125">
+                <svg class="w-6 h-6 text-gray-500 hover:text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M5 12h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+              </span>
+            </td>
+            <!-- คอลัมน์ "ค่าเฉลี่ย" -->
             <td class="px-6 py-4 text-gray-800 whitespace-nowrap relative">
               <!-- ปุ่มเพื่อแสดงข้อมูล -->
               <button @click="toggleExpand(device.dvid)" class="bg-gray-200 px-3 py-1 rounded-lg hover:bg-gray-300">
@@ -113,31 +175,12 @@
             </td>
             <td class="px-6 py-4 text-gray-800 whitespace-nowrap flex justify-center items-center">
               <!-- แสดงแผนภูมิแท่งเล็กๆ -->
-              <span @click="showAhPopup = true" class="cursor-pointer hover:text-gray-400">
+              <span @click="openStatsModal(device)" class="cursor-pointer hover:text-gray-400">
                 <svg class="w-6 h-6 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M4 12h2V7H4zm4 0h2V5H8zm4 0h2V3h-2zm4 0h2V2h-2z" />
                 </svg>
               </span>
             </td>
-
-            <!-- Popup for ah.vue -->
-            <transition name="fade">
-              <div v-if="showAhPopup" class="fixed inset-0 bg-transparent flex justify-center items-center z-50">
-                <div class="bg-white rounded-lg shadow-xl w-[90%] max-w-4xl max-h-[90vh] overflow-hidden relative animate-scale">
-                  <!-- Close Button -->
-                  <button @click="showAhPopup = false" 
-                    class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                  <!-- ah.vue Component -->
-                  <div class="p-6">
-                    <ah />
-                  </div>
-                </div>
-              </div>
-            </transition>
           </tr>
         </tbody>
       </table>
@@ -160,42 +203,6 @@
           class="absolute top-2 right-2 text-black hover:text-gray-600 px-3 py-1 rounded-full transition-all">✖</button>
       </div>
     </div>
-
-    <!-- Stats Modal -->
-    <div v-if="showStatsModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div class="bg-white rounded-lg shadow-xl w-[90%] max-w-4xl max-h-[90vh] overflow-hidden">
-        <!-- Modal Header -->
-        <div class="p-4 border-b border-gray-200 flex justify-between items-center">
-          <h3 class="text-xl font-semibold text-gray-800">
-            {{ selectedDevice?.place }} - สถิติค่าฝุ่นรายสัปดาห์
-          </h3>
-          <button @click="closeStatsModal" 
-            class="text-gray-500 hover:text-gray-700 transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <!-- Modal Content -->
-        <div class="p-4">
-          <!-- Loading State -->
-          <div v-if="loading" class="flex justify-center items-center h-64">
-            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-          </div>
-
-          <!-- Error State -->
-          <div v-else-if="error" class="text-red-500 text-center py-4">
-            {{ error }}
-          </div>
-
-          <!-- Chart -->
-          <div v-else class="h-[500px] w-full">
-            <div ref="statsChartContainer" class="w-full h-full"></div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 
 
@@ -207,11 +214,8 @@
 
 
 <script setup lang="ts">
-import { onMounted, ref, nextTick, onUnmounted } from 'vue';
-import * as echarts from 'echarts';
-import { useColorSettings } from '@/utils/useColorSettings';
-
-import { watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useRoute, useRouter } from "vue-router";
 
 // Declare the currentDate as a ref, not computed
 const currentDate = ref<string>('');
@@ -233,6 +237,44 @@ const refreshDate = () => {
 onMounted(() => {
   refreshDate();
 });
+
+// Language and theme setup
+const lang = ref<string>('th');
+const router = useRouter();
+const route = useRoute();
+
+
+// Toggle between languages and update route
+const toggleLanguage = () => {
+  const newLang = lang.value === 'th' ? 'en' : 'th';
+  lang.value = newLang;
+
+  // Get current path without language prefix
+  let currentPath = route.path;
+
+  // Remove existing language prefix if present
+  if (currentPath.startsWith('/en')) {
+    currentPath = currentPath.substring(3);
+  }
+
+  // Add new language prefix if needed
+  const newPath = newLang === 'en' ? `/en${currentPath}` : currentPath;
+
+  // Only navigate if the path would actually change
+  if (newPath !== route.path) {
+    router.push(newPath);
+  }
+};
+
+// Watch for route changes to update language
+watch(() => route.path, (newPath) => {
+  if (newPath.startsWith('/en')) {
+    lang.value = 'en';
+  } else {
+    lang.value = 'th';
+  }
+}, { immediate: true });
+
 
 // Set theme mode (light/dark)
 const theme = ref<string>('light');
@@ -265,20 +307,7 @@ interface Device {
   temperature?: number;
   humidity?: number;
   av1h?: number;
-  av3h?: number;
-  av6h?: number;
-  av12h?: number;
-  av24h?: number;
   trend?: string;
-  address?: string;
-  latitude?: number;
-  longitude?: number;
-}
-
-interface AirQualityData {
-  date: string;
-  pm25: number;
-  pm10: number;
 }
 
 const devices = ref<Device[]>([]);
@@ -287,11 +316,6 @@ const error = ref<string | null>(null);
 const searchQuery = ref('');
 const expandedRow = ref<string | null>(null);
 const selectedDevice = ref<Device | null>(null);
-const showStatsModal = ref(false);
-const selectedDeviceData = ref<AirQualityData[]>([]);
-const statsChartInstance = ref<echarts.ECharts | null>(null);
-const statsChartContainer = ref<HTMLElement | null>(null);
-const showAhPopup = ref(false);
 
 // Color settings and filter function
 const { colorRanges } = useColorSettings();
@@ -330,144 +354,37 @@ onMounted(async () => {
     const res1 = await response.json();
     devices.value = Array.isArray(res1.response) ? res1.response : [];
   } catch (err) {
-    error.value = 'เกิดข้อผิดพลาดในการดึงข้อมูล';
+    error.value = 'เกิดข้อผิดพลาด';
   } finally {
     loading.value = false;
   }
 });
-
-// Add stats modal functions
-async function openStatsModal(device: Device) {
-  try {
-    loading.value = true;
-
-    // เรียก API โดยใช้ device.address เป็นพารามิเตอร์
-    const response = await fetch('https://yakkaw.mfu.ac.th/api/yakkaw/devices');
-
-
-    if (error.value) throw new Error(error.value);
-
-    if (data.value?.data?.length > 0) {
-      selectedDeviceData.value = data.value.data.map((item: any) => ({
-        date: item.date,
-        pm25: Math.round(item.avg_pm25),
-        pm10: Math.round(item.avg_pm10)
-      }));
-      selectedDevice.value = device;
-      showStatsModal.value = true;
-
-      // Initialize chart after modal is shown
-      nextTick(() => {
-        initStatsChart();
-      });
-    } else {
-      throw new Error('No data available for this location');
-    }
-  } catch (err) {
-    console.error('Error fetching stats data:', err);
-    error.value = 'Failed to load statistics data';
-  } finally {
-    loading.value = false;
-  }
-}
-
-
-function closeStatsModal() {
-  showStatsModal.value = false;
-  selectedDevice.value = null;
-  selectedDeviceData.value = [];
-  if (statsChartInstance.value) {
-    statsChartInstance.value.dispose();
-    statsChartInstance.value = null;
-  }
-}
-
-function initStatsChart() {
-  if (!statsChartContainer.value) return;
-  statsChartInstance.value = echarts.init(statsChartContainer.value);
-  const option = {
-    title: {
-      text: `${selectedDevice.value?.place} - PM2.5 & PM10 Trend`,
-      left: 'center'
-    },
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'cross'
-      }
-    },
-    legend: {
-      data: ['PM2.5', 'PM10'],
-      bottom: 0
-    },
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '10%',
-      containLabel: true
-    },
-    xAxis: {
-      type: 'category',
-      data: selectedDeviceData.value.map(item => item.date),
-      axisLabel: {
-        rotate: 45
-      }
-    },
-    yAxis: {
-      type: 'value',
-      name: 'µg/m³'
-    },
-    series: [
-      {
-        name: 'PM2.5',
-        type: 'line',
-        data: selectedDeviceData.value.map(item => devices.avrage25pm),
-        smooth: true,
-        lineStyle: {
-          width: 3
-        },
-        itemStyle: {
-          color: '#4CAF50'
-        }
-      },
-      {
-        name: 'PM10',
-        type: 'line',
-        data: selectedDeviceData.value.map(item => devices.pm10),
-        smooth: true,
-        lineStyle: {
-          width: 3
-        },
-        itemStyle: {
-          color: '#2196F3'
-        }
-      }
-    ]
-  };
-
-  statsChartInstance.value.setOption(option);
-}
-
-// Add resize handler for chart
-onMounted(() => {
-  window.addEventListener('resize', handleChartResize);
-});
-
-onUnmounted(() => {
-  window.removeEventListener('resize', handleChartResize);
-  if (statsChartInstance.value) {
-    statsChartInstance.value.dispose();
-  }
-});
-
-function handleChartResize() {
-  if (statsChartInstance.value) {
-    statsChartInstance.value.resize();
-  }
-}
 </script>
 
-<style scoped>
+
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap");
+
+.container {
+  font-family: "Sarabun", sans-serif;
+  font-size: 14pt;
+  text-align: center;
+  margin: 50px;
+}
+
+nav {
+  margin-top: 20px;
+}
+
+a {
+  font-size: 14pt;
+  text-decoration: none;
+  margin: 0 10px;
+  color: #007bff;
+}
+
+
+
 /* Light Mode */
 body {
   background-color: #ffffff;
@@ -548,28 +465,5 @@ body.dark .text-gray-500 {
 body .text-gray-500 {
   color: #888888 !important;
   /* Lighter gray color for text-gray-500 in light mode */
-}
-
-/* Fade transition for popup */
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}
-
-/* Scale animation for popup */
-@keyframes scaleIn {
-  from {
-    transform: scale(0.9);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-.animate-scale {
-  animation: scaleIn 0.3s ease;
 }
 </style>

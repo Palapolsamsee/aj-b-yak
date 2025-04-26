@@ -38,7 +38,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
 const isMenuOpen = ref(false);
@@ -58,6 +58,8 @@ const menuItems = [
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
 };
+
+
 </script>
 
 <style scoped>

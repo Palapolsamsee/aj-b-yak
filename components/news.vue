@@ -55,7 +55,7 @@
             <div class="fb-header">
               <div class="fb-avatar"></div>
               <div class="fb-page-info">
-                <div class="fb-page-name">ห้องเรียนสูฝุ่น</div>
+                <div class="fb-page-name">ห้องเรียนสู้ฝุ่น</div>
                 <div class="fb-followers">ติดตามแล้ว 12K</div>
               </div>
             </div>

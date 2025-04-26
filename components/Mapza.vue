@@ -9,7 +9,7 @@
             <button class="search-button" @click="searchLocation">ค้นหา</button>
         </div>
 
-        <div class="map-container" style="max-width: 1200px; margin: 0 auto;">
+        <div class="map-container" style="max-width: 1200px; margin: 0 auto; border-radius: 10px; overflow: hidden;">
             <div ref="mapContainer" id="map" style="height: 500px; width: 100%;"></div>
         </div>
 
@@ -17,7 +17,7 @@
             <h3 class="banner-title">คุณภาพอากาศใน <span class="location-name">{{ selectedLocation.place }}</span></h3>
             <div class="air-quality">
                 <img class="weather-icon" :src="selectedLocation.weatherIcon" alt="weather icon">
-                <span class="pm25-value">{{ selectedLocation.pm25 }}</span>
+                <span class="pm25-marker">{{ selectedLocation.pm25_marker }}</span>
                 <span style="font-size: 18px; font-weight: bold; font-family: 'Sarabun', sans-serif;"
                     class="air-quality-status" :style="{ color: getStatusColor(selectedLocation.airQualityStatus) }">
                     {{ selectedLocation.airQualityStatus }}
@@ -79,10 +79,15 @@ export default {
             devices: [],
             previousPm25Values: new Map(),
             lastUpdateTime: null,
-            
+            colorRanges: [],
+
         };
     },
     async mounted() {
+        const { colorRanges } = useColorSettings(); // Get colorRanges
+        this.colorRanges = colorRanges.value; // Assign to component data
+
+
         await this.fetchData();
         this.loadGoogleMaps();
 
@@ -189,8 +194,8 @@ export default {
                 });
             }
         },
-        createCustomMarker(pm25, pm25Prev, trend) {
-            const color = this.getMarkerColor(pm25);
+        createCustomMarker(pm25_marker, pm25Prev, trend) {
+            const color = this.getMarkerColor(pm25_marker);
             const size = 50;
             const circleSize = 30;
             const arrowCircleSize = 20; // Outer circle for arrow
@@ -217,7 +222,7 @@ export default {
             context.font = 'bold 20px "Angsana New"';
             context.textAlign = 'center';
             context.textBaseline = 'middle';
-            context.fillText(pm25, size / 2 - 5, size / 2);
+            context.fillText(pm25_marker, size / 2 - 5, size / 2);
 
             // Calculate arrow position
             const arrowBaseX = size - arrowCircleSize / 2 - 2;
@@ -261,33 +266,51 @@ export default {
             return canvas.toDataURL();
         },
 
-        getMarkerColor(pm25) {
-            if (pm25 <= 25) {
+        getMarkerColor(pm25_marker) {
+            if (pm25_marker <= 15) {
                 return '#30b2fc';
-            } else if (pm25 <= 37) {
+            } else if (pm25_marker <= 25) {
                 return '#6dd951';
-            } else if (pm25 <= 50) {
+            } else if (pm25_marker <= 37.5) {
                 return '#e9db51';
-            } else if (pm25 <= 90) {
+            } else if (pm25_marker <= 75) {
                 return '#efa628';
             } else {
                 return 'red';
             }
         },
+
+        getStatusColor(status) {
+            switch (status) {
+                case 'ดีมาก':
+                    return '#30b2fc';
+                case 'ดี':
+                    return '#6dd951';
+                case 'ปานกลาง':
+                    return '#e9db51';
+                case 'แย่':
+                    return '#efa628';
+                case 'อันตราย':
+                    return 'red';
+                default:
+                    return 'black';
+            }
+        },
+
         updateBanner(device) {
             let airQualityStatus = '';
             let weatherIcon = '';
 
-            if (device.pm25 <= 25) {
+            if (device.pm25 <= 15) {
                 airQualityStatus = 'ดีมาก';
                 weatherIcon = '/assets/images/yyakkaw_blue_icon.png';
-            } else if (device.pm25 <= 37) {
+            } else if (device.pm25 <= 25) {
                 airQualityStatus = 'ดี';
                 weatherIcon = '/assets/images/yyakkaw_green_icon.png';
-            } else if (device.pm25 <= 50) {
+            } else if (device.pm25 <= 37.5) {
                 airQualityStatus = 'ปานกลาง';
                 weatherIcon = '/assets/images/yyakkaw_yellow_icon.png';
-            } else if (device.pm25 <= 90) {
+            } else if (device.pm25 <= 75) {
                 airQualityStatus = 'แย่';
                 weatherIcon = '/assets/images/yyakkaw_orange_icon.png';
             } else {
@@ -319,22 +342,6 @@ export default {
                 alert('ไม่พบสถานที่ที่ค้นหา');
             }
         },
-        getStatusColor(status) {
-            switch (status) {
-                case 'ดีมาก':
-                    return '#30b2fc';
-                case 'ดี':
-                    return '#6dd951';
-                case 'ปานกลาง':
-                    return '#e9db51';
-                case 'แย่':
-                    return '#efa628';
-                case 'อันตราย':
-                    return 'red';
-                default:
-                    return 'black';
-            }
-        }
     }
 }
 </script>
@@ -571,3 +578,4 @@ svg {
     background-color: red;
 }
 </style>
+
