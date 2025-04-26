@@ -27,6 +27,11 @@ const { colorRanges, addRange, removeRange, saveSettings } = useColorSettings();
  -->
 <template>
   <Header />
+  <br>
+  <br>
+
+  <br>
+
   <div class="p-6 max-w-lg mx-auto bg-white shadow-md rounded-lg">
     <h2 class="text-xl font-bold mb-4">ตั้งค่าช่วงสี</h2>
 
