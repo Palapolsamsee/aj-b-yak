@@ -11,6 +11,24 @@ app.use(express.json());
 // LINE API endpoint
 app.post('/api/line-notify', async (req, res) => {
     try {
+        const { message } = req.body;
+        
+        let lineMessage;
+        if (typeof message === 'string') {
+            // ถ้าเป็นข้อความธรรมดา
+            lineMessage = [{
+                type: 'text',
+                text: message
+            }];
+        } else if (message.type === 'image') {
+            // ถ้าเป็นรูปภาพ
+            lineMessage = [{
+                type: 'image',
+                originalContentUrl: message.originalContentUrl,
+                previewImageUrl: message.previewImageUrl
+            }];
+        }
+
         const response = await fetch('https://api.line.me/v2/bot/message/push', {
             method: 'POST',
             headers: {
@@ -20,6 +38,8 @@ app.post('/api/line-notify', async (req, res) => {
             body: JSON.stringify({
                 to: "U4eb05e7c181038411c3e83b6ebad1b36",
                 messages: [{ type: 'text', text: req.body.message }]
+
+/*                 messages: lineMessage */
             })
         });
         
