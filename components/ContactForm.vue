@@ -32,7 +32,7 @@ const submitForm = () => {
 </script>
 
 <template>
-  <div class="flex justify-center items-center min-h-screen bg-[#070d22] px-4">
+  <div class="flex justify-center items-center min-h-screen px-4">
     <div class="bg-white shadow-xl rounded-lg p-8 max-w-3xl w-full flex gap-6 flex-col md:flex-row">
       
       <!-- Contact Form (Left Side) -->

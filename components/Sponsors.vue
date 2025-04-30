@@ -1,5 +1,5 @@
 <template>
-  <section id="supporters" class="bg-[#070d22] py-12 px-4 md:px-12 rounded-lg">
+  <section id="supporters" class="py-12 px-4 md:px-12 rounded-lg">
     <div class="container mx-auto text-center">
       <h2 class="text-2xl font-bold mb-8 text-white">ผู้สนับสนุนโครงการ</h2>
       <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
