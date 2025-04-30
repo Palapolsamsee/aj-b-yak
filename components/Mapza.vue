@@ -205,8 +205,8 @@ export default {
             canvas.height = size;
             const context = canvas.getContext('2d');
 
-            console.log('Canvas width:', canvas.width);
-            console.log('Canvas height:', canvas.height);
+/*             console.log('Canvas width:', canvas.width);
+            console.log('Canvas height:', canvas.height); */
 
             // Draw the main PM2.5 circle marker
             context.beginPath();
@@ -375,7 +375,7 @@ export default {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    margin-top: 150px;
+    margin-top: 100px;
     padding: 10px;
     background-color: #070d22;
     border-radius: 10px;
@@ -430,6 +430,7 @@ export default {
     transition: opacity 0.3s ease;
     pointer-events: none;
     margin-top: 150px;
+    margin-left: 75px;
     /* Prevents it from blocking the map */
 }
 

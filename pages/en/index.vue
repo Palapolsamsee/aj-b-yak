@@ -4,6 +4,7 @@
 
 
 <template>
+  <en-Mapza/>
   <en-Header />
   <en-show />
   <en-Sponsors />

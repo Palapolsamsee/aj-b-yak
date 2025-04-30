@@ -48,9 +48,8 @@ const activePage = computed(() => route.path);
 
 const menuItems = [
     { name: "Main", path: "/en/" },
-    { name: "Yakkaw Map", path: "/en/MapPage" },
     { name: "News", path: "/en/News" },
-    { name: "Color Setting", path: "/en/ColorSetting" },
+/*     { name: "Color Setting", path: "/en/ColorSetting" }, */
     { name: "Supporting", path: "/en/Regis" },
     { name: "Sponsored", path: "/en/SponPage" },
     { name: "Contact", path: "/en/ContactPage" }
@@ -63,7 +62,7 @@ const toggleMenu = () => {
 
 <style scoped>
 .nav-item {
-    padding: 10px 16px;
+    padding: 10px;
     text-decoration: none;
     color: white;
     font-size: 16px;

@@ -1,14 +1,17 @@
 <template>
-    <en-Header />
+    <Header />
     <div class="container">
-        <h1>Register</h1>
+        <h1>ร่วมสนับสนุน</h1>
+        <div class="support-text">
+            ยักษ์ขาว เปิดรับการสนับสนุนในการส่งมอบเครื่องวัดฝุ่น ให้กับโรงเรียนและชุมชนที่ยังขาดแคลน
+        </div>
 
         <div class="bank-details">
-            <h2>Bank account</h2>
-            <p>Kasikorn</p>
-            <p>Account name: สมาคมยักษ์ขาว</p>
-            <p>Account number: 062-8-46998-9</p>
-            <p>Phone: 061-265-0505</p>
+            <h2>สนับสนุนผ่านบัญชีธนาคาร</h2>
+            <p>ธนาคารกสิกรไทย</p>
+            <p>ชื่อบัญชี: สมาคมยักษ์ขาว</p>
+            <p>เลขที่บัญชี: 062-8-46998-9</p>
+            <p>โทรแจ้ง: 061-265-0505</p>
         </div>
 
         <div class="packages">
@@ -17,105 +20,214 @@
                 <p v-for="(feature, i) in pkg.features" :key="i" :class="{ 'grey-text': !feature.included }">
                     {{ feature.text }}
                 </p>
-                <div class="price">{{ pkg.price }} Bath</div>
-                <button class="support-button" @click="supportPackage(pkg)">Register</button>
+                <div class="price">{{ pkg.price }} บาท</div>
+                <button class="support-button" @click="openForm(pkg)">สนับสนุน</button>
+            </div>
+        </div>
+
+        <!-- แบบฟอร์มยืนยัน -->
+        <div v-if="showForm" class="overlay">
+            <div class="form-popup">
+                <h2>ยืนยันการสนับสนุน - {{ selectedPackage.name }}</h2>
+                <form @submit.prevent="submitSupport">
+                    <input type="text" v-model="form.name" placeholder="ชื่อ-นามสกุล" required />
+                    <input type="text" v-model="form.phone" placeholder="เบอร์โทรศัพท์" required />
+                    <input type="date" v-model="form.date" required />
+                    <input type="file" @change="handleFileUpload" accept="image/*" required />
+                    <textarea v-model="form.note" placeholder="หมายเหตุเพิ่มเติม (ถ้ามี)"></textarea>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="confirm">ยืนยัน</button>
+                        <button type="button" class="cancel" @click="closeForm">ยกเลิก</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
+
 const packages = [
     {
-        name: "Yakkaw #1",
+        name: "ยักษ์ขาว #1",
         price: "4,000",
         features: [
-            { text: "✔ Connect WiFi", included: true },
-            { text: "✔ Connect Yakkaw application", included: true },
-            { text: "✔ Adapter", included: true },
-            { text: "✘ Support 3G/4G", included: false },
-            { text: "✘ Solar power system", included: false }
+            { text: "✔ เชื่อมต่อผ่าน WiFi", included: true },
+            { text: "✔ เชื่อมกับ แอพยักษ์ขาว", included: true },
+            { text: "✔ อแดปเตอร์", included: true },
+            { text: "✘ เชื่อมต่อ 3G/4G", included: false },
+            { text: "✘ ระบบพลังแสงอาทิตย์", included: false }
         ]
     },
     {
         name: "ยักษ์ขาว #2",
         price: "6,000",
         features: [
-            { text: "✔ Connect WiFi ", included: true },
-            { text: "✔ Connect Yakkaw application", included: true },
-            { text: "✔ Adapter", included: true },
-            { text: "✔ Support 3G/4G", included: true },
-            { text: "✘ Solar power system", included: false }
+            { text: "✔ เชื่อมต่อผ่าน WiFi", included: true },
+            { text: "✔ เชื่อมกับ แอพยักษ์ขาว", included: true },
+            { text: "✔ อแดปเตอร์", included: true },
+            { text: "✔ เชื่อมต่อผ่าน 3G/4G", included: true },
+            { text: "✘ ระบบพลังแสงอาทิตย์", included: false }
         ]
     },
     {
         name: "ยักษ์ขาว #3",
         price: "10,000",
         features: [
-            { text: "✔ Connect WiFi", included: true },
-            { text: "✔ Connect Yakkaw application", included: true },
-            { text: "✔ Adapter", included: true },
-            { text: "✔ Support 3G/4G", included: true },
-            { text: "✔ Solar power system", included: true }
+            { text: "✔ เชื่อมต่อผ่าน WiFi", included: true },
+            { text: "✔ เชื่อมกับ แอพยักษ์ขาว", included: true },
+            { text: "✔ อแดปเตอร์", included: true },
+            { text: "✔ เชื่อมต่อผ่าน 3G/4G", included: true },
+            { text: "✔ ระบบพลังแสงอาทิตย์", included: true }
         ]
     }
 ];
 
-const accessToken = "3Ok9sDtpWsj1PEwlQLs99NNV8ts4WS+mTUNbryXZLwveWhJYu5Zxy2KKM7OCFChWIR3LsG4dWYePq6XegKqn5b9/GuZzzCVbXXhyQ4Oi8CIFFKVr48q/Nq0amToB2OhXmHpZscds/MX4Hgj1hgb0IAdB04t89/1O/w1cDnyilFU=";  // ใส่ Channel Access Token ใหม่
-const userId = "blank";  // ใช้ User ID หรือ Group ID ของ LINE OA
 
-const sendMessageToLine = async (messageText) => {
-    const message = {
-        type: "text",
-        text: messageText
+const showForm = ref(false);
+const selectedPackage = ref(null);
+const form = ref({
+    name: '',
+    phone: null,
+    date: '',
+    note: '',
+    slip: null
+});
+
+const openForm = (pkg) => {
+    selectedPackage.value = pkg;
+    showForm.value = true;
+};
+
+const closeForm = () => {
+    showForm.value = false;
+    form.value = {
+        name: '',
+        phone: null,
+        date: '',
+        note: '',
+        slip: null
     };
+};
 
+
+
+const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    // แปลงไฟล์เป็น Base64
+    const reader = new FileReader();
+    reader.onload = () => {
+        form.value.slip = reader.result; // เก็บค่า Base64 string
+    };
+    reader.readAsDataURL(file);
+};
+
+const submitSupport = async () => {
     try {
-        const response = await fetch("https://api.line.me/v2/bot/message/push", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${"3Ok9sDtpWsj1PEwlQLs99NNV8ts4WS+mTUNbryXZLwveWhJYu5Zxy2KKM7OCFChWIR3LsG4dWYePq6XegKqn5b9/GuZzzCVbXXhyQ4Oi8CIFFKVr48q/Nq0amToB2OhXmHpZscds/MX4Hgj1hgb0IAdB04t89/1O/w1cDnyilFU="}` // ใส่ Channel Access Token ของคุณ
-            },
-            body: JSON.stringify({
-                to: "blank", // ส่งข้อความไปที่ User หรือ Group ของ LINE OA
-                messages: [message]
-            })
-        });
-
-        const responseData = await response.json();
-        if (response.ok) {
-            console.log("ข้อความถูกส่งไปยัง LINE OA เรียบร้อยแล้ว!");
-            alert("การสั่งซื้อถูกส่งไปยัง LINE OA เรียบร้อย!");
-        } else {
-            console.error("ไม่สามารถส่งข้อความได้", responseData);
-            alert(`เกิดข้อผิดพลาด: ${responseData.error.message}`);
+        // รอให้แปลงไฟล์เสร็จก่อน (ถ้ายังไม่เสร็จ)
+        if (!form.value.slip.startsWith('data:')) {
+            alert('กรุณารอสักครู่ กำลังประมวลผลรูปภาพ');
+            return;
         }
+
+        const messageText = `ยืนยันการสนับสนุนเครื่องวัดฝุ่น
+แพ็กเกจ: ${selectedPackage.value.name}
+ราคา: ${selectedPackage.value.price} บาท
+ชื่อ: ${form.value.name}
+เบอร์โทร: ${form.value.phone}
+วันที่โอน: ${form.value.date}
+หมายเหตุ: ${form.value.note || '-'}`;
+
+        // ส่งข้อความและรูปภาพแยกกัน
+        console.log('กำลังส่งข้อความ:', messageText);
+        
+        // ส่งข้อความ
+        await sendMessageToLine(messageText);
+        
+        // ส่งรูปภาพ
+        await sendImageToLine(form.value.slip);
+        
+        alert("ข้อมูลถูกส่งเรียบร้อยแล้ว! ขอบคุณสำหรับการสนับสนุน");
+        closeForm();
     } catch (error) {
-        console.error("เกิดข้อผิดพลาดในการส่งข้อความ", error);
-        alert("เกิดข้อผิดพลาดในการส่งข้อความไป LINE");
+        console.error('Error in submitSupport:', error);
+        alert(`เกิดข้อผิดพลาด: ${error.message}`);
     }
 };
 
-const supportPackage = (pkg) => {
-    const messageText = `📢 ลูกค้าสนใจสนับสนุนเครื่องวัดฝุ่น 🎉\n\nแพ็กเกจ: ${pkg.name}\nราคา: ${pkg.price} บาท\n\n📌 ขอบคุณสำหรับการสนับสนุน!`;
+// LINE OA
+const sendMessageToLine = async (messageText) => {
+    try {
+        console.log('กำลังส่งข้อความ:', messageText);
 
-    // ส่งข้อความไป LINE OA
-    sendMessageToLine(messageText);
+        const response = await fetch("http://localhost:3000/api/line-notify", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: messageText
+            })
+        });
 
-    // ลิงก์เชื่อมต่อไปยัง LINE OA
-    window.location.href = "https://line.me/R/ti/p/@606phsmk";
+        if (!response.ok) {
+            const responseData = await response.json();
+            throw new Error(`API Error: ${JSON.stringify(responseData)}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Response Data:', responseData);
+        
+    } catch (error) {
+        console.error("รายละเอียดข้อผิดพลาด:", {
+            message: error.message,
+            stack: error.stack
+        });
+        alert("ไม่สามารถส่งข้อความได้ กรุณาลองใหม่อีกครั้ง");
+        throw error;
+    }
+};
+
+// เพิ่มฟังก์ชันสำหรับส่งรูปภาพ
+const sendImageToLine = async (base64Image) => {
+    try {
+        const response = await fetch("http://localhost:3000/api/line-notify", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: {
+                    type: "image",
+                    originalContentUrl: base64Image,
+                    previewImageUrl: base64Image
+                }
+            })
+        });
+
+        if (!response.ok) {
+            const responseData = await response.json();
+            throw new Error(`API Error: ${JSON.stringify(responseData)}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Image Response Data:', responseData);
+    } catch (error) {
+        console.error("รายละเอียดข้อผิดพลาด (รูปภาพ):", error);
+        throw error;
+    }
 };
 </script>
-
 
 <style>
 body {
     font-family: 'Sarabun', sans-serif;
+    background-color: #070d22;
+    color: #fff;
     margin: 0;
     padding: 0;
-    background-color: #070d22;
-    color: #333;
 }
 
 .container {
@@ -135,28 +247,20 @@ h1 {
     text-align: center;
     font-size: 18px;
     margin-bottom: 40px;
-    color: #ffffff;
 }
 
 .bank-details {
     background: #fff;
+    color: #333;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     margin-bottom: 40px;
     text-align: center;
 }
 
 .bank-details h2 {
     font-size: 24px;
-    color: #333;
     margin-bottom: 10px;
-}
-
-.bank-details p {
-    font-size: 16px;
-    color: #555;
-    margin: 5px 0;
 }
 
 .packages {
@@ -168,42 +272,31 @@ h1 {
 
 .package {
     background: #fff;
+    color: #333;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
     flex: 1 1 300px;
     max-width: 300px;
 }
 
 .package h3 {
-    font-size: 22px;
     color: #f02a51;
-    margin-bottom: 15px;
-}
-
-.package p {
-    font-size: 16px;
-    color: #555;
-    margin: 10px 0;
 }
 
 .package .price {
     font-size: 24px;
     font-weight: bold;
-    color: #333;
     margin: 20px 0;
 }
 
 .package .support-button {
     background: #f02a51;
-    color: #fff;
-    border: none;
+    color: white;
     padding: 10px 20px;
+    border: none;
     border-radius: 5px;
-    font-size: 16px;
     cursor: pointer;
-    transition: background 0.3s ease;
 }
 
 .package .support-button:hover {
@@ -212,5 +305,61 @@ h1 {
 
 .grey-text {
     color: #b8b6b6;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.form-popup {
+    background: #fff;
+    color: #333;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+}
+
+.form-popup input,
+.form-popup textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.form-buttons .confirm {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    flex: 1;
+}
+
+.form-buttons .cancel {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    flex: 1;
 }
 </style>

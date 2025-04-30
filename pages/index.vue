@@ -1,19 +1,24 @@
 <script setup lang="ts">
 import Sponsors from '~/components/Sponsors.vue';
+import Table_show from '~/components/table_show.vue';
+
 </script>
 
 <template>
   <div class="bg-gradient-to-b from-blue-50 to-blue-100 min-h-screen flex flex-col">
     <!-- Header Section -->
     <Header />
-    
+    <Mapza />
+    <Table_show />
+
+
     <!-- Main Content -->
     <main class="flex-grow">
-       <show />
+<!-- <show /> -->
       <div class="container mx-auto px-4 py-8">
         <!-- Show Component -->
         <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
-         
+
         </div>
 
         <!-- Sponsors Section -->
@@ -62,9 +67,9 @@ html {
 }
 
 /* Add hover effect for interactive elements */
-button:hover, a:hover {
+button:hover,
+a:hover {
   transform: scale(1.05);
   transition: transform 0.2s ease-in-out;
 }
 </style>
-

@@ -47,9 +47,8 @@ const activePage = computed(() => route.path);
 
 const menuItems = [
   { name: "หน้าแรก", path: "/" },
-  { name: "แผนที่ยักษ์ขาว", path: "/MapPage" },
   { name: "ข่าว", path: "/News" },
-  { name: "ตั้งค่าสี", path: "/ColorSetting" },
+/*   { name: "ตั้งค่าสี", path: "/ColorSetting" }, */
   { name: "ร่วมสนับสนุน", path: "/Regis" },
   { name: "ผู้สนับสนุน", path: "/SponPage" },
   { name: "ติดต่อเรา", path: "/ContactPage" }
@@ -64,10 +63,11 @@ const toggleMenu = () => {
 
 <style scoped>
 .nav-item {
-  padding: 10px 16px;
+  /* padding: 10px 16px; */
+  padding: 25px;
   text-decoration: none;
   color: white;
-  font-size: 16px;
+  font-size: 18px;
   position: relative;
   transition: color 0.3s ease-in-out;
 }

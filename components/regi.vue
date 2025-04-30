@@ -115,7 +115,7 @@ const handleFileUpload = (event) => {
     form.value.slip = event.target.files[0];
 };
 
-const submitSupport = async () => {
+/* const submitSupport = async () => {
     try {
         const messageText = `
         ยืนยันการสนับสนุนเครื่องวัดฝุ่น
@@ -135,10 +135,10 @@ const submitSupport = async () => {
         console.error('Error in submitSupport:', error);
         alert(`เกิดข้อผิดพลาด: ${error.message}`);
     }
-};
+}; */
 
 // LINE OA
-const sendMessageToLine = async (messageText) => {
+/* const sendMessageToLine = async (messageText) => {
     try {
         console.log('กำลังส่งข้อความ:', messageText);
 
@@ -167,6 +167,29 @@ const sendMessageToLine = async (messageText) => {
         });
         alert("ไม่สามารถส่งข้อความได้ กรุณาลองใหม่อีกครั้ง");
         throw error;
+    }
+}; */
+
+const submitSupport = () => {
+    try {
+        const messageText = `
+        ยืนยันการสนับสนุนเครื่องวัดฝุ่น
+        แพ็กเกจ: ${selectedPackage.value.name}
+        ราคา: ${selectedPackage.value.price} บาท
+        ชื่อ: ${form.value.name}
+        เบอร์โทร: ${form.value.phone}
+        วันที่โอน: ${form.value.date}
+        หมายเหตุ: ${form.value.note || '-'}
+        `;
+
+        // ส่ง Line Notify โดยตรง
+        window.location.href = `https://yakkaw.mfu.ac.th/api/line-notify?message=${encodeURIComponent(messageText)}`;
+        
+        alert("ขอบคุณสำหรับการสนับสนุน");
+        closeForm();
+    } catch (error) {
+        console.error('Error:', error);
+        alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
     }
 };
 </script>
