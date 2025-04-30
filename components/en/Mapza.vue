@@ -2,14 +2,14 @@
     <!-- <div style="background-color: white;"> -->
     <div>
         <div class="search-container"
-            style="text-align: center; align-items: center; justify-content: center; margin-top: 100px;">
-            <span style="font-size: 22px; font-weight: bold; margin-right: 250px;">Air quality survey</span>
+            style="text-align: center; align-items: center; justify-content: center;">
+            <span class="survey-title">Air quality survey</span>
             <input type="text" class="search-input" placeholder="search location..." v-model="searchTerm"
                 @keyup.enter="searchLocation" />
             <button class="search-button" @click="searchLocation">Search</button>
         </div>
 
-        <div class="map-container" style="max-width: 1200px; margin: 0 auto; border-radius: 10px; overflow: hidden;">
+        <div class="map-container" style="max-width: 1200px; margin: 0px auto; border-radius: 10px; overflow: hidden;">
             <div ref="mapContainer" id="map" style="height: 500px; width: 100%;"></div>
         </div>
 
@@ -375,7 +375,7 @@ export default {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    margin-top: 20px;
+    margin-top: 100px;
     padding: 10px;
     background-color: #070d22;
     border-radius: 10px;
@@ -408,12 +408,12 @@ export default {
     font-style: italic;
 }
 
+
 #map {
     height: 100vh;
-    margin-top: 0px;
-    /*   WHITE SPACE BETWEEN HEADER AND MAP
-    margin: 0;
-    padding: 0; */
+/*        WHITE SPACE BETWEEN HEADER AND MAP
+    margin: 100px;
+    padding: 100px; */
 }
 
 .banner {
@@ -429,6 +429,7 @@ export default {
     line-height: 1.5;
     transition: opacity 0.3s ease;
     pointer-events: none;
+    margin-top: 150px;
     /* Prevents it from blocking the map */
 }
 
@@ -576,5 +577,39 @@ svg {
     width: 100px;
     height: 100px;
     background-color: red;
+}
+
+/* เพิ่ม CSS สำหรับ title */
+.survey-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-right: 250px;
+}
+
+/* Media Queries สำหรับ tablet */
+@media screen and (max-width: 1024px) {
+    .survey-title {
+        font-size: 20px;
+        margin-right: 150px;
+    }
+}
+
+/* Media Queries สำหรับ mobile */
+@media screen and (max-width: 768px) {
+    .survey-title {
+        font-size: 18px;
+        margin-right: 50px;
+    }
+    .search-container {
+        margin-top: 0;
+    }
+}
+
+/* สำหรับหน้าจอขนาดเล็กมาก */
+@media screen and (max-width: 480px) {
+    .survey-title {
+        font-size: 16px;
+        margin-right: 20px;
+    }
 }
 </style>

@@ -85,11 +85,12 @@ const packages = [
     }
 ];
 
+
 const showForm = ref(false);
 const selectedPackage = ref(null);
 const form = ref({
     name: '',
-    phone: '',
+    phone: null,
     date: '',
     note: '',
     slip: null
@@ -104,12 +105,14 @@ const closeForm = () => {
     showForm.value = false;
     form.value = {
         name: '',
-        phone: '',
+        phone: null,
         date: '',
         note: '',
         slip: null
     };
 };
+
+
 
 const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -129,14 +132,13 @@ const submitSupport = async () => {
             return;
         }
 
-        const messageText = `
-        ยืนยันการสนับสนุนเครื่องวัดฝุ่น
-        แพ็กเกจ: ${selectedPackage.value.name}
-        ราคา: ${selectedPackage.value.price} บาท
-        ชื่อ: ${form.value.name}
-        เบอร์โทร: ${form.value.phone}
-        วันที่โอน: ${form.value.date}
-        หมายเหตุ: ${form.value.note || '-'}`;
+        const messageText = `ยืนยันการสนับสนุนเครื่องวัดฝุ่น
+แพ็กเกจ: ${selectedPackage.value.name}
+ราคา: ${selectedPackage.value.price} บาท
+ชื่อ: ${form.value.name}
+เบอร์โทร: ${form.value.phone}
+วันที่โอน: ${form.value.date}
+หมายเหตุ: ${form.value.note || '-'}`;
 
         // ส่งข้อความและรูปภาพแยกกัน
         console.log('กำลังส่งข้อความ:', messageText);
