@@ -4,6 +4,7 @@
 
 <script>
 export default {
+  
   props: {
     sensorData: {
       type: Array,
@@ -49,13 +50,15 @@ export default {
     },
   },
   mounted() {
+  
     this.loadGoogleMaps();
   },
   methods: {
     loadGoogleMaps() {
+        const runtimeConfig = useRuntimeConfig();
       if (typeof google === "undefined") {
         const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD9TDjlJEO60ksYuV2mCk-j6R2lHjrjx6k&callback=initMap`;
+        script.src = runtimeConfig.public.GOOGLEMAPAPI;
         script.async = true;
         script.defer = true;
         window.initMap = this.initMap.bind(this);
@@ -66,13 +69,13 @@ export default {
     },
     initMap() {
       if (!this.$refs.mapContainer) return;
-
+      
       this.map = new google.maps.Map(this.$refs.mapContainer, {
         center: { lat: 13.7563, lng: 100.5018 },
         zoom: 6,
         styles: this.mapStyle,
       });
-
+      
       this.addSensorMarkers();
     },
     addSensorMarkers() {

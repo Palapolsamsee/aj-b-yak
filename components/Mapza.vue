@@ -67,8 +67,10 @@
 </template>
 
 <script>
+
 export default {
     data() {
+       
         return {
             isMenuOpen: false,
             map: null,
@@ -148,8 +150,9 @@ export default {
         loadGoogleMaps() {
             // Check if the Google Maps script already exists
             if (typeof google === 'undefined') {
+                const runtimeConfig = useRuntimeConfig();
                 const script = document.createElement('script');
-                script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD9TDjlJEO60ksYuV2mCk-j6R2lHjrjx6k&callback=initMap`;
+                script.src = runtimeConfig.public.GOOGLEMAPAPI;
                 script.async = true;
                 script.defer = true;
                 window.initMap = this.initMap;  // Directly assign the method

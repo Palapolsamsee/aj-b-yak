@@ -1,4 +1,10 @@
 export default defineNuxtConfig({
+    runtimeConfig: {
+    public: {
+      // API_ENDPOINT: process.env.NUXT_API_ENDPOINT,
+      GOOGLEMAPAPI:process.env.GOOGLEMAP
+    },
+  },
   css: ['@/assets/css/main.css', 'leaflet/dist/leaflet.css'],
   modules: ['@nuxtjs/leaflet', '@nuxtjs/tailwindcss', 'nuxt-echarts'],
   devtools: { enabled: true },
