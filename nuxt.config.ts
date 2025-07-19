@@ -1,7 +1,13 @@
 export default defineNuxtConfig({
     runtimeConfig: {
+      //private for test
+    yakkaw_api:process.env.YAKKAW_API,
+    apiUrl: process.env.NUXT_API_URL,
+    baseair:process.env.BASE_API_ARI,
+    oneyear:process.env.YEAR_API_ARI,
+    colorange: process.env.NUXT_API_URL_COLORRANGE,
+    //public for deploy
     public: {
-      // API_ENDPOINT: process.env.NUXT_API_ENDPOINT,
       GOOGLEMAPAPI:process.env.GOOGLEMAP
     },
   },

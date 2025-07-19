@@ -23,6 +23,9 @@ import { onMounted, ref, computed, watch, onUnmounted } from 'vue';
 import { useColorSettings } from '@/utils/useColorSettings';
 import * as echarts from 'echarts';
 
+const conifg = useRuntimeConfig();
+const BASE_YEAR_API = conifg.oneyear;
+
 const chart = ref<HTMLElement | null>(null);
 const chartInstance = ref<echarts.ECharts | null>(null);
 const { colorRanges } = useColorSettings(); 
@@ -41,7 +44,7 @@ async function fetchChartData() {
     error.value = '';
     
     // Update the API endpoint to match the backend
-    const response = await fetch('http://localhost:8080/api/airquality/one_year', {
+    const response = await fetch(`{BASE_YEAR_API}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',

@@ -12,6 +12,7 @@ const mapInteractionsEnabled = ref(true); // State to manage map interactions
 // Load color settings  
 const loadSettings = async () => {  
   try {  
+    //load จากไหน
     const response = await fetch("http://localhost:3000/api/settings");  
     const data = await response.json();  
     colorSettings.value = data.colorSettings || [];  

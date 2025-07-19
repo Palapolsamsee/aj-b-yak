@@ -70,15 +70,19 @@
   </div>
 </template>
 <script setup>
+
 import { ref, computed } from 'vue';
 import { useAsyncData } from '#app';
+import { useApiBase } from '@/composables/useApiBase'
+
+const { colorRangeApi } = useApiBase()
 
 // Dynamically import VueECharts only on the client side
 const VueECharts = process.client ? await import('vue-echarts').then(module => module.default) : null;
 if (process.client) {
 await import('echarts');
 }
-
+const apiUrl = config.apiUrl       
 // State for incremental loading
 const itemsPerPage = 5;
 const visibleItems = ref(itemsPerPage);
@@ -94,7 +98,7 @@ const selectedSensorPlace = ref('');
 // Fetch data using useAsyncData
 const { data: sensorData, pending, error } = useAsyncData('sensorData', async () => {
 try {
-  const response = await $fetch('http://localhost:8080/api/airquality/sensor_data/week');
+  const response = await $fetch(config.apiUrl);
   return response || [];
 } catch (err) {
   console.error('Error fetching sensor data:', err);
@@ -203,7 +207,7 @@ selectedSensorPlace.value = '';
 
 const { data: colorRanges } = await useAsyncData('colorRanges', async () => {
   try {
-    const response = await $fetch('http://localhost:8080/colorranges');
+    const response = await $fetch(`{colorRangeApi}`);
     return response || [];
   } catch (err) {
     console.error('Error fetching color ranges:', err);

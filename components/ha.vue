@@ -28,7 +28,8 @@
 
 <script>
 import * as echarts from 'echarts';
-
+import { useApiBase } from '@/composables/useApiBase'
+const {oneWeekApi} = useApiBase()
 export default {
   name: 'Ha',
   data() {
@@ -42,7 +43,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await fetch('http://localhost:8080/api/airquality/one_week');
+        const response = await fetch(`{oneWeekApi}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

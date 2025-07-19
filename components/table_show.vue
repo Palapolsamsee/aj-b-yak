@@ -123,11 +123,15 @@ const searchQuery = ref('');
 const showModal = ref(false);
 const selectedDeviceId = ref(null);
 const selectedSensorPlace = ref('');
+const config = useRuntimeConfig()
+import { useApiBase } from '@/composables/useApiBase'
+
+const { baseAirApi } = useApiBase()
 
 // Fetch data using useAsyncData
 const { data: sensorData, pending, error } = useAsyncData('sensorData', async () => {
 try {
-  const response = await $fetch('http://localhost:8080/api/airquality/sensor_data/week');
+  const response = await $fetch(`{baseAirApi}/week`);
   return response || [];
 } catch (err) {
   console.error('Error fetching sensor data:', err);

@@ -62,24 +62,25 @@ const threeMonthsData = ref([])
 const yearData = ref([])
 const loading = ref(true)
 const error = ref('')
-
+const config = useRuntimeConfig
+const BASE_API =  config.BASE_API
 // Function to fetch air quality data for different periods
 const fetchData = async () => {
   try {
     // Fetch one-week data
-    const weekResponse = await axios.get('http://localhost:8080/api/airquality/one_week');
+    const weekResponse = await axios.get(`{BASE_API}/one_week`);
     weekData.value = weekResponse.data;
 
     // Fetch one-month data
-    const monthResponse = await axios.get('/api/airquality/one_month');
+    const monthResponse = await axios.get(`{BASE_API}/one_month`);
     monthData.value = monthResponse.data;
 
     // Fetch three-months data
-    const threeMonthsResponse = await axios.get('/api/airquality/three_months');
+    const threeMonthsResponse = await axios.get(`{BASE_API}three_months`);
     threeMonthsData.value = threeMonthsResponse.data;
 
     // Fetch one-year data
-    const yearResponse = await axios.get('/api/airquality/one_year');
+    const yearResponse = await axios.get(`{BASE_API}/one_year`);
     yearData.value = yearResponse.data;
   } catch (err) {
     error.value = `เกิดข้อผิดพลาด: ${err.message}`;

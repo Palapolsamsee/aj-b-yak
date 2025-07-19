@@ -67,7 +67,8 @@
 </template>
 
 <script>
-
+const config = useRuntimeConfig();
+const api_yakkaw= config.api_yakkaw
 export default {
     data() {
        
@@ -106,7 +107,7 @@ export default {
         },
         async fetchData() {
             try {
-                const response = await fetch('https://yakkaw.mfu.ac.th/api/yakkaw/devices');
+                const response = await fetch(`{api_yakkaw}`);
                 if (!response.ok) {
                     throw new Error('ไม่สามารถโหลดข้อมูลได้');
                 }
