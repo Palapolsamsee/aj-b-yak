@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
+    "@heroicons/vue": "^2.2.0",
     "@line/bot-sdk": "^9.7.1",
     "@nuxt/http": "^0.6.4",
     "@nuxtjs/leaflet": "^1.2.4",
@@ -23,6 +24,7 @@
     "dotenv": "^16.5.0",
     "echarts": "^5.6.0",
     "express": "^4.21.2",
+    "firebase": "^12.0.0",
     "font-awesome": "^4.7.0",
     "leaflet": "^1.9.4",
     "nitropack": "^2.11.12",

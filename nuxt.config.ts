@@ -6,6 +6,16 @@ export default defineNuxtConfig({
     baseair:process.env.BASE_API_ARI,
     oneyear:process.env.YEAR_API_ARI,
     colorange: process.env.NUXT_API_URL_COLORRANGE,
+
+    //firebase test
+    firebaseApiKey: process.env.NUXT_FIREBASE_APIKEY,
+    firebaseAuthDomain: process.env.NUXT_FIREBASE_AUTHDOMAIN,
+    firebaseProjectId: process.env.NUXT_FIREBASE_PROJECTID,
+    firebaseStorageBucket: process.env.NUXT_FIREBASE_STORAGEBUCKET,
+    firebaseMessagingSenderId: process.env.NUXT_FIREBASE_MESSAGINGSENDERID,
+    firebaseAppId: process.env.NUXT_FIREBASE_APPID,
+
+    
     //public for deploy
     public: {
       GOOGLEMAPAPI:process.env.GOOGLEMAP
