@@ -1,7 +1,7 @@
 export default defineNuxtConfig({
     runtimeConfig: {
       //private for test
-    yakkaw_api:process.env.YAKKAW_API,
+    
     apiUrl: process.env.NUXT_API_URL,
     baseair:process.env.BASE_API_ARI,
     oneyear:process.env.YEAR_API_ARI,
@@ -15,9 +15,9 @@ export default defineNuxtConfig({
     firebaseMessagingSenderId: process.env.NUXT_FIREBASE_MESSAGINGSENDERID,
     firebaseAppId: process.env.NUXT_FIREBASE_APPID,
 
-    
     //public for deploy
     public: {
+      yakkaw_api:process.env.YAKKAW_API,
       GOOGLEMAPAPI:process.env.GOOGLEMAP
     },
   },

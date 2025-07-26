@@ -76,31 +76,117 @@
   </section>
 </template>
 
-<script setup>
-// Mock data - in real app, this would come from API
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useApiBase } from '@/composables/useApiBase'
+
+interface Device {
+  dvid: string
+  place: string
+  latitude: number
+  longitude: number
+  status?: string
+  pm25?: number
+  aqi?: number
+  timestamp?: number
+}
+
+const { yakkawApi } = useApiBase()
+
+const devices = ref<Device[]>([])
 const currentData = ref({
-  location: 'Bangkok, Thailand',
-  aqi: 87,
-  pm25: 32,
-  timestamp: new Date().toLocaleString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
+  location: 'Unknown',
+  aqi: 0,
+  pm25: 0,
+  timestamp: '',
 })
 
 const trendData = ref({
-  average: 75,
-  highest: 112,
-  lowest: 45
+  average: 0,
+  highest: 0,
+  lowest: 0
 })
 
 const globalRank = ref(82)
 
-const getAQIBackground = (aqi) => {
+const getAQI = (pm25: number): number => {
+  if (pm25 <= 12) return 50
+  if (pm25 <= 35.4) return 100
+  if (pm25 <= 55.4) return 150
+  if (pm25 <= 150.4) return 200
+  return 300
+}
+
+const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+  const toRad = (value: number) => value * Math.PI / 180
+  const R = 6371
+  const dLat = toRad(lat2 - lat1)
+  const dLon = toRad(lon2 - lon1)
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+    Math.sin(dLon / 2) ** 2
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  return R * c
+}
+
+onMounted(async () => {
+  try {
+    const res = await fetch(`${yakkawApi}`)
+    const json = await res.json()
+    const allDevices = Array.isArray(json.response) ? json.response : []
+    devices.value = allDevices.filter((d: Device) => d.status === 'Active')
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        const { latitude, longitude } = position.coords
+
+        let closest: Device | null = null
+        let minDist = Infinity
+
+        for (const device of devices.value) {
+          if (device.latitude && device.longitude && device.pm25 != null) {
+            const dist = getDistance(latitude, longitude, device.latitude, device.longitude)
+            if (dist < minDist) {
+              minDist = dist
+              closest = device
+            }
+          }
+        }
+
+        if (closest) {
+          const aqi = closest.aqi && closest.aqi > 0 ? closest.aqi : getAQI(closest.pm25 ?? 0)
+          const date = new Date(closest.timestamp ?? Date.now())
+
+          currentData.value = {
+            location: closest.place,
+            aqi,
+            pm25: closest.pm25 ?? 0,
+            timestamp: date.toLocaleString('en-US', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            }),
+          }
+
+          trendData.value = {
+            average: Math.round((aqi + 70) / 2),
+            highest: aqi + 20,
+            lowest: Math.max(10, aqi - 30)
+          }
+        }
+      }, err => {
+        console.warn('ไม่สามารถใช้ตำแหน่งได้', err)
+      })
+    }
+  } catch (e) {
+    console.error('โหลดข้อมูลไม่สำเร็จ', e)
+  }
+})
+
+const getAQIBackground = (aqi: number) => {
   if (aqi <= 50) return 'bg-gradient-to-br from-green-400 to-green-600'
   if (aqi <= 100) return 'bg-gradient-to-br from-yellow-400 to-yellow-600'
   if (aqi <= 150) return 'bg-gradient-to-br from-orange-400 to-orange-600'
@@ -108,7 +194,7 @@ const getAQIBackground = (aqi) => {
   return 'bg-gradient-to-br from-purple-400 to-purple-600'
 }
 
-const getAQIStatus = (aqi) => {
+const getAQIStatus = (aqi: number) => {
   if (aqi <= 50) return 'Good'
   if (aqi <= 100) return 'Moderate'
   if (aqi <= 150) return 'Unhealthy for Sensitive Groups'
@@ -116,7 +202,7 @@ const getAQIStatus = (aqi) => {
   return 'Very Unhealthy'
 }
 
-const getHealthAdvice = (aqi) => {
+const getHealthAdvice = (aqi: number) => {
   if (aqi <= 50) return 'Air quality is good. Perfect for outdoor activities!'
   if (aqi <= 100) return 'Air quality is acceptable for most people. Sensitive individuals should consider reducing outdoor exertion.'
   if (aqi <= 150) return 'Sensitive groups should limit outdoor activities. Others can enjoy outdoor activities normally.'
