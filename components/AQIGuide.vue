@@ -2,54 +2,41 @@
   <section id="advice" class="py-16 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-gray-900 mb-4">AQI Health Guide</h2>
-        <p class="text-gray-600">Learn how different air quality levels affect your health</p>
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Latest Air Quality News</h2>
+        <p class="text-gray-600">Stay updated with recent news and updates</p>
       </div>
 
-      <div class="grid gap-6">
-        <div v-for="(level, index) in aqiLevels" :key="index"
-             :class="[
-               'rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1',
-               level.bgClass
-             ]"
-        >
-          <div class="flex items-start space-x-4">
-            <div class="text-4xl">{{ level.emoji }}</div>
-            <div class="flex-1">
-              <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                <div>
-                  <h3 class="text-xl font-bold text-white mb-1">{{ level.title }}</h3>
-                  <p class="text-white/90 text-sm">AQI Range: {{ level.range }}</p>
-                </div>
-                <div class="mt-2 md:mt-0">
-                  <span class="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-white font-semibold">
-                    {{ level.status }}
-                  </span>
-                </div>
-              </div>
-              
-              <div class="grid md:grid-cols-2 gap-4">
-                <div class="bg-white/15 backdrop-blur-sm rounded-lg p-4">
-                  <h4 class="font-semibold text-white mb-2">👥 Who's Affected</h4>
-                  <p class="text-white/90 text-sm">{{ level.affected }}</p>
-                </div>
-                <div class="bg-white/15 backdrop-blur-sm rounded-lg p-4">
-                  <h4 class="font-semibold text-white mb-2">🏃‍♂️ Recommended Actions</h4>
-                  <p class="text-white/90 text-sm">{{ level.actions }}</p>
-                </div>
-              </div>
-              
-              <div class="mt-4 bg-white/15 backdrop-blur-sm rounded-lg p-4">
-                <h4 class="font-semibold text-white mb-2">💡 Health Tips</h4>
-                <ul class="text-white/90 text-sm space-y-1">
-                  <li v-for="tip in level.tips" :key="tip" class="flex items-start">
-                    <span class="text-white/60 mr-2">•</span>
-                    {{ tip }}
-                  </li>
-                </ul>
-              </div>
-            </div>
+      <!-- Loading/Error -->
+      <div v-if="pending" class="text-center text-gray-500">Loading news...</div>
+      <div v-else-if="error" class="text-center text-red-500">{{ error.message }}</div>
+
+      <!-- News Grid -->
+      <div v-else class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div v-for="item in news" :key="item.id" class="rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300">
+          <img :src="getImageUrl(item.image)" alt="News Image" class="w-full h-48 object-cover" />
+          <div class="p-5">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">{{ item.title }}</h3>
+            <p class="text-gray-600 text-sm mb-4">{{ formatThaiDate(item.date) }}</p>
+            <p class="text-gray-700 text-sm line-clamp-3">{{ item.summary }}</p>
+            <a :href="item.link" target="_blank" class="mt-4 inline-block text-blue-600 font-semibold">Read More</a>
           </div>
+        </div>
+      </div>
+
+      <!-- Facebook Page Embed -->
+      <div class="mt-16 flex justify-center">
+        <div class="fb-page"
+             data-href="https://www.facebook.com/yourpage"
+             data-tabs="timeline"
+             data-width="400"
+             data-height="400"
+             data-small-header="false"
+             data-adapt-container-width="true"
+             data-hide-cover="false"
+             data-show-facepile="true">
+          <blockquote cite="https://www.facebook.com/yourpage" class="fb-xfbml-parse-ignore">
+            <a href="https://www.facebook.com/yourpage">Your Page Name</a>
+          </blockquote>
         </div>
       </div>
     </div>
@@ -57,78 +44,102 @@
 </template>
 
 <script setup>
-const aqiLevels = ref([
-  {
-    title: 'Good',
-    range: '0-50',
-    status: 'Excellent',
-    emoji: '😊',
-    bgClass: 'bg-gradient-to-br from-green-400 to-green-600',
-    affected: 'No one affected',
-    actions: 'Perfect time for outdoor activities and exercise',
-    tips: [
-      'Enjoy outdoor activities without restriction',
-      'Great air quality for jogging and cycling',
-      'Windows can be kept open for fresh air'
-    ]
-  },
-  {
-    title: 'Moderate',
-    range: '51-100',
-    status: 'Acceptable',
-    emoji: '🙂',
-    bgClass: 'bg-gradient-to-br from-yellow-400 to-yellow-600',
-    affected: 'Unusually sensitive people may experience minor symptoms',
-    actions: 'Normal outdoor activities are fine for most people',
-    tips: [
-      'Most people can enjoy outdoor activities normally',
-      'Sensitive individuals should monitor their symptoms',
-      'Consider reducing prolonged outdoor exertion if sensitive'
-    ]
-  },
-  {
-    title: 'Unhealthy for Sensitive Groups',
-    range: '101-150',
-    status: 'Caution',
-    emoji: '😐',
-    bgClass: 'bg-gradient-to-br from-orange-400 to-orange-600',
-    affected: 'Children, elderly, and people with heart/lung conditions',
-    actions: 'Sensitive groups should limit prolonged outdoor activities',
-    tips: [
-      'Reduce outdoor exercise if you have respiratory issues',
-      'Keep windows closed during peak pollution hours',
-      'Consider wearing N95 masks outdoors if sensitive'
-    ]
-  },
-  {
-    title: 'Unhealthy',
-    range: '151-200',
-    status: 'Warning',
-    emoji: '😷',
-    bgClass: 'bg-gradient-to-br from-red-400 to-red-600',
-    affected: 'Everyone may experience health effects',
-    actions: 'Avoid prolonged outdoor activities, especially exercise',
-    tips: [
-      'Limit time outdoors, especially for exercise',
-      'Use air purifiers indoors if available',
-      'Wear N95 masks when going outside',
-      'Keep indoor air clean and well-filtered'
-    ]
-  },
-  {
-    title: 'Very Unhealthy',
-    range: '201-300',
-    status: 'Emergency',
-    emoji: '🚨',
-    bgClass: 'bg-gradient-to-br from-purple-400 to-purple-600',
-    affected: 'Serious health effects for everyone',
-    actions: 'Avoid all outdoor activities and stay indoors',
-    tips: [
-      'Stay indoors with doors and windows closed',
-      'Use air purifiers and avoid outdoor air',
-      'Seek medical attention if experiencing symptoms',
-      'Cancel all outdoor events and activities'
-    ]
+import { ref, onMounted } from 'vue'
+
+const API_URL = 'http://localhost:8080/news'
+const news = ref([])
+const pending = ref(true)
+const error = ref(null)
+
+function getImageUrl(url) {
+  return url || 'https://via.placeholder.com/300x200?text=No+Image'
+}
+
+function formatThaiDate(dateString) {
+  const date = new Date(dateString)
+  const options = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'Asia/Bangkok'
   }
-])
+  return date.toLocaleDateString('th-TH', options)
+}
+
+async function fetchNews() {
+  try {
+    const res = await fetch(API_URL)
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
+    const data = await res.json()
+
+    news.value = Array.isArray(data) 
+      ? data.sort((a, b) => new Date(b.date) - new Date(a.date))
+      : []
+  } catch (err) {
+    error.value = err
+  } finally {
+    pending.value = false
+  }
+}
+
+function loadFacebookSDK() {
+  return new Promise((resolve) => {
+    if (window.FB) {
+      resolve(window.FB)
+      return
+    }
+
+    if (!document.getElementById('fb-root')) {
+      const fbRoot = document.createElement('div')
+      fbRoot.id = 'fb-root'
+      document.body.appendChild(fbRoot)
+    }
+
+    const script = document.createElement('script')
+    script.src = 'https://connect.facebook.net/th_TH/sdk.js#xfbml=1&version=v18.0'
+    script.async = true
+    script.defer = true
+    script.crossOrigin = 'anonymous'
+
+    script.onload = () => {
+      window.FB.init({ xfbml: true, version: 'v18.0' })
+      resolve(window.FB)
+    }
+
+    script.onerror = () => {
+      console.error('Failed to load Facebook SDK')
+      resolve(null)
+    }
+
+    document.body.appendChild(script)
+  })
+}
+
+onMounted(async () => {
+  await fetchNews()
+
+  if (process.client) {
+    const fb = await loadFacebookSDK()
+    if (fb) {
+      setTimeout(() => {
+        fb.XFBML.parse()
+        document.querySelectorAll('.fb-page iframe').forEach(iframe => {
+          iframe.style.width = '400px'
+          iframe.style.height = '400px'
+          iframe.style.backgroundColor = 'white'
+        })
+      }, 500)
+    }
+  }
+})
 </script>
+
+<style scoped>
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>
