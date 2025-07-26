@@ -26,7 +26,7 @@
       <!-- Facebook Page Embed -->
       <div class="mt-16 flex justify-center">
         <div class="fb-page"
-             data-href="https://www.facebook.com/yourpage"
+             data-href="https://www.facebook.com/profile.php?id=100064516369084"
              data-tabs="timeline"
              data-width="400"
              data-height="400"
@@ -34,8 +34,8 @@
              data-adapt-container-width="true"
              data-hide-cover="false"
              data-show-facepile="true">
-          <blockquote cite="https://www.facebook.com/yourpage" class="fb-xfbml-parse-ignore">
-            <a href="https://www.facebook.com/yourpage">Your Page Name</a>
+          <blockquote cite="https://www.facebook.com/profile.php?id=100064516369084" class="fb-xfbml-parse-ignore">
+            <a href="https://www.facebook.com/profile.php?id=100064516369084">ยักษ์ขาว</a>
           </blockquote>
         </div>
       </div>
