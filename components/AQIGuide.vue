@@ -18,7 +18,7 @@
             <h3 class="text-xl font-bold text-gray-800 mb-2">{{ item.title }}</h3>
             <p class="text-gray-600 text-sm mb-4">{{ formatThaiDate(item.date) }}</p>
             <p class="text-gray-700 text-sm line-clamp-3">{{ item.summary }}</p>
-            <a :href="item.link" target="_blank" class="mt-4 inline-block text-blue-600 font-semibold">Read More</a>
+            <a :href="item.url" target="_blank" class="mt-4 inline-block text-blue-600 font-semibold">Read More</a>
           </div>
         </div>
       </div>
