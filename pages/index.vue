@@ -21,6 +21,7 @@
       <HeroSection />
       <CurrentAirQuality />
       <AirQualityMap />
+      <DeviceTable />
       <AQIGuide />
     </main>
     <AppFooter />
