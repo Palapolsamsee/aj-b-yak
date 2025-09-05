@@ -23,6 +23,8 @@
       <AirQualityMap />
       <DeviceTable />
       <AQIGuide />
+
+      <Sponsors />
     </main>
     <AppFooter />
   </div>

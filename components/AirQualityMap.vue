@@ -128,20 +128,23 @@ const filteredStations = computed(() => {
 })
 
 const getMarkerColor = (aqi: number) => {
-  if (aqi <= 50) return 'green'
-  if (aqi <= 100) return 'yellow'
-  if (aqi <= 150) return 'orange'
-  if (aqi <= 200) return 'red'
+  if (aqi <= 20) return '#2EA8FF'
+  if (aqi <= 50) return '#46DA01'
+  if (aqi <= 100) return '#FECC17'
+  if (aqi <= 150) return '#F26B0F'
+  if (aqi <= 200) return '#FF2C2C'
   return 'purple'
 }
 
 const getStationBackground = (aqi: number) => {
-  if (aqi <= 50) return 'bg-gradient-to-br from-green-400 to-green-600'
-  if (aqi <= 100) return 'bg-gradient-to-br from-yellow-400 to-yellow-600'
-  if (aqi <= 150) return 'bg-gradient-to-br from-orange-400 to-orange-600'
-  if (aqi <= 200) return 'bg-gradient-to-br from-red-400 to-red-600'
+  if (aqi <= 20) return 'bg-gradient-to-br from-[#2EA8FF] to-[#1B6FB3]'
+  if (aqi <= 50) return 'bg-gradient-to-br from-[#46DA01] to-[#2D8C00]'
+  if (aqi <= 100) return 'bg-gradient-to-br from-[#FECC17] to-[#B38A0E]'
+  if (aqi <= 150) return 'bg-gradient-to-br from-[#F26B0F] to-[#9C3F07]'
+  if (aqi <= 200) return 'bg-gradient-to-br from-[#FF2C2C] to-[#B31D1D]'
   return 'bg-gradient-to-br from-purple-400 to-purple-600'
 }
+
 
 const getAQIStatus = (aqi: number) => {
   if (aqi <= 50) return 'Good'
@@ -173,25 +176,29 @@ onMounted(async () => {
     zoom: 6
   })
 
-  filteredStations.value.forEach(station => {
-    const marker = new window.google.maps.Marker({
-      position: { lat: station.latitude, lng: station.longitude },
-      map: map.value,
-      title: `${station.place} - AQI ${station.aqi}`,
-      icon: {
-        path: window.google.maps.SymbolPath.CIRCLE,
-        scale: 10,
-        fillColor: getMarkerColor(station.aqi),
-        fillOpacity: 1,
-        strokeWeight: 1,
-        strokeColor: '#ffffff'
-      }
-    })
 
-    marker.addListener('click', () => {
-      selectedStation.value = station
-      map.value.setCenter(marker.getPosition()!)
-    })
+allStations.value.forEach(station => {
+  const marker = new window.google.maps.Marker({
+    position: { lat: station.latitude, lng: station.longitude },
+    map: map.value,
+    title: `${station.place} - AQI ${station.aqi}`,
+    icon: {
+      path: window.google.maps.SymbolPath.CIRCLE,
+      scale: 10,
+      fillColor: getMarkerColor(station.aqi),
+      fillOpacity: 1,
+      strokeWeight: 1,
+      strokeColor: '#ffffff'
+    }
   })
+
+  marker.addListener('click', () => {
+    selectedStation.value = station
+    map.value.setCenter(marker.getPosition()!)
+  })
+})
+
+
+
 })
 </script>
