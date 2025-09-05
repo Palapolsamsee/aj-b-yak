@@ -1,15 +1,16 @@
 <template>
+    <section id="map"> 
     <!-- <div style="background-color: white;"> -->
     <div>
         <div class="search-container"
-            style="text-align: center; align-items: center; justify-content: center; margin-top: 100px;">
-            <span style="font-size: 22px; font-weight: bold; margin-right: 250px;">สำรวจคุณภาพอากาศ</span>
+            style="text-align: center; align-items: center; justify-content: center; ">
+            <span class="survey-title">สำรวจคุณภาพอากาศ</span>
             <input type="text" class="search-input" placeholder="ค้นหาสถานที่..." v-model="searchTerm"
                 @keyup.enter="searchLocation" />
             <button class="search-button" @click="searchLocation">ค้นหา</button>
         </div>
 
-        <div class="map-container" style="max-width: 1200px; margin: 0 auto; border-radius: 10px; overflow: hidden;">
+        <div class="map-container" style="max-width: 1200px; margin: 0px auto 0; border-radius: 10px; overflow: hidden;">
             <div ref="mapContainer" id="map" style="height: 500px; width: 100%;"></div>
         </div>
 
@@ -64,14 +65,12 @@
 
     </div>
     <!-- </div> -->
+     </section>
 </template>
 
 <script>
-const config = useRuntimeConfig();
-const api_yakkaw= config.api_yakkaw
 export default {
     data() {
-       
         return {
             isMenuOpen: false,
             map: null,
@@ -107,7 +106,7 @@ export default {
         },
         async fetchData() {
             try {
-                const response = await fetch(`{api_yakkaw}`);
+                const response = await fetch('https://yakkaw.mfu.ac.th/api/yakkaw/devices');
                 if (!response.ok) {
                     throw new Error('ไม่สามารถโหลดข้อมูลได้');
                 }
@@ -151,9 +150,8 @@ export default {
         loadGoogleMaps() {
             // Check if the Google Maps script already exists
             if (typeof google === 'undefined') {
-                const runtimeConfig = useRuntimeConfig();
                 const script = document.createElement('script');
-                script.src = runtimeConfig.public.GOOGLEMAPAPI;
+                script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyD9TDjlJEO60ksYuV2mCk-j6R2lHjrjx6k&callback=initMap`;
                 script.async = true;
                 script.defer = true;
                 window.initMap = this.initMap;  // Directly assign the method
@@ -208,11 +206,7 @@ export default {
             canvas.width = size;
             canvas.height = size;
             const context = canvas.getContext('2d');
-
-            console.log('Canvas width:', canvas.width);
-            console.log('Canvas height:', canvas.height);
-
-            // Draw the main PM2.5 circle marker
+       // Draw the main PM2.5 circle marker
             context.beginPath();
             context.arc(size / 2 - 5, size / 2, circleSize / 2, 0, 2 * Math.PI);
             context.fillStyle = color;
@@ -379,7 +373,7 @@ export default {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    margin-top: 20px;
+     margin-top: 100px;
     padding: 10px;
     background-color: #070d22;
     border-radius: 10px;
@@ -433,6 +427,8 @@ export default {
     line-height: 1.5;
     transition: opacity 0.3s ease;
     pointer-events: none;
+    margin-top: 150px;
+    margin-left: 75px;
     /* Prevents it from blocking the map */
 }
 
@@ -452,8 +448,9 @@ export default {
     /* Temporary style for debugging */
     display: block !important;
     opacity: 1 !important;
-    top: 100px;
+    top: 80px;
     left: 100px;
+
 }
 
 .banner-title {
@@ -581,5 +578,50 @@ svg {
     height: 100px;
     background-color: red;
 }
-</style>
 
+/* เพิ่ม CSS สำหรับ title */
+.survey-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-right: 250px;
+}
+
+/* Media Queries สำหรับ tablet */
+@media screen and (max-width: 1024px) {
+    .survey-title {
+        font-size: 20px;
+        margin-right: 150px;
+    }
+}
+
+/* Media Queries สำหรับ mobile */
+@media screen and (max-width: 768px) {
+    .survey-title {
+        font-size: 18px;
+        margin-right: 50px;
+    }
+
+    .search-container {
+        margin-top: 0;
+    }
+
+    .map-container {
+        margin-top: 0px;
+    }
+
+    #banner {
+        top: 60px;
+    }
+}
+
+/* สำหรับหน้าจอขนาดเล็กมาก */
+@media screen and (max-width: 480px) {
+    .survey-title {
+        font-size: 16px;
+        margin-right: 20px;
+    }
+    .search-container {
+        margin-top: 0px;
+    }
+}
+</style>

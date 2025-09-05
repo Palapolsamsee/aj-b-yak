@@ -17,13 +17,16 @@
           <a href="#home" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Home</a>
           <a href="#map" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Map</a>
           <a href="#data" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">AQI Data</a>
-          <a href="#advice" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Advice</a>
+          <a href="#advice" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">News</a>
+          <a href="#regis" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Register</a>
+          <a href="#supporters" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Sponsors</a>
           <a href="#contact" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Contact</a>
+
         </nav>
 
         <!-- Language Switch and Mobile Menu -->
         <div class="flex items-center space-x-4">
-          <div class="flex bg-gray-100 rounded-lg p-1">
+          <!-- <div class="flex bg-gray-100 rounded-lg p-1">
             <button 
               @click="currentLang = 'en'"
               :class="[
@@ -42,7 +45,7 @@
             >
               TH
             </button>
-          </div>
+          </div> -->
 
           <!-- Mobile menu button -->
           <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2">

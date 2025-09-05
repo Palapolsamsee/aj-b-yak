@@ -19,15 +19,20 @@
     <AppHeader />
     <main>
       <HeroSection />
+      <Mapza />
       <CurrentAirQuality />
-      <AirQualityMap />
+      <!-- <show /> -->
       <AQIGuide />
+      <Regis />
+      <Sponsors />
     </main>
     <AppFooter />
   </div>
 </template>
 
 <script setup>
+import Regis from './Regis.vue';
+
 // Global styles and meta
 useHead({
   htmlAttrs: {

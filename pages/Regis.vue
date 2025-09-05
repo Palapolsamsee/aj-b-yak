@@ -1,6 +1,6 @@
 <template>
-    <Header />
-    <div class="container">
+      <section id="regis" class="py-16 bg-white"></section>
+    <div class="container ">
         <h1>ร่วมสนับสนุน</h1>
         <div class="support-text">
             ยักษ์ขาว เปิดรับการสนับสนุนในการส่งมอบเครื่องวัดฝุ่น ให้กับโรงเรียนและชุมชนที่ยังขาดแคลน
@@ -228,7 +228,7 @@ body {
     padding: 0;
 }
 
-.container {
+.container { 
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
