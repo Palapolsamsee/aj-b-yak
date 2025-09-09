@@ -4,20 +4,26 @@
       <div class="flex justify-between items-center h-16">
         <!-- Logo and Title -->
         <div class="flex items-center space-x-3">
-          <div class="bg-gradient-to-br from-blue-500 to-green-500 p-2 rounded-lg">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-          </div>
-          <h1 class="text-xl font-bold text-gray-900">Yakkaw</h1>
+        <div class="bg-gradient-to-br from-[#0b1126] to-[#f82249] p-2 rounded-lg">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+            </path>
+          </svg>
+        </div>
+
+       <h1 class="text-xl font-bold text-gray-900">
+          <span class="text-blue-950">Yak</span><span class="text-red-600">kaw</span>
+        </h1>
+
         </div>
 
         <!-- Desktop Navigation -->
         <nav class="hidden md:flex items-center space-x-8">
           <a href="#home" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Home</a>
           <a href="#map" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Map</a>
-          <a href="#data" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">AQI Data</a>
-          <a href="#advice" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Advice</a>
+          <a href="#data" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Air Quality</a>
+          <a href="#advice" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">News</a>
           <a href="#contact" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Contact</a>
         </nav>
 

@@ -2,7 +2,9 @@
   <section id="home" class="bg-gradient-to-br from-blue-50 via-white to-green-50 py-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-        Yak<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-green-600">kaw</span>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#2563eb] via-[#0b1126] to-[#f82249]">
+      ยักษ์ขาววัดฝุ่น
+        </span>
       </h1>
       <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
         Monitor PM2.5 and AQI levels across Thailand. Stay informed, breathe safer, and make better decisions for your health.
