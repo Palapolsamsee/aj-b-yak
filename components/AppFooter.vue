@@ -18,7 +18,7 @@
               <li><a href="#home" class="text-gray-400 hover:text-white transition-colors">Home</a></li>
               <li><a href="#map" class="text-gray-400 hover:text-white transition-colors">Air Quality Map</a></li>
               <li><a href="#data" class="text-gray-400 hover:text-white transition-colors">Current Data</a></li>
-              <li><a href="#advice" class="text-gray-400 hover:text-white transition-colors">Health Advice</a></li>
+              <li><a href="#advice" class="text-gray-400 hover:text-white transition-colors">News</a></li>
             </ul>
           </div>
 

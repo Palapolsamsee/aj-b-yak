@@ -22,8 +22,8 @@
         <nav class="hidden md:flex items-center space-x-8">
           <a href="#home" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Home</a>
           <a href="#map" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Map</a>
-          <a href="#data" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">AQI Data</a>
-          <a href="#advice" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Advice</a>
+          <a href="#data" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Air Quality</a>
+          <a href="#advice" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">News</a>
           <a href="#contact" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Contact</a>
         </nav>
 

@@ -23,7 +23,7 @@
       <AirQualityMap />
       <DeviceTable />
       <AQIGuide />
-
+        <Mapza />
       <Sponsors />
     </main>
     <AppFooter />
