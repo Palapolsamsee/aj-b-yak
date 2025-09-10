@@ -27,9 +27,11 @@ import { ref, onMounted } from "vue"
 import { useRoute } from "vue-router"
 import VChart from "vue-echarts"
 
+import { useApiBase } from '@/composables/useApiBase'
+const { yakkawApi} = useApiBase()
+
 const route = useRoute()
 const address = route.params.address as string
-
 const chartOptions = ref<any>(null)
 
 onMounted(async () => {
@@ -37,7 +39,7 @@ onMounted(async () => {
   const res = await $fetch<{
     data: { timestamp: number; pm25: number; pm10: number; address: string }[]
   }>(
-    `http://localhost:8080/api/airquality/one_year?address=${encodeURIComponent(
+    yakkawApi+`/one_year?address=${encodeURIComponent(
       address
     )}`
   )

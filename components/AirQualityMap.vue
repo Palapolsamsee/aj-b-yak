@@ -72,8 +72,8 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useApiBase } from '@/composables/useApiBase'
 
+import { useApiBase } from '@/composables/useApiBase'
 const { yakkawApi, googlemap_key } = useApiBase()
 
 const mapRef = ref(null)

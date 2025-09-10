@@ -99,7 +99,8 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-
+import { useApiBase } from '@/composables/useApiBase'
+const { yakkawApi ,baseair,oneWeekApi} = useApiBase()
 const airQualityData = ref([]);
 const error = ref(null);
 const loading = ref(true);
@@ -119,7 +120,7 @@ const fetchData = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const response = await fetch('http://localhost:8080/api/airquality/one_week');
+    const response = await fetch(oneWeekApi);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -143,7 +144,7 @@ const showYearlyData = async (dvid) => {
   error.value = null;
   selectedDvid.value = dvid;
   try {
-    const response = await fetch(`http://localhost:8080/api/airquality/one_year?dvid=${dvid}`);
+    const response = await fetch(baseair+`/one_year?dvid=${dvid}`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }

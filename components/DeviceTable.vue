@@ -26,13 +26,15 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useApiBase } from '@/composables/useApiBase'
 
 const device = ref(null)
 const error = ref(null)
 
+const { yakkawApi } = useApiBase()
 const fetchData = async () => {
   try {
-    const response = await fetch('https://yakkaw.mfu.ac.th/api/yakkaw/devices')
+    const response = await fetch(yakkawApi)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }

@@ -2,9 +2,6 @@ export default defineNuxtConfig({
     runtimeConfig: {
       //private for test
     
-    apiUrl: process.env.NUXT_API_URL,
-    baseair:process.env.BASE_API_ARI,
-    oneyear:process.env.YEAR_API_ARI,
     colorange: process.env.NUXT_API_URL_COLORRANGE,
 
     //firebase test
@@ -17,7 +14,12 @@ export default defineNuxtConfig({
 
     //public for deploy
     public: {
+      apiUrl: process.env.NUXT_API_URL,
+      aqiweek:process.env.WEAK_API_ARI,
+      baseair:process.env.BASE_API_ARI,
+      oneyear:process.env.YEAR_API_ARI,
       yakkaw_api:process.env.YAKKAW_API,
+      
       GOOGLEMAPAPI:process.env.GOOGLEMAP
     },
   },
@@ -28,7 +30,7 @@ export default defineNuxtConfig({
   nitro: {
     devProxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:8080', //dont forgot this
         changeOrigin: true,
         prependPath: true,
         secure: false,
