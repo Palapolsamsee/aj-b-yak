@@ -36,7 +36,7 @@
       </div>
 
       <!-- Station Details -->
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div v-for="(station, index) in filteredStations" :key="index"
              :class="[
                'rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow cursor-pointer transform hover:-translate-y-1',
@@ -65,7 +65,7 @@
             {{ getAQIStatus(station.aqi) }}
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </section>
 </template>
