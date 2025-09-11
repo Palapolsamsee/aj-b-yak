@@ -17,6 +17,7 @@ export default defineNuxtConfig({
       apiUrl: process.env.NUXT_API_URL,
       aqiweek:process.env.WEAK_API_ARI,
       baseair:process.env.BASE_API_ARI,
+      baseAirApi: process.env.BASE_API_ARI,
       oneyear:process.env.YEAR_API_ARI,
       yakkaw_api:process.env.YAKKAW_API,
       

@@ -4,7 +4,7 @@ export const useApiBase = () => {
   return {
     //อย่าลืม public 
     yakkawApi: config.public.yakkaw_api,
-    baseAirApi: config.public.baseair,
+    baseAirApi: config.public.baseAirApi,
     oneYearApi: config.public.oneyear,
     oneWeekApi: config.public.aqiweek, 
     colorRangeApi: config.colorange,

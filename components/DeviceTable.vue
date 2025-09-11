@@ -30,7 +30,7 @@ import { useApiBase } from '@/composables/useApiBase'
 
 const device = ref(null)
 const error = ref(null)
-
+ 
 const { yakkawApi } = useApiBase()
 const fetchData = async () => {
   try {
