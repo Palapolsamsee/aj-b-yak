@@ -14,16 +14,17 @@
 }
 </style>
  -->
-<template>
-  <div class="min-h-screen bg-gray-50">
+<template bg-white-100>
+  <div class="min-h-screen bg-white">
     <AppHeader />
     <main>
       <HeroSection />
       <CurrentAirQuality />
       <AirQualityMap />
+      <!-- <Mapza />  -->
       <DeviceTable />
+      <Static />
       <AQIGuide />
-        <Mapza />
       <Sponsors />
     </main>
     <AppFooter />

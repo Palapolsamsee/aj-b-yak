@@ -4,9 +4,9 @@ export const useApiBase = () => {
   return {
     //อย่าลืม public 
     yakkawApi: config.public.yakkaw_api,
-    baseAirApi: config.baseair,
-    oneYearApi: config.oneyear,
-    oneWeekApi: config.apiUrl, 
+    baseAirApi: config.public.baseAirApi,
+    oneYearApi: config.public.oneyear,
+    oneWeekApi: config.public.aqiweek, 
     colorRangeApi: config.colorange,
     googlemap_key: config.public.GOOGLEMAPAPI
   }
