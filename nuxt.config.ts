@@ -20,7 +20,6 @@ export default defineNuxtConfig({
       baseAirApi: process.env.BASE_API_ARI,
       oneyear:process.env.YEAR_API_ARI,
       yakkaw_api:process.env.YAKKAW_API,
-      
       GOOGLEMAPAPI:process.env.GOOGLEMAP
     },
   },

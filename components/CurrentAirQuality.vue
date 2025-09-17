@@ -45,32 +45,6 @@
           </div>
         </div>
 
-        <!-- Quick Stats -->
-        <div class="space-y-6">
-          <div class="bg-gray-50 rounded-2xl p-6">
-            <h4 class="font-semibold text-gray-900 mb-4">24h Trend</h4>
-            <div class="space-y-3">
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Average</span>
-                <span class="font-semibold">{{ trendData.average }} AQI</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Highest</span>
-                <span class="font-semibold text-red-600">{{ trendData.highest }} AQI</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-gray-600">Lowest</span>
-                <span class="font-semibold text-green-600">{{ trendData.lowest }} AQI</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-2xl p-6">
-            <h4 class="font-semibold mb-2">🌍 Global Rank</h4>
-            <p class="text-sm mb-3">Thailand ranks #{{ globalRank }} in air quality globally</p>
-            <div class="text-2xl font-bold">#{{ globalRank }}</div>
-          </div>
-        </div>
       </div>
     </div>
   </section>
@@ -187,12 +161,13 @@ onMounted(async () => {
 })
 
 const getAQIBackground = (aqi: number) => {
-  if (aqi <= 50) return 'bg-gradient-to-br from-green-400 to-green-600'
-  if (aqi <= 100) return 'bg-gradient-to-br from-yellow-400 to-yellow-600'
-  if (aqi <= 150) return 'bg-gradient-to-br from-orange-400 to-orange-600'
-  if (aqi <= 200) return 'bg-gradient-to-br from-red-400 to-red-600'
-  return 'bg-gradient-to-br from-purple-400 to-purple-600'
+  if (aqi <= 50) return 'bg-green-500'
+  if (aqi <= 100) return 'bg-yellow-500'
+  if (aqi <= 150) return 'bg-orange-500'
+  if (aqi <= 200) return 'bg-red-500'
+  return 'bg-purple-600'
 }
+
 
 const getAQIStatus = (aqi: number) => {
   if (aqi <= 50) return 'Good'

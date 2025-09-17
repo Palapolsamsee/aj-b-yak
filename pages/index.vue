@@ -21,9 +21,11 @@
       <HeroSection />
       <CurrentAirQuality />
       <AirQualityMap />
+      <!-- Place Heatmap between the map and the table -->
+      <heatmap />
       <!-- <Mapza />  -->
       <DeviceTable />
-      <Static />
+      <!-- <Static /> -->
       <AQIGuide />
       <Sponsors />
     </main>
