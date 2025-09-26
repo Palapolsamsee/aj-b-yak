@@ -1,15 +1,6 @@
 <template>
-  <div class="max-w-6xl mx-auto p-6 bg-white rounded-xl shadow-lg font-sans">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-bold text-gray-900">
-        📅 Calendar Heatmap — {{ decodedAddress }}
-      </h2>
-    </div>
-
     <!-- Reuse Static component to render the heatmap; allow inner list to change address -->
     <Static :address="currentAddress" @change-address="onChangeAddress" />
-
-  </div>
 </template>
 
 

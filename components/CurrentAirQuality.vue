@@ -1,57 +1,82 @@
-<template>
-  <section id="data" class="py-16 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-gray-900 mb-4">Current Air Quality</h2>
-        <p class="text-gray-600">Real-time data from your current location</p>
-      </div>
+<!-- <template>
+  <div class="relative w-full h-[600px]">
+    <!-- Map -->
+    <div id="map" class="w-full h-full rounded-xl overflow-hidden"></div>
 
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Current Location Card -->
-        <div class="lg:col-span-2">
-          <div 
-            :class="[
-              'p-8 rounded-2xl shadow-lg transform hover:scale-105 transition-all duration-300',
-              getAQIBackground(currentData.aqi)
-            ]"
+    <!-- Floating Widget -->
+    <Card
+      class="absolute top-4 left-1/2 -translate-x-1/2 w-80"
+      shadow
+      rounded
+      elevated
+    >
+      <CardHeader>
+        <CardTitle class="text-center text-base font-semibold">
+          วันนี้อากาศเป็นอย่างไร?
+        </CardTitle>
+        <CardSubtitle class="text-xs text-gray-500 text-center">
+          ข้อมูลค่า PM2.5 เฉลี่ย 24 ชั่วโมง
+        </CardSubtitle>
+      </CardHeader>
+
+      <CardContent>
+        <!-- Location -->
+        <div class="flex items-center justify-center text-sm text-gray-600 mb-3">
+          <Icon name="map-pin" class="text-sky-500 mr-1" />
+          {{ currentData.location }}
+        </div>
+
+        <!-- Main Info -->
+        <div class="flex items-center justify-between bg-sky-50 rounded-md p-3 mb-3">
+          <Badge
+            variant="outline"
+            color="sky"
+            size="sm"
           >
-            <div class="flex items-center justify-between mb-6">
-              <div>
-                <h3 class="text-2xl font-bold text-white mb-2">{{ currentData.location }}</h3>
-                <p class="text-white/80">{{ currentData.timestamp }}</p>
-              </div>
-              <div class="text-right">
-                <div class="text-4xl font-bold text-white">{{ currentData.aqi }}</div>
-                <div class="text-white/80 text-sm">AQI</div>
-              </div>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-4 mb-6">
-              <div class="bg-white/20 backdrop-blur-sm rounded-lg p-4">
-                <div class="text-white/80 text-sm mb-1">PM2.5</div>
-                <div class="text-2xl font-bold text-white">{{ currentData.pm25 }}</div>
-                <div class="text-white/60 text-xs">µg/m³</div>
-              </div>
-              <div class="bg-white/20 backdrop-blur-sm rounded-lg p-4">
-                <div class="text-white/80 text-sm mb-1">Status</div>
-                <div class="text-lg font-semibold text-white">{{ getAQIStatus(currentData.aqi) }}</div>
-              </div>
-            </div>
-            
-            <div class="bg-white/20 backdrop-blur-sm rounded-lg p-4">
-              <h4 class="font-semibold text-white mb-2">Health Recommendation</h4>
-              <p class="text-white/90 text-sm">{{ getHealthAdvice(currentData.aqi) }}</p>
-            </div>
+            {{ getAQIStatus(currentData.aqi) }}
+          </Badge>
+
+          <div class="flex items-end gap-1">
+            <span class="text-2xl font-bold text-sky-600">{{ currentData.pm25 }}</span>
+            <span class="text-xs text-gray-500">µg/m³</span>
           </div>
         </div>
 
-      </div>
-    </div>
-  </section>
+        <!-- Weather -->
+        <div class="flex justify-around text-xs text-gray-600 mb-3">
+          <div class="flex flex-col items-center">
+            🌤️ <span>{{ weather.temp }}°C</span>
+          </div>
+          <div class="flex flex-col items-center">
+            💧 <span>{{ weather.humidity }}%</span>
+          </div>
+          <div class="flex flex-col items-center">
+            🌬️ <span>{{ weather.wind }} กม./ชม.</span>
+          </div>
+        </div>
+      </CardContent>
+
+      <CardFooter class="flex justify-center">
+        <Button
+          variant="solid"
+          color="sky"
+          size="sm"
+          icon="download"
+        >
+          ดาวน์โหลดรายงาน (PDF)
+        </Button>
+      </CardFooter>
+    </Card>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { Card, CardHeader, CardTitle, CardSubtitle, CardContent, CardFooter } from "intuitive-vue/card"
+import { Button } from "intuitive-vue/button"
+import { Badge } from "intuitive-vue/badge"
+import { Icon } from "intuitive-vue/icon"
+
 import { useApiBase } from '@/composables/useApiBase'
 
 interface Device {
@@ -62,26 +87,21 @@ interface Device {
   status?: string
   pm25?: number
   aqi?: number
-  timestamp?: number
 }
 
 const { yakkawApi } = useApiBase()
 
-const devices = ref<Device[]>([])
 const currentData = ref({
-  location: 'Unknown',
-  aqi: 0,
+  location: 'ไม่ทราบ',
   pm25: 0,
-  timestamp: '',
+  aqi: 0,
 })
 
-const trendData = ref({
-  average: 0,
-  highest: 0,
-  lowest: 0
+const weather = ref({
+  temp: 30,
+  humidity: 50,
+  wind: 2.3,
 })
-
-const globalRank = ref(82)
 
 const getAQI = (pm25: number): number => {
   if (pm25 <= 12) return 50
@@ -91,97 +111,27 @@ const getAQI = (pm25: number): number => {
   return 300
 }
 
-const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
-  const toRad = (value: number) => value * Math.PI / 180
-  const R = 6371
-  const dLat = toRad(lat2 - lat1)
-  const dLon = toRad(lon2 - lon1)
-  const a = Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-    Math.sin(dLon / 2) ** 2
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-  return R * c
+function getAQIStatus(aqi: number) {
+  if (aqi <= 50) return 'ดีมาก'
+  if (aqi <= 100) return 'ปานกลาง'
+  if (aqi <= 150) return 'อ่อนไหวควรระวัง'
+  if (aqi <= 200) return 'ไม่ดีต่อสุขภาพ'
+  return 'อันตราย'
 }
 
 onMounted(async () => {
-  try {
-    const res = await fetch(`${yakkawApi}`)
-    const json = await res.json()
-    const allDevices = Array.isArray(json.response) ? json.response : []
-    devices.value = allDevices.filter((d: Device) => d.status === 'Active')
+  const res = await fetch(`${yakkawApi}`)
+  const json = await res.json()
+  const allDevices = Array.isArray(json.response) ? json.response : []
+  const devices = allDevices.filter((d: Device) => d.status === 'Active')
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        const { latitude, longitude } = position.coords
-
-        let closest: Device | null = null
-        let minDist = Infinity
-
-        for (const device of devices.value) {
-          if (device.latitude && device.longitude && device.pm25 != null) {
-            const dist = getDistance(latitude, longitude, device.latitude, device.longitude)
-            if (dist < minDist) {
-              minDist = dist
-              closest = device
-            }
-          }
-        }
-
-        if (closest) {
-          const aqi = closest.aqi && closest.aqi > 0 ? closest.aqi : getAQI(closest.pm25 ?? 0)
-          const date = new Date(closest.timestamp ?? Date.now())
-
-          currentData.value = {
-            location: closest.place,
-            aqi,
-            pm25: closest.pm25 ?? 0,
-            timestamp: date.toLocaleString('en-US', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
-            }),
-          }
-
-          trendData.value = {
-            average: Math.round((aqi + 70) / 2),
-            highest: aqi + 20,
-            lowest: Math.max(10, aqi - 30)
-          }
-        }
-      }, err => {
-        console.warn('ไม่สามารถใช้ตำแหน่งได้', err)
-      })
+  if (devices.length > 0) {
+    const closest = devices[0]
+    currentData.value = {
+      location: closest.place,
+      pm25: closest.pm25 ?? 0,
+      aqi: closest.aqi && closest.aqi > 0 ? closest.aqi : getAQI(closest.pm25 ?? 0),
     }
-  } catch (e) {
-    console.error('โหลดข้อมูลไม่สำเร็จ', e)
   }
 })
-
-const getAQIBackground = (aqi: number) => {
-  if (aqi <= 50) return 'bg-green-500'
-  if (aqi <= 100) return 'bg-yellow-500'
-  if (aqi <= 150) return 'bg-orange-500'
-  if (aqi <= 200) return 'bg-red-500'
-  return 'bg-purple-600'
-}
-
-
-const getAQIStatus = (aqi: number) => {
-  if (aqi <= 50) return 'Good'
-  if (aqi <= 100) return 'Moderate'
-  if (aqi <= 150) return 'Unhealthy for Sensitive Groups'
-  if (aqi <= 200) return 'Unhealthy'
-  return 'Very Unhealthy'
-}
-
-const getHealthAdvice = (aqi: number) => {
-  if (aqi <= 50) return 'Air quality is good. Perfect for outdoor activities!'
-  if (aqi <= 100) return 'Air quality is acceptable for most people. Sensitive individuals should consider reducing outdoor exertion.'
-  if (aqi <= 150) return 'Sensitive groups should limit outdoor activities. Others can enjoy outdoor activities normally.'
-  if (aqi <= 200) return 'Everyone should limit outdoor activities, especially children and elderly.'
-  return 'Avoid outdoor activities. Stay indoors with air purifiers if possible.'
-}
-</script>
+</script> -->

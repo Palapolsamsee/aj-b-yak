@@ -2,32 +2,11 @@
   <section id="map" class="py-16 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-gray-900 mb-4">Air Quality Map</h2>
-        <p class="text-gray-600">Monitor air quality across Thailand's major cities</p>
       </div>
 
       <!-- Filter Bar: Search + Dropdown -->
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="🔍 ค้นหาสถานที่หรือที่อยู่..."
-          class="border border-gray-300 rounded-lg px-4 py-2 w-full md:w-1/2"
-        />
 
-        <div>
-          <label for="station-count" class="mr-2 text-sm text-gray-600">จำนวนสถานีที่แสดง:</label>
-          <select
-            v-model="visibleCount"
-            id="station-count"
-            class="border border-gray-300 rounded-lg px-3 py-2"
-          >
-            <option :value="4">4 สถานี</option>
-            <option :value="8">8 สถานี</option>
-            <option :value="12">12 สถานี</option>
-            <option :value="100">แสดงทั้งหมด</option>
-          </select>
-        </div>
       </div>
 
       <!-- Map Container -->

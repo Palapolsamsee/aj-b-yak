@@ -120,7 +120,7 @@
     <div v-if="address" class="mt-6">
       <div class="flex items-center justify-between mb-3">
         <h4 class="text-base font-semibold text-gray-900 truncate">
-          📅 Calendar Heatmap — {{ decodedAddress }}
+           Heatmap — {{ decodedAddress }}
         </h4>
         <div class="flex items-center gap-2">
           <label class="text-xs text-gray-600">เลือกปี:</label>

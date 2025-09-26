@@ -19,13 +19,17 @@
     <AppHeader />
     <main>
       <HeroSection />
-      <CurrentAirQuality />
+      
+      
+      <!-- <CurrentAirQuality /> -->
+      
       <AirQualityMap />
       <!-- Place Heatmap between the map and the table -->
       <heatmap />
       <!-- <Mapza />  -->
       <DeviceTable />
       <!-- <Static /> -->
+      <Regis />
       <AQIGuide />
       <Sponsors />
     </main>
