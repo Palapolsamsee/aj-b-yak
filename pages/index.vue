@@ -16,24 +16,30 @@
  -->
 <template bg-white-100>
   <div class="min-h-screen bg-white">
-    <AppHeader />
+    <Header />
     <main>
       <HeroSection />
       <CurrentAirQuality />
-      <AirQualityMap />
+      <Mapza />
       <!-- Place Heatmap between the map and the table -->
       <heatmap />
       <!-- <Mapza />  -->
       <DeviceTable />
       <!-- <Static /> -->
       <AQIGuide />
+     <Facebook />
       <Sponsors />
+      
+    
     </main>
     <AppFooter />
   </div>
+  
 </template>
 
 <script setup>
+import Header from '~/components/Header.vue';
+
 // Global styles and meta
 useHead({
   htmlAttrs: {
@@ -49,3 +55,4 @@ html {
   font-family: 'Inter', sans-serif;
 }
 </style>
+
