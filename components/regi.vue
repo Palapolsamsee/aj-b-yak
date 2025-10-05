@@ -1,49 +1,63 @@
 <template>
-    <Header />
-    <div class="container">
-        <h1>ร่วมสนับสนุน</h1>
-        <div class="support-text">
-            ยักษ์ขาว เปิดรับการสนับสนุนในการส่งมอบเครื่องวัดฝุ่น ให้กับโรงเรียนและชุมชนที่ยังขาดแคลน
-        </div>
+    <section id="regis">
+        <div class="container">
+            <h1>ร่วมสนับสนุน</h1>
+            <div class="support-text">
+                ยักษ์ขาว เปิดรับการสนับสนุนในการส่งมอบเครื่องวัดฝุ่นให้กับโรงเรียนและชุมชนที่ยังขาดแคลน
+            </div>
 
-        <div class="bank-details">
-            <h2>สนับสนุนผ่านบัญชีธนาคาร</h2>
-            <p>ธนาคารกสิกรไทย</p>
-            <p>ชื่อบัญชี: สมาคมยักษ์ขาว</p>
-            <p>เลขที่บัญชี: 062-8-46998-9</p>
-            <p>โทรแจ้ง: 061-265-0505</p>
-        </div>
+            <div class="bank-details">
+                <h2>สนับสนุนผ่านบัญชีธนาคารชื่อบัญชี : สมาคมยักษ์ขาว</h2>
+                <p>ธนาคารกสิกรไทย</p>
+                <p>เลขที่บัญชี: 062-8-46998-9</p>
+                <p>โทรแจ้ง: 061-265-0505</p>
+            </div>
 
-        <div class="packages">
-            <div v-for="(pkg, index) in packages" :key="index" class="package">
-                <h3>{{ pkg.name }}</h3>
-                <p v-for="(feature, i) in pkg.features" :key="i" :class="{ 'grey-text': !feature.included }">
-                    {{ feature.text }}
-                </p>
-                <div class="price">{{ pkg.price }} บาท</div>
-                <button class="support-button" @click="openForm(pkg)">สนับสนุน</button>
+            <div class="packages">
+                <div v-for="(pkg, index) in packages" :key="index" class="package">
+                    <h3 class="name">{{ pkg.name }}</h3>
+                    <p v-for="(feature, i) in pkg.features" :key="i" :class="{ 'grey-text': !feature.included }">
+                        {{ feature.text }}
+                    </p>
+                    <div class="price">{{ pkg.price }} บาท</div>
+                    <button class="support-button" @click="openForm(pkg)">สนับสนุน</button>
+                </div>
+            </div>
+
+            <!-- แบบฟอร์มยืนยัน -->
+            <div v-if="showForm" class="overlay">
+                <div class="form-popup">
+                    <h2>ยืนยันการสนับสนุน - {{ selectedPackage.name }}</h2>
+
+                    <form @submit.prevent="submitSupport">
+                        <input type="text" v-model="form.name" placeholder="ชื่อ-นามสกุล" required />
+                        <input type="text" v-model="form.phone" placeholder="เบอร์โทรศัพท์" required />
+                        <input type="date" v-model="form.date" required />
+                        <input type="file" @change="handleFileUpload" accept="image/*" required />
+                        <textarea v-model="form.note" placeholder="หมายเหตุเพิ่มเติม (ถ้ามี)"></textarea>
+
+                        <!-- Loading and Success Messages -->
+                        <div v-if="loading" class="skeleton-wrapper">
+                            <div class="skeleton-line w-3/4"></div>
+                            <div class="skeleton-line w-1/2"></div>
+                            <div class="skeleton-line w-full"></div>
+                        </div>
+
+                        <div v-if="successMessage" class="message success">✅ {{ successMessage }}</div>
+                        <div v-if="errorMessage" class="message error">❌ {{ errorMessage }}</div>
+
+
+                        <div class="form-buttons">
+                            <button type="submit" class="confirm" :disabled="loading">
+                                {{ loading ? 'กำลังส่ง...' : 'ยืนยัน' }}
+                            </button>
+                            <button type="button" class="cancel" @click="closeForm" :disabled="loading">ยกเลิก</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-
-        <!-- แบบฟอร์มยืนยัน -->
-        <div v-if="showForm" class="overlay">
-            <div class="form-popup">
-                <h2>ยืนยันการสนับสนุน - {{ selectedPackage.name }}</h2>
-                <form @submit.prevent="submitSupport">
-                    <input type="text" v-model="form.name" placeholder="ชื่อ-นามสกุล" required />
-                    <input type="text" v-model="form.phone" placeholder="เบอร์โทรศัพท์" required />
-                    <input type="date" v-model="form.date" required />
-                    <input type="file" @change="handleFileUpload" accept="image/*" required />
-                    <textarea v-model="form.note" placeholder="หมายเหตุเพิ่มเติม (ถ้ามี)"></textarea>
-
-                    <div class="form-buttons">
-                        <button type="submit" class="confirm">ยืนยัน</button>
-                        <button type="button" class="cancel" @click="closeForm">ยกเลิก</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    </section>
 </template>
 
 <script setup>
@@ -87,6 +101,10 @@ const packages = [
 
 const showForm = ref(false);
 const selectedPackage = ref(null);
+const loading = ref(false);
+const successMessage = ref('');
+const errorMessage = ref('');
+
 const form = ref({
     name: '',
     phone: '',
@@ -98,10 +116,14 @@ const form = ref({
 const openForm = (pkg) => {
     selectedPackage.value = pkg;
     showForm.value = true;
+    // Reset messages when opening form
+    successMessage.value = '';
+    errorMessage.value = '';
 };
 
 const closeForm = () => {
     showForm.value = false;
+    loading.value = false;
     form.value = {
         name: '',
         phone: '',
@@ -109,95 +131,87 @@ const closeForm = () => {
         note: '',
         slip: null
     };
+    successMessage.value = '';
+    errorMessage.value = '';
 };
 
 const handleFileUpload = (event) => {
     form.value.slip = event.target.files[0];
 };
 
-/* const submitSupport = async () => {
+const submitSupport = async () => {
     try {
+        loading.value = true;
+        successMessage.value = '';
+        errorMessage.value = '';
+
         const messageText = `
-        ยืนยันการสนับสนุนเครื่องวัดฝุ่น
-        แพ็กเกจ: ${selectedPackage.value.name}
-        ราคา: ${selectedPackage.value.price} บาท
-        ชื่อ: ${form.value.name}
-        เบอร์โทร: ${form.value.phone}
-        วันที่โอน: ${form.value.date}
-        หมายเหตุ: ${form.value.note || '-'}
-        `;
+📋 ยืนยันการสนับสนุนเครื่องวัดฝุ่น
+━━━━━━━━━━━━━━━
+📦 แพ็กเกจ: ${selectedPackage.value.name}
+💰 ราคา: ${selectedPackage.value.price} บาท
+👤 ชื่อ: ${form.value.name}
+📞 เบอร์โทร: ${form.value.phone}
+📅 วันที่โอน: ${form.value.date}
+📝 หมายเหตุ: ${form.value.note || '-'}
+━━━━━━━━━━━━━━━
+        `.trim();
 
-        console.log('ข้อมูลที่จะส่ง:', messageText);
-        await sendMessageToLine(messageText);
-        alert("ข้อมูลถูกส่งเรียบร้อยแล้ว! ขอบคุณสำหรับการสนับสนุน");
-        closeForm();
-    } catch (error) {
-        console.error('Error in submitSupport:', error);
-        alert(`เกิดข้อผิดพลาด: ${error.message}`);
-    }
-}; */
+        // Use CORS proxy to avoid CORS issues
+        const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbw9MCRDfvcyeqMxvhKQ3wt6V0HHjDzy-XSn4i9Y2xr35QYaYcKBFMKJTeSPvYgZllLdPw/exec';
 
-// LINE OA
-/* const sendMessageToLine = async (messageText) => {
-    try {
-        console.log('กำลังส่งข้อความ:', messageText);
-
-        const response = await fetch("http://localhost:3000/api/line-notify", {
-            method: "POST",
+        const response = await fetch(googleScriptUrl, {
+            method: 'POST',
+            mode: 'no-cors',
             headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
                 message: messageText
             })
         });
 
-        if (!response.ok) {
-            const responseData = await response.json();
-            throw new Error(`API Error: ${JSON.stringify(responseData)}`);
-        }
+        // With no-cors, we can't read the response but the request is sent
+        successMessage.value = '✅ ส่งข้อมูลสำเร็จ! ขอบคุณสำหรับการสนับสนุน';
+        setTimeout(() => {
+            closeForm();
+        }, 3000);
 
-        const responseData = await response.json();
-        console.log('Response Data:', responseData);
-        
-    } catch (error) {
-        console.error("รายละเอียดข้อผิดพลาด:", {
-            message: error.message,
-            stack: error.stack
-        });
-        alert("ไม่สามารถส่งข้อความได้ กรุณาลองใหม่อีกครั้ง");
-        throw error;
-    }
-}; */
-
-const submitSupport = () => {
-    try {
-        const messageText = `
-        ยืนยันการสนับสนุนเครื่องวัดฝุ่น
-        แพ็กเกจ: ${selectedPackage.value.name}
-        ราคา: ${selectedPackage.value.price} บาท
-        ชื่อ: ${form.value.name}
-        เบอร์โทร: ${form.value.phone}
-        วันที่โอน: ${form.value.date}
-        หมายเหตุ: ${form.value.note || '-'}
-        `;
-
-        // ส่ง Line Notify โดยตรง
-        window.location.href = `https://yakkaw.mfu.ac.th/api/line-notify?message=${encodeURIComponent(messageText)}`;
-        
-        alert("ขอบคุณสำหรับการสนับสนุน");
-        closeForm();
     } catch (error) {
         console.error('Error:', error);
-        alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");
+        errorMessage.value = `❌ ส่งข้อมูลไม่สำเร็จ: ${error.message}`;
+    } finally {
+        loading.value = false;
     }
 };
+
+/*         const result = await response.json();
+        console.log('Server Response:', result);
+
+        if (result.success) {
+            successMessage.value = '✅ ส่งข้อมูลไปยัง LINE สำเร็จ! ขอบคุณสำหรับการสนับสนุน';
+            setTimeout(() => {
+                closeForm();
+            }, 3000);
+        } else {
+            throw new Error(result.error || 'ไม่สามารถส่งข้อความได้');
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
+        errorMessage.value = `❌ ส่งข้อมูลไม่สำเร็จ: ${error.message}`;
+    } finally {
+        loading.value = false;
+    }
+}; */
 </script>
 
 <style>
+/* Your existing styles... */
+
+/* Add message styles */
 body {
     font-family: 'Sarabun', sans-serif;
-    background-color: #070d22;
     color: #fff;
     margin: 0;
     padding: 0;
@@ -212,20 +226,22 @@ body {
 h1 {
     text-align: center;
     font-size: 36px;
-    color: #f02a51;
+    font-weight: bold;
+    color: black;
     margin-bottom: 20px;
 }
 
 .support-text {
     text-align: center;
     font-size: 18px;
+    color: black;
     margin-bottom: 40px;
 }
 
 .bank-details {
-    background: #fff;
-    color: #333;
-    padding: 20px;
+    background: #070d22;
+    color: rgb(200, 196, 196);
+    padding: 15px;
     border-radius: 10px;
     margin-bottom: 40px;
     text-align: center;
@@ -233,7 +249,12 @@ h1 {
 
 .bank-details h2 {
     font-size: 24px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    color: white;
+}
+
+.bank-details p {
+    color: white
 }
 
 .packages {
@@ -244,27 +265,40 @@ h1 {
 }
 
 .package {
-    background: #fff;
-    color: #333;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    flex: 1 1 300px;
-    max-width: 300px;
+  background: #ffffff;
+  color: #172554;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  flex: 1 1 300px;
+  max-width: 300px;
+
+  border: 2px solid #d4d4d9; 
 }
+
+
+
+.package .name {
+    font-size: 25px;
+    font-weight: bold;
+    color: #172554;
+}
+
+
 
 .package h3 {
     color: #f02a51;
 }
 
 .package .price {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
     margin: 20px 0;
+    color: rgb(0, 0, 0);
 }
 
 .package .support-button {
-    background: #f02a51;
+    background: #172554;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -277,7 +311,7 @@ h1 {
 }
 
 .grey-text {
-    color: #b8b6b6;
+    color: #ee0000;
 }
 
 .overlay {
@@ -334,5 +368,37 @@ h1 {
     padding: 10px;
     border-radius: 5px;
     flex: 1;
+}
+
+.message {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.message.loading {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.message.success {
+    background: #d1edff;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Disabled state for buttons */
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 </style>

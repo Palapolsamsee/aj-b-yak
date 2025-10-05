@@ -1,8 +1,5 @@
 
 <template>
-    <Header />
-    <Mapza/>
-    <show/>
-    <ContactForm />
+    <regi />
 </template>
 

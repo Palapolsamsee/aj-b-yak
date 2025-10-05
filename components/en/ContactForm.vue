@@ -32,30 +32,30 @@ const submitForm = () => {
 </script>
 
 <template>
-  <div class="flex justify-center items-center min-h-screen bg-[#070d22] px-4">
+  <section id="contact">
+  <div class="flex justify-center items-center min-h-screen bg-[#ffffff] px-4">
     <div class="bg-white shadow-xl rounded-lg p-8 max-w-3xl w-full flex gap-6 flex-col md:flex-row">
       
       <!-- Contact Form (Left Side) -->
 <div class="w-full md:w-1/2 flex flex-col items-center">
-  <h2 class="text-2xl font-bold text-gray-800 mb-1 text-center">Contact us</h2>
-  <h2 class="text-sm text-gray-500 mb-4 text-center">Yakkaw</h2>
+  <h2 class="text-2xl font-bold text-gray-800 mb-1 text-center">ติดต่อเรา</h2>
 
   <form @submit.prevent="submitForm" class="space-y-4 w-full">
     <div class="form-group">
-      <label for="name" class="block font-medium text-gray-700">Name:</label>
-      <input type="text" id="name" v-model="formData.name" required class="input-field" placeholder="Fill in your name" />
+      <label for="name" class="block font-medium text-gray-700">ชื่อ-นามสกุล:</label>
+      <input type="text" id="name" v-model="formData.name" required class="input-field" placeholder="ชื่อจริง - นามสกุล" />
     </div>
     <div class="form-group">
-      <label for="email" class="block font-medium text-gray-700">Mail:</label>
-      <input type="email" id="email" v-model="formData.email" required class="input-field" placeholder="example@mail.com" />
+      <label for="email" class="block font-medium text-gray-700">อีเมล:</label>
+      <input type="email" id="email" v-model="formData.email" required class="input-field" placeholder="ที่อยู่อีเมล" />
     </div>
     <div class="form-group">
-      <label for="subject" class="block font-medium text-gray-700">Topic:</label>
-      <input type="text" id="subject" v-model="formData.subject" required class="input-field" placeholder="Things you want to contact" />
+      <label for="subject" class="block font-medium text-gray-700">หัวข้อ:</label>
+      <input type="text" id="subject" v-model="formData.subject" required class="input-field" placeholder="ใส่หัวข้อที่ต้องการร้องเรียน" />
     </div>
     <div class="form-group">
-      <label for="message" class="block font-medium text-gray-700">Message:</label>
-      <textarea id="message" v-model="formData.message" required class="input-field resize-none h-24" placeholder="Type your message..."></textarea>
+      <label for="message" class="block font-medium text-gray-700">รายละเอียด:</label>
+      <textarea id="message" v-model="formData.message" required class="input-field resize-none h-24" placeholder="รายละเอียดเพิ่มเติม..."></textarea>
     </div>
     <button type="submit" class="submit-btn">
       <span v-if="!loading">Send</span>
@@ -72,8 +72,12 @@ const submitForm = () => {
 
     </div>
   </div>
+  </section>
 </template>
+
+
 <style scoped>
+
 .input-field {
   width: 100%;
   padding: 12px;

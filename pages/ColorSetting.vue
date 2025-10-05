@@ -25,12 +25,7 @@ import { useColorSettings } from '@/utils/useColorSettings';
 const { colorRanges, addRange, removeRange, saveSettings } = useColorSettings();
 </script>
  -->
-<template>
-  <Header />
-  <br>
-  <br>
-
-  <br>
+<!-- <template>
 
   <div class="p-6 max-w-lg mx-auto bg-white shadow-md rounded-lg">
     <h2 class="text-xl font-bold mb-4">ตั้งค่าช่วงสี</h2>
@@ -49,7 +44,7 @@ const { colorRanges, addRange, removeRange, saveSettings } = useColorSettings();
     <button @click="addRange" class="px-4 py-2 bg-blue-500 text-white rounded-lg">เพิ่มช่วง</button>
     <button @click="saveSettings" class="px-4 py-2 bg-green-500 text-white rounded-lg ml-2">บันทึก</button>
   </div>
-</template>
+</template> -->
 
 <script setup lang="ts">
 import { useColorSettings } from '@/utils/useColorSettings';
