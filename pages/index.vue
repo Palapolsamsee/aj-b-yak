@@ -13,33 +13,27 @@
   min-height: 100vh; /* Ensure the background covers the full viewport height */
 }
 </style>
- -->
+-->
 <template bg-white-100>
   <div class="min-h-screen bg-white">
-    <Header />
+    <AppHeader />
     <main>
       <HeroSection />
       <CurrentAirQuality />
+      <!-- <AirQualityMap /> -->
       <Mapza />
-      <!-- Place Heatmap between the map and the table -->
-      <heatmap />
-      <!-- <Mapza />  -->
       <DeviceTable />
-      <!-- <Static /> -->
+      <Static />
       <AQIGuide />
-     <Facebook />
       <Sponsors />
-      
-    
+      <ContactForm />
+      <regi />
     </main>
     <AppFooter />
   </div>
-  
 </template>
 
 <script setup>
-import Header from '~/components/Header.vue';
-
 // Global styles and meta
 useHead({
   htmlAttrs: {
@@ -55,4 +49,3 @@ html {
   font-family: 'Inter', sans-serif;
 }
 </style>
-
