@@ -1,25 +1,75 @@
 import { onMounted, ref } from 'vue';
 import { useRuntimeConfig } from '#app';
+import {
+  fetchColorRanges,
+  getResolvedColorRangeUrl,
+  buildColorRangeUrlCandidates,
+  type ColorRange as ApiColorRange,
+} from '@/utils/api/colorRanges';
 
-export interface ColorRange {
-  id?: number;
-  min: number;
-  max: number;
-  color: string;
-}
+export type ColorRange = ApiColorRange;
 
 export function useColorSettings() {
   const colorRanges = ref<ColorRange[]>([]);
+  const resolvedBaseUrl = ref<string | null>(null);
 
   // ดึงจาก .env ผ่าน runtimeConfig
   const config = useRuntimeConfig();
-  const BASE_URL = config.colorange; 
+  const baseUrlFromConfig = [
+    (config as any)?.colorange,
+    (config as any)?.COLOUR,
+    (config.public as any)?.COLOUR,
+    (config.public as any)?.colour,
+    (config.public as any)?.colorange,
+  ].find(
+    (candidate): candidate is string =>
+      typeof candidate === 'string' && candidate.trim().length > 0
+  );
+  const urlCandidates = buildColorRangeUrlCandidates(baseUrlFromConfig);
+
+  const ensureBaseUrl = async (): Promise<string | null> => {
+    if (resolvedBaseUrl.value) return resolvedBaseUrl.value;
+
+    const resolved = getResolvedColorRangeUrl();
+    if (resolved) {
+      resolvedBaseUrl.value = resolved;
+      return resolvedBaseUrl.value;
+    }
+
+    await getAllColorRanges();
+    if (resolvedBaseUrl.value) {
+      return resolvedBaseUrl.value;
+    }
+
+    if (urlCandidates.length > 0) {
+      for (const candidate of urlCandidates) {
+        try {
+          const response = await fetch(candidate, { method: 'HEAD' });
+          if (response.ok) {
+            resolvedBaseUrl.value = candidate;
+            return resolvedBaseUrl.value;
+          }
+        } catch {
+          continue;
+        }
+      }
+      resolvedBaseUrl.value = urlCandidates[0];
+      return resolvedBaseUrl.value;
+    }
+
+    return null;
+  };
 
   const getAllColorRanges = async () => {
     try {
-      const response = await fetch(`${BASE_URL}`);
-      const data: ColorRange[] = await response.json();
+      const data = await fetchColorRanges(true);
       colorRanges.value = data;
+      const resolved = getResolvedColorRangeUrl();
+      if (resolved) {
+        resolvedBaseUrl.value = resolved;
+      } else if (!resolvedBaseUrl.value && urlCandidates.length > 0) {
+        resolvedBaseUrl.value = urlCandidates[0];
+      }
     } catch (error) {
       console.error('Error fetching color ranges:', error);
     }
@@ -27,7 +77,11 @@ export function useColorSettings() {
 
   const saveAllColorRanges = async () => {
     try {
-      const response = await fetch(`${BASE_URL}`, {
+      const baseUrl = await ensureBaseUrl();
+      if (!baseUrl) {
+        throw new Error('Color range endpoint is not configured.');
+      }
+      const response = await fetch(baseUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +98,11 @@ export function useColorSettings() {
 
   const addColorRange = async (range: ColorRange) => {
     try {
-      const response = await fetch(`${BASE_URL}/add`, {
+      const baseUrl = await ensureBaseUrl();
+      if (!baseUrl) {
+        throw new Error('Color range endpoint is not configured.');
+      }
+      const response = await fetch(`${baseUrl}/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,7 +118,11 @@ export function useColorSettings() {
 
   const deleteColorRange = async (id: number) => {
     try {
-      await fetch(`${BASE_URL}/${id}`, {
+      const baseUrl = await ensureBaseUrl();
+      if (!baseUrl) {
+        throw new Error('Color range endpoint is not configured.');
+      }
+      await fetch(`${baseUrl}/${id}`, {
         method: 'DELETE',
       });
       colorRanges.value = colorRanges.value.filter((range) => range.id !== id);

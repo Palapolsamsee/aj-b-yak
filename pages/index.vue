@@ -26,6 +26,7 @@
       <DeviceTable />
       <Regis />
       <AQIGuide />
+      <facebook />
       <Sponsors />
     </main>
     <AppFooter />

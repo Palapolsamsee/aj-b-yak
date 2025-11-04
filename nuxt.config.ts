@@ -1,7 +1,7 @@
 export default defineNuxtConfig({
-    runtimeConfig: {
-      //private for test
-    
+  runtimeConfig: {
+    //private for test
+
     colorange: process.env.NUXT_API_URL_COLORRANGE,
 
     //firebase test
@@ -15,54 +15,55 @@ export default defineNuxtConfig({
     //public for deploy
     public: {
       apiUrl: process.env.NUXT_API_URL,
-      aqiweek:process.env.WEAK_API_ARI,
-      baseair:process.env.BASE_API_ARI,
+      aqiweek: process.env.WEAK_API_ARI,
+      baseair: process.env.BASE_API_ARI,
       baseAirApi: process.env.BASE_API_ARI,
-      oneyear:process.env.YEAR_API_ARI,
-      yakkaw_api:process.env.YAKKAW_API,
-      GOOGLEMAPAPI:process.env.GOOGLEMAP
+      oneyear: process.env.YEAR_API_ARI,
+      yakkaw_api: process.env.YAKKAW_API,
+      GOOGLEMAPAPI: process.env.GOOGLEMAP,
+      COLOUR: process.env.NUXT_API_URL_COLORRANGE,
     },
   },
-  css: ['@/assets/css/main.css', 'leaflet/dist/leaflet.css'],
-  modules: ['@nuxtjs/leaflet', '@nuxtjs/tailwindcss', 'nuxt-echarts'],
+  css: ["@/assets/css/main.css", "leaflet/dist/leaflet.css"],
+  modules: ["@nuxtjs/leaflet", "@nuxtjs/tailwindcss", "nuxt-echarts"],
   devtools: { enabled: true },
 
   nitro: {
     devProxy: {
-      '/api': {
-        target: 'http://localhost:8080', //dont forgot this
+      "/api": {
+        target: "http://localhost:8080", //dont forgot this
         changeOrigin: true,
         prependPath: true,
         secure: false,
         ws: true,
         headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization, Accept',
-          'Access-Control-Max-Age': '86400'
-        }
-      }
-    }
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept",
+          "Access-Control-Max-Age": "86400",
+        },
+      },
+    },
   },
 
   vite: {
     ssr: {
       noExternal: [
-        'destr',
-        'nitropack',
-        'cookie-es',
-        'unenv',
-        'crossws'  // เพิ่มตรงนี้
-      ]
-    }
+        "destr",
+        "nitropack",
+        "cookie-es",
+        "unenv",
+        "crossws", // เพิ่มตรงนี้
+      ],
+    },
   },
 
   postcss: {
     plugins: {
       tailwindcss: {},
-      autoprefixer: {}
-    }
+      autoprefixer: {},
+    },
   },
 
-  compatibilityDate: '2025-05-28'
-})
+  compatibilityDate: "2025-05-28",
+});

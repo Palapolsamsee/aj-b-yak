@@ -9,9 +9,30 @@ export interface ColorRange {
 
 const HEX_COLOR_REGEX = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
 const DEFAULT_COLOR = "#9ca3af";
+const NAMED_COLOR_MAP: Record<string, string> = {
+  red: "#ff0000",
+  green: "#008000",
+  blue: "#0000ff",
+  yellow: "#ffff00",
+  orange: "#ffa500",
+  purple: "#800080",
+  pink: "#ffc0cb",
+  lime: "#00ff00",
+  teal: "#008080",
+  cyan: "#00ffff",
+  magenta: "#ff00ff",
+  maroon: "#800000",
+  navy: "#000080",
+  olive: "#808000",
+  gray: "#808080",
+  grey: "#808080",
+  black: "#000000",
+  white: "#ffffff",
+};
 
 let cachedRanges: ColorRange[] | null = null;
 let pendingRequest: Promise<ColorRange[]> | null = null;
+let resolvedColorRangeUrl: string | null = null;
 
 const toNumber = (value: unknown): number | null => {
   if (typeof value === "number" && Number.isFinite(value)) {
@@ -70,6 +91,31 @@ const pickResponseArray = (payload: unknown): any[] => {
   return [];
 };
 
+const buildColorRangeUrlCandidates = (input?: string | null): string[] => {
+  if (!input) return [];
+  const trimmed = input.trim();
+  if (!trimmed) return [];
+  const candidates = new Set<string>([trimmed]);
+  if (trimmed.includes("color-ranges")) {
+    candidates.add(trimmed.replace("color-ranges", "colorranges"));
+  } else if (trimmed.includes("colorranges")) {
+    candidates.add(trimmed.replace("colorranges", "color-ranges"));
+  }
+  return Array.from(candidates);
+};
+
+const requestColorRanges = async (url: string) => {
+  const response = await fetch(url, {
+    headers: { Accept: "application/json" },
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+  const raw = await response.json();
+  const items = pickResponseArray(raw).map(normalizeRange).filter(Boolean);
+  return items as ColorRange[];
+};
+
 /**
  * Fetches color range configuration from the backend.
  * Results are cached to avoid repeated network hops during a single session.
@@ -83,9 +129,21 @@ export const fetchColorRanges = async (force = false): Promise<ColorRange[]> => 
     return pendingRequest;
   }
 
-  const { colorange } = useRuntimeConfig();
+  const runtimeConfig = useRuntimeConfig();
+  const configuredUrl =
+    [
+      (runtimeConfig as any)?.colorange,
+      (runtimeConfig as any)?.COLOUR,
+      (runtimeConfig.public as any)?.COLOUR,
+      (runtimeConfig.public as any)?.colour,
+      (runtimeConfig.public as any)?.colorange,
+      (runtimeConfig.public as any)?.colorRange,
+    ].find(
+      (candidate): candidate is string =>
+        typeof candidate === "string" && candidate.trim().length > 0
+    ) ?? null;
 
-  if (!colorange) {
+  if (!configuredUrl) {
     console.warn(
       "[colorRanges] Missing runtime config `colorange`. Returning empty list."
     );
@@ -94,37 +152,43 @@ export const fetchColorRanges = async (force = false): Promise<ColorRange[]> => 
   }
 
   pendingRequest = (async () => {
-    try {
-      const response = await fetch(colorange, {
-        headers: { "Accept": "application/json" },
-      });
+    const candidates = buildColorRangeUrlCandidates(configuredUrl);
+    let lastError: unknown = null;
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+    for (const candidate of candidates) {
+      try {
+        const items = await requestColorRanges(candidate);
+        cachedRanges = items;
+        resolvedColorRangeUrl = candidate;
+        return cachedRanges;
+      } catch (error) {
+        lastError = error;
+        continue;
       }
+    }
 
-      const raw = await response.json();
-      const items = pickResponseArray(raw).map(normalizeRange).filter(Boolean);
-      cachedRanges = items as ColorRange[];
-    } catch (error) {
-      console.error("[colorRanges] Failed to load ranges:", error);
-      if (!cachedRanges) {
-        cachedRanges = [];
-      }
-    } finally {
-      pendingRequest = null;
+    if (!cachedRanges) {
+      cachedRanges = [];
+    }
+
+    if (lastError) {
+      console.error("[colorRanges] Failed to load ranges:", lastError);
     }
 
     return cachedRanges;
   })();
 
-  return pendingRequest;
+  return pendingRequest.finally(() => {
+    pendingRequest = null;
+  });
 };
 
 export const refreshColorRanges = () => fetchColorRanges(true);
 
 export const getCachedColorRanges = (): ColorRange[] =>
   cachedRanges ? [...cachedRanges] : [];
+
+export const getResolvedColorRangeUrl = () => resolvedColorRangeUrl;
 
 export const matchColorRange = (
   value: number,
@@ -160,6 +224,10 @@ export const resolveColorForValue = (
 export const toTranslucent = (color: string, alpha = 0.12): string | null => {
   if (!color) return null;
   const value = color.trim();
+  const keywordHex = NAMED_COLOR_MAP[value.toLowerCase()];
+  if (keywordHex) {
+    return toTranslucent(keywordHex, alpha);
+  }
 
   if (HEX_COLOR_REGEX.test(value)) {
     const hex = value.slice(1);
@@ -207,4 +275,4 @@ export const toTranslucent = (color: string, alpha = 0.12): string | null => {
   return null;
 };
 
-export { DEFAULT_COLOR };
+export { DEFAULT_COLOR, buildColorRangeUrlCandidates };
