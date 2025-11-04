@@ -16,19 +16,14 @@
  -->
 <template bg-white-100>
   <div class="min-h-screen bg-white">
-    <AppHeader />
     <main>
+      <AppHeader />
       <HeroSection />
-      
-      
-      <!-- <CurrentAirQuality /> -->
-      
-      <AirQualityMap />
-      <!-- Place Heatmap between the map and the table -->
-      <heatmap />
-      <!-- <Mapza />  -->
+      <Mapza />
+      <!-- <heatmap /> -->
+
+      <AqiTable />
       <DeviceTable />
-      <!-- <Static /> -->
       <Regis />
       <AQIGuide />
       <Sponsors />
@@ -41,15 +36,15 @@
 // Global styles and meta
 useHead({
   htmlAttrs: {
-    lang: 'en'
-  }
-})
+    lang: "en",
+  },
+});
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
 html {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 </style>
