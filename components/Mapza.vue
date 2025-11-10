@@ -1,7 +1,7 @@
 <template>
   <section id="map">
     <div class="bg-gray-50 to">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="text-center mb-8">
           <h2 class="text-3xl font-bold text-gray-900 mb-2">
             สำรวจคุณภาพอากาศและภัยพิบัติ
@@ -1603,26 +1603,9 @@ export default {
 }
 
 #map {
-  height: 100vh;
+  height: 80vh;
   margin-top: 0px;
 }
-
-/* .banner {
-    position: absolute;
-    background: #fffdf9;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    width: 250px;
-    z-index: 1000;
-    font-family: "Sarabun", sans-serif;
-    line-height: 1.5;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-    margin-top: 200px;
-    margin-left: 150px;
-} */
 
 #banner {
   position: fixed;

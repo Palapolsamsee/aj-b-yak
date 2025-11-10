@@ -45,6 +45,12 @@ export function useStaticChart(options: {
   const allData = ref<Point[]>([]);
   const availableYears = ref<number[]>([]);
   const selectedYear = ref<number>(new Date().getFullYear());
+  let echartsReady = false;
+  const ensureEchartsReady = async () => {
+    if (!process.client || echartsReady) return;
+    await registerEchartsModules();
+    echartsReady = true;
+  };
 
   const buildVisualMap = () => {
     const ranges = colorRanges.value;
@@ -127,6 +133,7 @@ export function useStaticChart(options: {
       chartOptions.value = null;
       return;
     }
+    await ensureEchartsReady();
     try {
       const url = `${baseAirApi}/one_year_series?address=${encodeURIComponent(
         props.address
@@ -182,7 +189,7 @@ export function useStaticChart(options: {
 
   const bootstrapChart = async () => {
     if (!process.client) return;
-    await registerEchartsModules();
+    await ensureEchartsReady();
     await fetchHeatmapData();
   };
 

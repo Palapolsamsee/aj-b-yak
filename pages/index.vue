@@ -24,10 +24,11 @@
 
       <AqiTable />
       <DeviceTable />
-      <Regis />
       <AQIGuide />
       <facebook />
       <Sponsors />
+      <Regis />
+      <ContactForm />
     </main>
     <AppFooter />
   </div>

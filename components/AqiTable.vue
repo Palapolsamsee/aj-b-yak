@@ -1,5 +1,6 @@
 <template>
   <section
+    id="data"
     class="mx-auto flex w-full max-w-4xl flex-col gap-5 rounded-3xl bg-white/90 p-5 shadow-lg ring-1 ring-black/5 backdrop-blur"
   >
     <header class="flex flex-col items-center gap-1 text-center">
@@ -44,7 +45,7 @@
         <div class="flex items-center gap-2">
           <button
             type="submit"
-            class="inline-flex items-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-indigo-700"
+            class="inline-flex items-center rounded-xl bg-[#172554] px-4 py-2 text-sm font-medium text-white shadow-sm transition"
           >
             ค้นหา
           </button>
@@ -105,7 +106,6 @@
                 <th class="px-3 py-2 text-left">อันดับ</th>
                 <th class="px-3 py-2 text-left">สถานี</th>
                 <th class="px-3 py-2 text-left">จังหวัด</th>
-                <th class="px-3 py-2 text-right">AQI</th>
                 <th class="px-3 py-2 text-right">PM2.5</th>
                 <th class="px-3 py-2 text-left">แนวโน้ม</th>
                 <th class="px-3 py-2 text-left">คุณภาพอากา</th>
@@ -135,14 +135,12 @@
                 <td class="px-3 py-2 text-right">
                   <span
                     class="font-semibold"
-                    :style="getCategoryTextStyle(item.rankingValue)"
+                    :style="getCategoryTextStyle(item.pm25)"
                   >
-                    {{ formatValue(item.rankingValue) }}
+                    {{ formatValue(item.pm25) }}
                   </span>
                 </td>
-                <td class="px-3 py-2 text-right text-gray-700">
-                  {{ formatValue(item.pm25) }}
-                </td>
+
                 <td class="px-3 py-2 text-gray-700">
                   <span class="inline-flex items-center gap-1 text-xs">
                     <span
@@ -156,13 +154,13 @@
                 <td class="px-3 py-2">
                   <span
                     class="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-[11px] font-medium"
-                    :style="getCategoryChipStyle(item.rankingValue)"
+                    :style="getCategoryChipStyle(item.pm25)"
                   >
                     <span
                       class="h-2 w-2 rounded-full"
-                      :style="getCategoryDotStyle(item.rankingValue)"
+                      :style="getCategoryDotStyle(item.pm25)"
                     />
-                    {{ getCategoryLabel(item.rankingValue) }}
+                    {{ getCategoryLabel(item.pm25) }}
                   </span>
                 </td>
                 <td class="px-3 py-2 text-center">
@@ -230,7 +228,9 @@
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
         @click.self="closeHeatmap"
       >
-        <div class="w-full max-w-lg rounded-2xl bg-white shadow-xl">
+        <div
+          class="w-full max-w-3xl lg:max-w-4xl rounded-2xl bg-white shadow-xl"
+        >
           <header
             class="flex items-center justify-between border-b border-gray-100 px-5 py-4"
           >
@@ -259,7 +259,7 @@
               </svg>
             </button>
           </header>
-          <div class="px-5 py-6 space-y-4 text-sm text-gray-600">
+          <div class="px-6 py-7 space-y-5 text-sm text-gray-600">
             <div
               class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
             >
@@ -292,33 +292,18 @@
               <component
                 :is="VChart"
                 v-if="chartOptions"
-                class="h-[320px] w-full"
+                class="h-[220px] w-full"
                 :option="chartOptions"
                 autoresize
               />
               <div
                 v-else
-                class="flex h-[320px] items-center justify-center rounded-xl border border-dashed border-gray-200 bg-gray-50 text-sm text-gray-400"
+                class="flex h-[220px] items-center justify-center rounded-xl border border-dashed border-gray-200 bg-gray-50 text-sm text-gray-400"
               >
                 กำลังโหลด Heatmap...
               </div>
             </ClientOnly>
           </div>
-          <footer
-            class="flex justify-end gap-2 border-t border-gray-100 px-5 py-4"
-          >
-            <button
-              class="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
-              @click="closeHeatmap"
-            >
-              ปิด
-            </button>
-            <button
-              class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
-            >
-              เปิดหน้ารายละเอียด
-            </button>
-          </footer>
         </div>
       </div>
     </transition>

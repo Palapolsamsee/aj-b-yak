@@ -1,5 +1,5 @@
 export default {
-    router: {
-      base: '/my-app/' 
-    }
-  }
+  router: {
+    base: "/my-app/",
+  },
+};
