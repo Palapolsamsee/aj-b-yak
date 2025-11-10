@@ -21,7 +21,6 @@
       <HeroSection />
       <Mapza />
       <!-- <heatmap /> -->
-
       <AqiTable />
       <DeviceTable />
       <AQIGuide />

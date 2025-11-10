@@ -1,7 +1,7 @@
 <template>
   <section
     id="data"
-    class="mx-auto flex w-full max-w-4xl flex-col gap-5 rounded-3xl bg-white/90 p-5 shadow-lg ring-1 ring-black/5 backdrop-blur"
+    class="mx-auto flex w-full max-w-7xl flex-col gap-5 rounded-3xl bg-white/90 p-5 shadow-lg ring-1 ring-black/5 backdrop-blur"
   >
     <header class="flex flex-col items-center gap-1 text-center">
       <span
@@ -15,7 +15,7 @@
       class="flex flex-col gap-4 rounded-2xl border border-gray-100 bg-white/60 p-4 sm:flex-row sm:items-center sm:justify-between"
     >
       <form
-        class="flex w-full flex-col gap-2 sm:flex-row sm:items-center"
+        class="flex w-full flex-col gap-3 sm:flex-row sm:items-center"
         @submit.prevent="applySearch"
       >
         <label class="relative flex-1">
@@ -39,20 +39,20 @@
             v-model="searchInput"
             type="search"
             placeholder="ค้นหาสถานีหรือที่อยู่"
-            class="w-full rounded-xl border border-gray-200 bg-white px-10 py-2 text-sm text-gray-700 placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            class="w-full rounded-xl border border-gray-200 bg-white px-10 py-2 text-lg text-gray-700 placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
           />
         </label>
-        <div class="flex items-center gap-2">
+        <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
           <button
             type="submit"
-            class="inline-flex items-center rounded-xl bg-[#172554] px-4 py-2 text-sm font-medium text-white shadow-sm transition"
+            class="inline-flex w-full items-center justify-center rounded-xl bg-[#172554] px-4 py-2 text-base font-medium text-white shadow-sm transition sm:w-auto sm:text-lg"
           >
             ค้นหา
           </button>
           <button
             v-if="searchTerm"
             type="button"
-            class="inline-flex items-center rounded-xl border border-gray-200 px-4 py-2 text-sm text-gray-600 transition hover:bg-gray-50"
+            class="inline-flex w-full items-center justify-center rounded-xl border border-gray-200 px-4 py-2 text-base text-gray-600 transition hover:bg-gray-50 sm:w-auto sm:text-lg"
             @click="clearSearch"
           >
             ล้าง
@@ -60,12 +60,12 @@
         </div>
       </form>
       <div
-        class="flex items-center justify-between gap-2 text-sm text-gray-500 sm:justify-end"
+        class="flex flex-wrap items-center justify-between gap-2 text-sm text-gray-500 sm:flex-nowrap sm:text-lg sm:justify-end"
       >
         <span>แสดง</span>
         <select
           v-model.number="pageSize"
-          class="rounded-xl border border-gray-200 bg-white px-2 py-1 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+          class="rounded-xl border border-gray-200 bg-white px-2 py-1 text-lg focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
         >
           <option v-for="option in PAGE_OPTIONS" :key="option" :value="option">
             {{ option }}
@@ -76,17 +76,17 @@
     </div>
 
     <div v-if="loading" class="py-10 flex justify-center">
-      <span class="text-sm text-gray-500 animate-pulse"
+      <span class="text-lg text-gray-500 animate-pulse"
         >กำลังโหลดข้อมูล...</span
       >
     </div>
 
     <div v-else-if="error" class="py-10 text-center">
-      <p class="text-sm text-rose-600 font-medium">
+      <p class="text-lg text-rose-600 font-medium">
         เกิดข้อผิดพลาดในการโหลดข้อมูล
       </p>
       <button
-        class="mt-3 inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
+        class="mt-3 inline-flex items-center rounded-lg border border-gray-300 px-3 py-1.5 text-lg text-gray-700 hover:bg-gray-50"
         @click="fetchData"
       >
         ลองอีกครั้ง
@@ -94,11 +94,109 @@
     </div>
 
     <div v-else>
-      <div
-        class="overflow-hidden rounded-2xl border border-gray-100 bg-white/70"
+      <!-- Mobile Card View -->
+      <div class="sm:hidden space-y-4">
+        <article
+          v-for="(item, index) in paginatedData"
+          :key="item.dvid ?? index"
+          class="rounded-3xl border border-gray-100 bg-white/80 p-4 shadow-sm ring-1 ring-black/5"
+        >
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <p class="text-xs uppercase tracking-[0.3em] text-gray-400">
+                อันดับ
+              </p>
+              <p class="text-2xl font-semibold text-gray-900">
+                #{{ pageOffset + index + 1 }}
+              </p>
+            </div>
+            <span
+              class="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-base font-semibold"
+              :style="getCategoryChipStyle(item.pm25)"
+            >
+              <span
+                class="h-2 w-2 rounded-full"
+                :style="getCategoryDotStyle(item.pm25)"
+              />
+              {{ getCategoryLabel(item.pm25) }}
+            </span>
+          </div>
+          <div class="mt-3 space-y-1">
+            <p class="text-lg font-semibold text-gray-900">
+              {{ item.place ?? "-" }}
+            </p>
+            <p class="text-sm text-gray-500">
+              {{ item.address ?? "-" }}
+            </p>
+          </div>
+          <dl class="mt-4 grid grid-cols-2 gap-3 text-sm text-gray-600">
+            <div>
+              <dt class="text-xs uppercase tracking-wide text-gray-400">
+                จังหวัด
+              </dt>
+              <dd class="text-base font-medium text-gray-900">
+                {{ getProvince(item.address) }}
+              </dd>
+            </div>
+            <div class="text-right">
+              <dt class="text-xs uppercase tracking-wide text-gray-400">
+                PM2.5
+              </dt>
+              <dd
+                class="text-2xl font-semibold"
+                :style="getCategoryTextStyle(item.pm25)"
+              >
+                {{ formatValue(item.pm25) }}
+              </dd>
+            </div>
+            <div class="col-span-2 flex items-center justify-between text-base">
+              <span class="text-gray-500">แนวโน้ม</span>
+              <span class="font-semibold uppercase" :class="trendClass(item.trend)">
+                {{ trendLabel(item.trend) }}
+              </span>
+            </div>
+          </dl>
+          <div class="mt-4 flex items-center justify-between">
+            <p class="text-sm text-gray-500">ดูรายละเอียด Heatmap</p>
+            <button
+              class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-gray-300 hover:bg-gray-50"
+              @click="openHeatmap(item)"
+              aria-label="ดู Heatmap"
+            >
+              Heatmap
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                class="h-4 w-4"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M3 7h6l2-2h10v12H3z"
+                />
+              </svg>
+            </button>
+          </div>
+        </article>
+      </div>
+
+      <p
+        v-if="filteredData.length === 0"
+        class="mt-4 rounded-2xl border border-dashed border-gray-200 px-4 py-8 text-center text-base text-gray-500 sm:hidden"
       >
-        <div class="overflow-x-auto">
-          <table class="min-w-full text-xs sm:text-sm">
+        ไม่พบข้อมูลสถานีที่พร้อมใช้งาน
+      </p>
+
+      <!-- Desktop Table -->
+      <div class="hidden sm:block">
+        <div
+          class="overflow-hidden rounded-2xl border border-gray-100 bg-white/70"
+        >
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-xs sm:text-base">
             <thead
               class="bg-gray-50/80 text-[11px] font-semibold uppercase tracking-wide text-gray-500 sm:text-xs"
             >
@@ -142,7 +240,7 @@
                 </td>
 
                 <td class="px-3 py-2 text-gray-700">
-                  <span class="inline-flex items-center gap-1 text-xs">
+                  <span class="inline-flex items-center gap-1 text-lg">
                     <span
                       class="uppercase tracking-wide"
                       :class="trendClass(item.trend)"
@@ -153,7 +251,7 @@
                 </td>
                 <td class="px-3 py-2">
                   <span
-                    class="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-[11px] font-medium"
+                    class="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-lg font-medium"
                     :style="getCategoryChipStyle(item.pm25)"
                   >
                     <span
@@ -187,7 +285,7 @@
               <tr v-if="filteredData.length === 0">
                 <td
                   colspan="8"
-                  class="px-4 py-10 text-center text-sm text-gray-500"
+                  class="px-4 py-10 text-center text-lg text-gray-500"
                 >
                   ไม่พบข้อมูลสถานีที่พร้อมใช้งาน
                 </td>
@@ -197,7 +295,7 @@
         </div>
       </div>
       <div
-        class="px-3 py-3 sm:px-5 sm:py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-xs text-gray-500 sm:text-sm"
+        class="px-3 py-3 sm:px-5 sm:py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-xs text-gray-500 sm:text-lg"
       >
         <p class="text-center sm:text-left">
           ทั้งหมด {{ totalFiltered }} รายการ · หน้า {{ currentPage }} /
@@ -205,14 +303,14 @@
         </p>
         <div class="flex items-center justify-center gap-2">
           <button
-            class="rounded-lg border border-gray-200 px-3 py-1.5 text-xs text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 sm:text-sm"
+            class="rounded-lg border border-gray-200 px-3 py-1.5 text-xs text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 sm:text-lg"
             :disabled="!canPrev"
             @click="prevPage"
           >
             ก่อนหน้า
           </button>
           <button
-            class="rounded-lg border border-gray-200 px-3 py-1.5 text-xs text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 sm:text-sm"
+            class="rounded-lg border border-gray-200 px-3 py-1.5 text-xs text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40 sm:text-lg"
             :disabled="!canNext"
             @click="nextPage"
           >
@@ -220,63 +318,67 @@
           </button>
         </div>
       </div>
+      </div>
     </div>
 
     <transition name="fade">
       <div
         v-if="selectedStation"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+        class="fixed inset-0 z-50 flex items-end justify-center bg-black/40 px-0 py-0 sm:items-center sm:px-4 sm:py-6"
         @click.self="closeHeatmap"
       >
         <div
-          class="w-full max-w-3xl lg:max-w-4xl rounded-2xl bg-white shadow-xl"
+          class="w-full max-w-none rounded-t-3xl bg-white shadow-2xl transition sm:w-auto sm:max-w-3xl sm:rounded-2xl lg:max-w-4xl"
         >
           <header
-            class="flex items-center justify-between border-b border-gray-100 px-5 py-4"
+            class="flex items-start justify-between gap-3 border-b border-gray-100 px-5 py-4 sm:items-center"
           >
             <div>
-              <h3 class="text-base font-semibold text-gray-900">
-                Heatmap — {{ selectedStation?.place ?? "ไม่ทราบสถานี" }}
+              <p class="text-xs uppercase tracking-[0.3em] text-gray-400">
+                Heatmap
+              </p>
+              <h3 class="text-lg font-semibold text-gray-900 sm:text-xl">
+                {{ selectedStation?.place ?? "ไม่ทราบสถานี" }}
               </h3>
               <p class="text-xs text-gray-500">{{ popupAddress }}</p>
             </div>
             <button
-              class="rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition"
+              class="rounded-full border border-gray-200 p-2 text-gray-500 transition hover:bg-gray-50 hover:text-gray-800"
               @click="closeHeatmap"
               aria-label="ปิด"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
-                fill="currentColor"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
                 class="h-5 w-5"
               >
-                <path
-                  fill-rule="evenodd"
-                  d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 0 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
-                  clip-rule="evenodd"
-                />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M6 18 18 6" />
               </svg>
             </button>
           </header>
-          <div class="px-6 py-7 space-y-5 text-sm text-gray-600">
-            <div
-              class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
-            >
+          <div
+            class="max-h-[80vh] overflow-y-auto px-5 py-6 text-base text-gray-600 sm:max-h-full sm:px-6 sm:py-7 sm:text-lg"
+          >
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p class="text-sm text-gray-500">ค่า AQI ปัจจุบัน</p>
-                <p class="text-xl font-semibold text-gray-900">
-                  {{ formatValue(selectedStation?.rankingValue) }}
+                <p class="text-sm uppercase tracking-wide text-gray-400">
+                  ค่า PM2.5 ปัจจุบัน
+                </p>
+                <p class="text-3xl font-bold text-gray-900 sm:text-4xl">
+                  {{ formatValue(selectedStation?.pm25) }}
                 </p>
               </div>
               <div
                 v-if="availableYears.length"
-                class="flex items-center gap-2 text-xs text-gray-500 sm:text-sm"
+                class="flex items-center gap-2 rounded-2xl bg-gray-50 px-3 py-2 text-sm text-gray-500 sm:bg-transparent sm:p-0 sm:text-base"
               >
                 <span>เลือกปี</span>
                 <select
                   v-model="selectedYear"
-                  class="rounded-lg border border-gray-200 bg-white px-3 py-1 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  class="rounded-lg border border-gray-200 bg-white px-3 py-1 text-base focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                 >
                   <option
                     v-for="year in availableYears"
@@ -292,13 +394,13 @@
               <component
                 :is="VChart"
                 v-if="chartOptions"
-                class="h-[220px] w-full"
+                class="mt-5 h-[240px] w-full sm:h-[280px]"
                 :option="chartOptions"
                 autoresize
               />
               <div
                 v-else
-                class="flex h-[220px] items-center justify-center rounded-xl border border-dashed border-gray-200 bg-gray-50 text-sm text-gray-400"
+                class="mt-5 flex h-[240px] items-center justify-center rounded-xl border border-dashed border-gray-200 bg-gray-50 text-base text-gray-400 sm:h-[280px] sm:text-lg"
               >
                 กำลังโหลด Heatmap...
               </div>

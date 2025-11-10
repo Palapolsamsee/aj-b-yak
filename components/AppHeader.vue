@@ -1,154 +1,120 @@
 <template>
-  <header class="bg-white shadow-sm sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center py-4">
-        <!-- Logo and Title -->
-        <div class="bg-white hidden md:flex items-center space-x-3">
-          <div class="p-1 rounded-lg">
-            <img
-              src="/assets/images/yakkaw_nouse.jpg"
-              alt="Yakkaw Logo"
-              class="w-100 h-20 object-contain"
-            />
-          </div>
-          <h1 class="justify-center text-4xl font-bold text-gray-900">
-            <span class="text-blue-950">ยักษ์ขาว</span
-            ><span class="text-red-600">วัดฝุ่น</span>
-          </h1>
+  <header class="sticky top-0 z-50 bg-white/95 shadow-sm backdrop-blur">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+      <a href="#home" class="flex items-center gap-3">
+        <img
+          src="/assets/images/yakkaw_nouse.jpg"
+          alt="Yakkaw Logo"
+          class="h-12 w-12 rounded-xl object-cover shadow-sm sm:h-16 sm:w-16"
+        />
+        <div>
+          <p class="text-lg font-bold text-gray-900 sm:text-2xl">
+            <span class="text-blue-950">ยักษ์ขาว</span>
+            <span class="text-red-600">วัดฝุ่น</span>
+          </p>
+          <p class="text-xs uppercase tracking-[0.3em] text-gray-400">
+            Air Quality Watch
+          </p>
         </div>
+      </a>
 
-        <!-- Desktop Navigation -->
-        <nav class="hidden md:flex items-center space-x-8">
-          <a
-            href="#home"
-            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >หน้าหลัก</a
-          >
-          <a
-            href="#map"
-            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >แผนที่</a
-          >
-          <a
-            href="#data"
-            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >คุณภาพอากาศ</a
-          >
-          <a
-            href="#advice"
-            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >ข่าว</a
-          >
-          <a
-            href="#supporters"
-            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >ผู้สนับสนุน</a
-          >
-          <a
-            href="#regis"
-            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >ร่วมสนับสนุน</a
-          >
-          <a
-            href="#contact"
-            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >ติดต่อเรา</a
-          >
-        </nav>
+      <nav class="hidden items-center gap-6 text-sm font-medium text-gray-700 md:flex">
+        <a
+          v-for="item in menuItems"
+          :key="item.href"
+          :href="item.href"
+          class="rounded-full px-4 py-2 transition hover:bg-blue-50 hover:text-blue-700"
+        >
+          {{ item.label }}
+        </a>
+      </nav>
 
-        <!-- Language Switch and Mobile Menu -->
-        <div class="flex items-center space-x-4">
-          <!--           <div class="flex bg-gray-100 rounded-lg p-1">
-            <button from-blue-50 via-white to-green-50
-              @click="currentLang = 'en'"
-              :class="[
-                'px-3 py-1 rounded-md text-sm font-medium transition-colors',
-                currentLang === 'en' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
-              ]"
-            >
-              EN
-            </button>
-            <button
-              @click="currentLang = 'th'"
-              :class="[
-                'px-3 py-1 rounded-md text-sm font-medium transition-colors',
-                currentLang === 'th' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-600 hover:text-gray-900'
-              ]"
-            >
-              TH
-            </button>
-          </div> -->
-
-          <!-- Mobile menu button -->
-          <button
-            @click="mobileMenuOpen = !mobileMenuOpen"
-            class="md:hidden p-2"
-          >
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              ></path>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Mobile Navigation -->
-      <div
-        v-show="mobileMenuOpen"
-        class="md:hidden border-t border-gray-200 py-4"
+      <button
+        type="button"
+        class="inline-flex items-center rounded-full border border-gray-200 p-2 text-gray-700 transition hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 md:hidden"
+        @click="toggleMobileMenu"
+        :aria-expanded="mobileMenuOpen.toString()"
+        aria-controls="mobile-nav"
       >
-        <nav class="flex flex-col space-y-4">
+        <span class="sr-only">เมนู</span>
+        <svg
+          v-if="!mobileMenuOpen"
+          class="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 7h14M5 12h14M5 17h10" />
+        </svg>
+        <svg
+          v-else
+          class="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M6 18 18 6" />
+        </svg>
+      </button>
+    </div>
+
+    <Transition name="mobile-nav">
+      <div
+        v-if="mobileMenuOpen"
+        id="mobile-nav"
+        class="md:hidden border-t border-gray-100 bg-white/95 px-4 py-4 shadow-inner"
+      >
+        <nav class="flex flex-col gap-2 text-base font-medium text-gray-700">
           <a
-            href="#home"
-            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >Home</a
+            v-for="item in menuItems"
+            :key="item.label"
+            :href="item.href"
+            class="rounded-2xl px-4 py-3 transition hover:bg-blue-50 hover:text-blue-700"
+            @click="closeMobileMenu"
           >
-          <a
-            href="#map"
-            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >แผนที่</a
-          >
-          <a
-            href="#data"
-            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >คุณภาพอากาศ</a
-          >
-          <a
-            href="#advice"
-            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >ข่าว</a
-          >
-          <a
-            href="#supporters"
-            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >ผู้สนับสนุน</a
-          >
-          <a
-            href="#contact"
-            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >ติดต่อเรา</a
-          >
-          <a
-            href="#regis"
-            class="text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >ร่วมสนับสนุน</a
-          >
+            {{ item.label }}
+          </a>
         </nav>
       </div>
-    </div>
+    </Transition>
   </header>
 </template>
 
 <script setup>
-const currentLang = ref("en");
+import { ref } from "vue";
+
 const mobileMenuOpen = ref(false);
+
+const menuItems = [
+  { label: "หน้าหลัก", href: "#home" },
+  { label: "แผนที่", href: "#map" },
+  { label: "คุณภาพอากาศ", href: "#data" },
+  { label: "ข่าว", href: "#advice" },
+  { label: "ผู้สนับสนุน", href: "#supporters" },
+  { label: "ร่วมสนับสนุน", href: "#regis" },
+  { label: "ติดต่อเรา", href: "#contact" },
+];
+
+const toggleMobileMenu = () => {
+  mobileMenuOpen.value = !mobileMenuOpen.value;
+};
+
+const closeMobileMenu = () => {
+  mobileMenuOpen.value = false;
+};
 </script>
+
+<style scoped>
+.mobile-nav-enter-active,
+.mobile-nav-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.mobile-nav-enter-from,
+.mobile-nav-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+</style>
