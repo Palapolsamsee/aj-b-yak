@@ -8,28 +8,31 @@
         <h2 class="text-3xl font-bold text-gray-900">
           สำรวจคุณภาพอากาศและภัยพิบัติ
         </h2>
-        <p class="mx-auto mt-2 max-w-2xl text-sm text-gray-600">
-          ค้นหาอัปเดตล่าสุดเกี่ยวกับคุณภาพอากาศ จุดความร้อน และแผ่นดินไหวได้แบบเรียลไทม์
-          ผ่านแผนที่อินเทอร์แอคทีฟเดียว
-        </p>
+      <p class="mx-auto mt-2 max-w-2xl text-sm text-gray-600">
+  สามารถตรวจสอบสภาพอากาศ ไฟป่า และแผ่นดินไหวล่าสุดแบบเรียลไทม์<br>
+  พร้อมติดตามเหตุการณ์ต่าง ๆ ได้อย่างง่ายดาย
+</p>
       </header>
 
-      <div class="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div class="relative w-full md:max-w-xl">
-          <input
-            v-model="searchTerm"
-            type="text"
-            class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-            placeholder="ค้นหาสถานที่หรือที่อยู่..."
-            @keyup.enter="searchLocation"
-          />
-          <button
-            type="button"
-            class="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-blue-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-950"
-            @click="searchLocation"
-          >
-            ค้นหา
-          </button>
+    <div class="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+ <div class="relative w-full max-w-[690px]">
+      <input
+        v-model="searchTerm"
+        type="text"
+        class="w-full rounded-xl border border-gray-300 bg-white px-4 py-7 text-base text-gray-900 shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        placeholder="ค้นหาสถานที่หรือที่อยู่..."
+        @keyup.enter="searchLocation"
+      />
+      <button
+        type="button"
+        class="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-blue-900 px-6 py-4 text-base font-semibold text-white shadow-sm transition hover:bg-blue-950"
+        @click="searchLocation"
+      >
+        ค้นหา
+      </button>
+    </div>
+    
+    <div class="flex flex-wrap items-center justify-center gap-3">
         </div>
 
         <div class="flex flex-wrap items-center justify-center gap-3">
@@ -41,7 +44,7 @@
             :class="
               filter.model.value
                 ? 'border-transparent shadow-md'
-                : 'border-gray-200 hover:border-gray-300'
+                : 'border-gray-500 hover:border-gray-300'
             "
             :aria-pressed="filter.model.value.toString()"
             @click="toggleFilter(filter.model)"

@@ -7,23 +7,44 @@
         เปิดรับการสนับสนุนในการส่งมอบเครื่องวัดฝุ่นให้กับโรงเรียนและชุมชนที่ยังขาดแคลน
       </div>
 
-      <div class="bank-details">
-        <h2>สนับสนุนผ่านบัญชีธนาคารชื่อบัญชี : สมาคมยักษ์ขาว</h2>
-        <p>ธนาคารกสิกรไทย</p>
-        <p>เลขที่บัญชี: 062-8-46998-9</p>
-        <p>โทรแจ้ง: 061-265-0505</p>
-      </div>
+   <div class="bank-details">
+    
+    <div class="bank-header">
+      <span>บริจาคผ่านธนาคาร ชื่อบัญชี : สมาคมยักษ์ขาว</span>
+      <span>โทรแจ้ง: 061-265-0505</span>
+    </div>
 
+    <hr class="bank-divider" />
+
+    <div class="bank-body">
+      <img 
+        src="https://www.kasikornbank.com/SiteCollectionDocuments/about/img/logo/logo.png" 
+        alt="โลโก้ธนาคารกสิกรไทย" 
+        class="bank-logo" 
+      />
+      <div class="account-details">
+        <p class="account-number">062-8-46998-9</p>
+        <p class="bank-name">ธนาคารกสิกรไทย</p>
+      </div>
+    </div>
+
+</div>
+
+</div>
       <div class="packages">
         <div v-for="(pkg, index) in packages" :key="index" class="package">
           <h3 class="name">{{ pkg.name }}</h3>
-          <p
-            v-for="(feature, i) in pkg.features"
-            :key="i"
-            :class="{ 'grey-text': !feature.included }"
-          >
-            {{ feature.text }}
-          </p>
+          <div class="features">
+   <div class="features">
+  <p
+    v-for="(feature, i) in pkg.features"
+    :key="i"
+    :class="{ 'grey-text': !feature.included }"
+  >
+    {{ feature.text }}
+  </p>
+</div>
+</div>
           <div class="price">{{ pkg.price }} บาท</div>
           <button class="support-button" @click="openForm(pkg)">
             สนับสนุน
@@ -91,7 +112,7 @@
           </form>
         </div>
       </div>
-    </div>
+    
   </section>
 </template>
 
@@ -103,33 +124,35 @@ const packages = [
     name: "ยักษ์ขาว #1",
     price: "4,000",
     features: [
-      { text: "✔ เชื่อมต่อผ่าน WiFi", included: true },
-      { text: "✔ เชื่อมกับ แอพยักษ์ขาว", included: true },
-      { text: "✔ อแดปเตอร์", included: true },
-      { text: "✘ เชื่อมต่อ 3G/4G", included: false },
-      { text: "✘ ระบบพลังแสงอาทิตย์", included: false },
+      { text: "📶 เชื่อมต่อผ่าน WiFi", included: true },
+      { text: "📱 เชื่อมกับ แอพยักษ์ขาว", included: true },
+      { text: "🔌 อแดปเตอร์", included: true },
+      { text: "❌ เชื่อมต่อผ่าน 3G/4G", included: false },
+      { text: "❌ ระบบพลังแสงอาทิตย์", included: false },
+      
     ],
   },
   {
     name: "ยักษ์ขาว #2",
     price: "6,000",
     features: [
-      { text: "✔ เชื่อมต่อผ่าน WiFi", included: true },
-      { text: "✔ เชื่อมกับ แอพยักษ์ขาว", included: true },
-      { text: "✔ อแดปเตอร์", included: true },
-      { text: "✔ เชื่อมต่อผ่าน 3G/4G", included: true },
-      { text: "✘ ระบบพลังแสงอาทิตย์", included: false },
+      { text: "📶 เชื่อมต่อผ่าน WiFi", included: true },
+      { text: "📱 เชื่อมกับ แอพยักษ์ขาว", included: true },
+      { text: "🔌 อแดปเตอร์", included: true          },
+      { text: "📡 เชื่อมต่อผ่าน 3G/4G", included: true },
+      { text: "❌ ระบบพลังแสงอาทิตย์", included: false },
+      
     ],
   },
   {
     name: "ยักษ์ขาว #3",
     price: "10,000",
     features: [
-      { text: "✔ เชื่อมต่อผ่าน WiFi", included: true },
-      { text: "✔ เชื่อมกับ แอพยักษ์ขาว", included: true },
-      { text: "✔ อแดปเตอร์", included: true },
-      { text: "✔ เชื่อมต่อผ่าน 3G/4G", included: true },
-      { text: "✔ ระบบพลังแสงอาทิตย์", included: true },
+      { text: "📶 เชื่อมต่อผ่าน WiFi", included: true },
+      { text: "📱 เชื่อมกับ แอพยักษ์ขาว", included: true },
+      { text: "🔌 อแดปเตอร์", included: true },
+      { text: "📡 เชื่อมต่อผ่าน 3G/4G", included: true },
+      { text: "☀️ ระบบพลังแสงอาทิตย์", included: true },
     ],
   },
 ];
@@ -273,30 +296,84 @@ h1 {
   margin-bottom: 40px;
 }
 
+/* กล่องหลัก */
 .bank-details {
-  background: #283048;
-  color: rgb(200, 196, 196);
-  padding: 15px;
+  background-color: #ffffff;
+  /* สีขอบฟ้าเหมือนในรูป */
+  border: 2px solid #c7c6c6; 
   border-radius: 10px;
-  margin-bottom: 40px;
-  text-align: center;
+  padding: 20px;
+  margin-bottom: 40px; /* ระยะห่างด้านล่าง (จากโค้ดเดิม) */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* เพิ่มเงาเล็กน้อย */
+  max-width: 1088px;   /* ← เพิ่ม */
+  margin: 0 auto 40px auto;
 }
 
-.bank-details h2 {
-  font-size: 24px;
-  margin-bottom: 12px;
-  color: white;
+/* แถวบน (ชื่อบัญชี และ เบอร์โทร) */
+.bank-header {
+ display: flex;
+  justify-content: space-between; /* ดันข้อความไป 2 ฝั่ง */
+  align-items: center;
+  flex-wrap: wrap; /* เผื่อหน้าจอแคบ */
+  gap: 100px;
+  font-weight: 600; /* ตัวหนาเล็กน้อย */
+  color: #333;
 }
 
-.bank-details p {
-  color: white;
+/* เส้นคั่นสีเทา */
+.bank-divider {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
+
+/* แถวล่าง (โลโก้ และ เลขบัญชี) */
+.bank-body {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* ระยะห่างระหว่างโลโก้กับข้อความ */
+}
+
+/* โลโก้ธนาคาร */
+.bank-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  flex-shrink: 0; /* ไม่ให้โลโก้หดเมื่อจอแคบ */
+}
+
+/* กลุ่มข้อความเลขบัญชี */
+.account-details {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ลบ margin ของ <p> ที่ติดมา */
+.account-details p {
+  margin: 0; 
+  color: #444; /* ตั้งสีตัวอักษรกลับเป็นสีเข้ม */
+}
+
+/* เลขบัญชี (ตัวใหญ่) */
+.account-number {
+  font-size: 1.75rem; /* ขนาดใหญ่ */
+  font-weight: 700; /* ตัวหนา */
+  color: #000000;
+  line-height: 1.2;
+}
+
+/* ชื่อธนาคาร (ตัวเล็ก) */
+.bank-name {
+  font-size: 1.1rem;
+}
+
 
 .packages {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 90px;
 }
 
 .package {
@@ -304,6 +381,7 @@ h1 {
   color: #172554;
   padding: 20px;
   border-radius: 10px;
+   text-align: left;
   text-align: center;
   flex: 1 1 300px;
   max-width: 300px;
@@ -339,6 +417,15 @@ h1 {
 .package .support-button:hover {
   background: #d92041;
 }
+
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* ระยะห่างบรรทัดเท่ากัน */
+  text-align: left; /* ชิดซ้ายให้เหมือน bullet list */
+  margin-top: 10px;
+}
+
 
 .grey-text {
   color: #ee0000;
