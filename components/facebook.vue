@@ -6,9 +6,11 @@
     <!-- Facebook Section -->
     <section class="py-16 bg-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl font-bold text-gray-900 mb-4">Join Us Online</h2>
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">
+          เป็นส่วนหนึ่งของเรา
+        </h2>
         <p class="text-gray-600 mb-8">
-          Follow us on Facebook for the latest updates
+          ติดตาม Facebook ของเราเพื่อรับข้อมูลล่าสุด
         </p>
 
         <!-- Loading State -->

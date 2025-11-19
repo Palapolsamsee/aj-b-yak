@@ -4,9 +4,9 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
           <h2 class="text-3xl font-bold text-gray-900 mb-4">
-            Latest Air Quality News
+            สถานการณ์คุณภาพอากาศล่าสุด
           </h2>
-          <p class="text-gray-600">Stay updated with recent news and updates</p>
+          <p class="text-gray-600">ติดตามข่าวสารและข้อมูลล่าสุด</p>
         </div>
 
         <!-- Loading/Error -->

@@ -36,89 +36,90 @@ const submitForm = () => {
 
 <template>
   <section id="contact">
-  <div class="flex justify-center items-center min-h-screen bg-[#070d22] px-4">
     <div
-      class="bg-white shadow-xl rounded-lg p-8 max-w-3xl w-full flex gap-6 flex-col md:flex-row"
+      class="flex justify-center items-center min-h-screen bg-[#070d22] px-4 mt-8"
     >
-      <!-- Contact Form (Left Side) -->
-      <div class="w-full md:w-1/2 flex flex-col items-center">
-        <h2 class="text-2xl font-bold text-gray-800 mb-1 text-center">
-          ติดต่อเรา
-        </h2>
-        <h2 class="text-sm text-gray-500 mb-4 text-center">สมาคมยักษ์ขาว</h2>
+      <div
+        class="bg-white shadow-xl rounded-lg p-8 max-w-3xl w-full flex gap-6 flex-col md:flex-row"
+      >
+        <!-- Contact Form (Left Side) -->
+        <div class="w-full md:w-1/2 flex flex-col items-center">
+          <h2 class="text-2xl font-bold text-gray-800 mb-1 text-center">
+            ติดต่อเรา
+          </h2>
+          <h2 class="text-sm text-gray-500 mb-4 text-center">สมาคมยักษ์ขาว</h2>
 
-        <form @submit.prevent="submitForm" class="space-y-4 w-full">
-          <div class="form-group">
-            <label for="name" class="block font-medium text-gray-700"
-              >ชื่อ:</label
-            >
-            <input
-              type="text"
-              id="name"
-              v-model="formData.name"
-              required
-              class="input-field"
-              placeholder="กรอกชื่อของคุณ"
-            />
-          </div>
-          <div class="form-group">
-            <label for="email" class="block font-medium text-gray-700"
-              >อีเมล:</label
-            >
-            <input
-              type="email"
-              id="email"
-              v-model="formData.email"
-              required
-              class="input-field"
-              placeholder="example@mail.com"
-            />
-          </div>
-          <div class="form-group">
-            <label for="subject" class="block font-medium text-gray-700"
-              >หัวข้อเรื่อง:</label
-            >
-            <input
-              type="text"
-              id="subject"
-              v-model="formData.subject"
-              required
-              class="input-field"
-              placeholder="เรื่องที่ต้องการติดต่อ"
-            />
-          </div>
-          <div class="form-group">
-            <label for="message" class="block font-medium text-gray-700"
-              >ข้อความ:</label
-            >
-            <textarea
-              id="message"
-              v-model="formData.message"
-              required
-              class="input-field resize-none h-24"
-              placeholder="พิมพ์ข้อความของคุณ..."
-            ></textarea>
-          </div>
-          <button type="submit" class="submit-btn">
-            <span v-if="!loading">ส่งข้อความ</span>
-            <span v-else class="loading-spinner"></span>
-          </button>
-          <p v-if="successMessage" class="text-green-600 text-center mt-2">
-            {{ successMessage }}
-          </p>
-        </form>
-      </div>
+          <form @submit.prevent="submitForm" class="space-y-4 w-full">
+            <div class="form-group">
+              <label for="name" class="block font-medium text-gray-700"
+                >ชื่อ:</label
+              >
+              <input
+                type="text"
+                id="name"
+                v-model="formData.name"
+                required
+                class="input-field"
+                placeholder="กรอกชื่อของคุณ"
+              />
+            </div>
+            <div class="form-group">
+              <label for="email" class="block font-medium text-gray-700"
+                >อีเมล:</label
+              >
+              <input
+                type="email"
+                id="email"
+                v-model="formData.email"
+                required
+                class="input-field"
+                placeholder="example@mail.com"
+              />
+            </div>
+            <div class="form-group">
+              <label for="subject" class="block font-medium text-gray-700"
+                >หัวข้อเรื่อง:</label
+              >
+              <input
+                type="text"
+                id="subject"
+                v-model="formData.subject"
+                required
+                class="input-field"
+                placeholder="เรื่องที่ต้องการติดต่อ"
+              />
+            </div>
+            <div class="form-group">
+              <label for="message" class="block font-medium text-gray-700"
+                >ข้อความ:</label
+              >
+              <textarea
+                id="message"
+                v-model="formData.message"
+                required
+                class="input-field resize-none h-24"
+                placeholder="พิมพ์ข้อความของคุณ..."
+              ></textarea>
+            </div>
+            <button type="submit" class="submit-btn">
+              <span v-if="!loading">ส่งข้อความ</span>
+              <span v-else class="loading-spinner"></span>
+            </button>
+            <p v-if="successMessage" class="text-green-600 text-center mt-2">
+              {{ successMessage }}
+            </p>
+          </form>
+        </div>
 
-      <!-- Image Section (Right Side) -->
-      <div class="w-full md:w-1/2 flex justify-center items-center">
-        <img :src="yakkawImage" alt="ติดต่อเรา" class="rounded-lg w-full" />
-        <img src="@/assets/images/yakkaw_nouse.jpg" />
+        <!-- Image Section (Right Side) -->
+        <div class="w-full md:w-1/2 flex justify-center items-center">
+          <img :src="yakkawImage" alt="ติดต่อเรา" class="rounded-lg w-full" />
+          <img src="@/assets/images/yakkaw_nouse.jpg" />
+        </div>
       </div>
     </div>
-  </div>
   </section>
 </template>
-
 
 <style scoped>
 .input-field {
