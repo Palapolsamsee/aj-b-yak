@@ -1,8 +1,21 @@
+const upstreamAirqualityBase =
+  process.env.AIRQUALITY_API_BASE ??
+  process.env.BASE_API_ARI ??
+  "http://localhost:8080/api/airquality";
+
+const publicAirqualityBase =
+  process.env.NUXT_PUBLIC_BASE_AIR_API ?? "/proxy/airquality";
+
+const allowInsecureAirqualityProxy =
+  (process.env.AIRQUALITY_PROXY_ALLOW_INSECURE ?? "").toLowerCase() === "true";
+
 export default defineNuxtConfig({
   runtimeConfig: {
     //private for test
 
     colorange: process.env.NUXT_API_URL_COLORRANGE,
+    airqualityProxyTarget: upstreamAirqualityBase,
+    airqualityProxyAllowInsecure: allowInsecureAirqualityProxy,
 
     //firebase test
     firebaseApiKey: process.env.NUXT_FIREBASE_APIKEY,
@@ -16,8 +29,8 @@ export default defineNuxtConfig({
     public: {
       apiUrl: process.env.NUXT_API_URL,
       aqiweek: process.env.WEAK_API_ARI,
-      baseair: process.env.BASE_API_ARI,
-      baseAirApi: process.env.BASE_API_ARI,
+      baseair: publicAirqualityBase,
+      baseAirApi: publicAirqualityBase,
       oneyear: process.env.YEAR_API_ARI,
       yakkaw_api: process.env.YAKKAW_API,
       GOOGLEMAPAPI: process.env.GOOGLEMAP,
