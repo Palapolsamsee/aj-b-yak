@@ -118,7 +118,7 @@
                 class="h-2 w-2 rounded-full"
                 :style="getCategoryDotStyle(item.pm25)"
               />
-              {{ getCategoryLabel(item.pm25) }}
+              {{ getCategoryLabel(item.pm25).label }}
             </span>
           </div>
           <div class="mt-3 space-y-1">
@@ -258,7 +258,7 @@
                       class="h-2 w-2 rounded-full"
                       :style="getCategoryDotStyle(item.pm25)"
                     />
-                    {{ getCategoryLabel(item.pm25) }}
+                    {{ getCategoryLabel(item.pm25).label }}
                   </span>
                 </td>
                 <td class="px-3 py-2 text-center">
@@ -420,6 +420,7 @@ import { useStaticChart } from "~/assets/scripts/staticChart";
 import {
   DEFAULT_COLOR,
   fetchColorRanges,
+  matchColorRange,
   toTranslucent,
   type ColorRange,
 } from "@/utils/api/colorRanges";
@@ -625,30 +626,56 @@ const DEFAULT_CHIP_STYLE = {
   borderColor: DEFAULT_COLOR,
   color: DEFAULT_TEXT_COLOR,
 };
-const CATEGORY_COLORS: Record<string, string> = {
+const FALLBACK_CATEGORY_COLORS = {
   ไม่ทราบ: "#6b7280", // gray-600
   ดี: "#16a34a", // green-600
   ปานกลาง: "#ca8a04", // amber-600
   ไม่ดี: "#dc2626", // red-600
+} as const;
+
+type CategoryKey = keyof typeof FALLBACK_CATEGORY_COLORS;
+
+type CategoryResult = {
+  label: CategoryKey;
+  color: string;
 };
 
-const getCategoryLabel = (value: number | string | null | undefined) => {
+const getBackendColor = (value: number | string | null | undefined): string | null => {
   const numeric = toNumber(value);
-  if (numeric === null) return "ไม่ทราบ";
-  if (numeric <= 50) return "ดี";
-  if (numeric <= 100) return "ปานกลาง";
-  return "ไม่ดี";
+  if (numeric === null) return null;
+  const range = matchColorRange(numeric, colorRanges.value);
+  const color = range?.color?.trim();
+  return color && color.length > 0 ? color : null;
+};
+
+const buildCategoryResult = (
+  label: CategoryKey,
+  value: number | string | null | undefined
+): CategoryResult => {
+  const backendColor = getBackendColor(value);
+  const fallbackColor = FALLBACK_CATEGORY_COLORS[label] ?? DEFAULT_TEXT_COLOR;
+  return {
+    label,
+    color: backendColor ?? fallbackColor,
+  };
+};
+
+const getCategoryLabel = (value: number | string | null | undefined): CategoryResult => {
+  const numeric = toNumber(value);
+  if (numeric === null) return buildCategoryResult("ไม่ทราบ", value);
+  if (numeric <= 50) return buildCategoryResult("ดี", value);
+  if (numeric <= 100) return buildCategoryResult("ปานกลาง", value);
+  return buildCategoryResult("ไม่ดี", value);
 };
 
 const getCategoryTextStyle = (value: number | string | null | undefined) => {
-  const label = getCategoryLabel(value);
-  const color = CATEGORY_COLORS[label] ?? DEFAULT_TEXT_COLOR;
+  const { color } = getCategoryLabel(value);
   return { color };
 };
 
 const getCategoryChipStyle = (value: number | string | null | undefined) => {
-  const label = getCategoryLabel(value);
-  const baseColor = CATEGORY_COLORS[label];
+  const { color } = getCategoryLabel(value);
+  const baseColor = color;
   if (!baseColor) return { ...DEFAULT_CHIP_STYLE };
   const background =
     toTranslucent(baseColor, 0.18) ?? DEFAULT_CHIP_STYLE.backgroundColor;
@@ -660,8 +687,8 @@ const getCategoryChipStyle = (value: number | string | null | undefined) => {
 };
 
 const getCategoryDotStyle = (value: number | string | null | undefined) => {
-  const label = getCategoryLabel(value);
-  const baseColor = CATEGORY_COLORS[label] ?? DEFAULT_TEXT_COLOR;
+  const { color } = getCategoryLabel(value);
+  const baseColor = color ?? DEFAULT_TEXT_COLOR;
   return { backgroundColor: baseColor };
 };
 
