@@ -324,11 +324,11 @@
     <transition name="fade">
       <div
         v-if="selectedStation"
-        class="fixed inset-0 z-50 flex items-end justify-center bg-black/40 px-0 py-0 sm:items-center sm:px-4 sm:py-6"
+        class="fixed inset-0 z-50 flex flex-col bg-black/40 px-0 py-0 sm:flex sm:items-center sm:justify-center sm:px-4 sm:py-6"
         @click.self="closeHeatmap"
       >
         <div
-          class="w-full max-w-none rounded-t-3xl bg-white shadow-2xl transition sm:w-auto sm:max-w-3xl sm:rounded-2xl lg:max-w-4xl"
+          class="mt-auto flex w-full max-w-none flex-col rounded-t-[32px] bg-white shadow-2xl transition max-h-[95vh] overflow-hidden sm:mt-0 sm:w-auto sm:max-h-[85vh] sm:max-w-3xl sm:rounded-2xl lg:max-w-4xl"
         >
           <header
             class="flex items-start justify-between gap-3 border-b border-gray-100 px-5 py-4 sm:items-center"
@@ -360,7 +360,7 @@
             </button>
           </header>
           <div
-            class="max-h-[80vh] overflow-y-auto px-5 py-6 text-base text-gray-600 sm:max-h-full sm:px-6 sm:py-7 sm:text-lg"
+            class="flex-1 overflow-y-auto px-5 py-6 text-base text-gray-600 sm:max-h-full sm:px-6 sm:py-7 sm:text-lg"
           >
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
@@ -394,7 +394,8 @@
               <component
                 :is="VChart"
                 v-if="chartOptions"
-                class="mt-5 h-[240px] w-full sm:h-[280px]"
+                class="mt-5 h-[280px] w-screen"
+
                 :option="chartOptions"
                 autoresize
               />
@@ -419,7 +420,6 @@ import { useStaticChart } from "~/assets/scripts/staticChart";
 import {
   DEFAULT_COLOR,
   fetchColorRanges,
-  matchColorRange,
   toTranslucent,
   type ColorRange,
 } from "@/utils/api/colorRanges";
@@ -625,14 +625,11 @@ const DEFAULT_CHIP_STYLE = {
   borderColor: DEFAULT_COLOR,
   color: DEFAULT_TEXT_COLOR,
 };
-
-const resolveRange = (
-  value: number | string | null | undefined
-): ColorRange | null => {
-  const numeric = toNumber(value);
-  if (numeric === null) return null;
-  const range = matchColorRange(numeric, colorRanges.value);
-  return range ?? null;
+const CATEGORY_COLORS: Record<string, string> = {
+  ไม่ทราบ: "#6b7280", // gray-600
+  ดี: "#16a34a", // green-600
+  ปานกลาง: "#ca8a04", // amber-600
+  ไม่ดี: "#dc2626", // red-600
 };
 
 const getCategoryLabel = (value: number | string | null | undefined) => {
@@ -644,15 +641,15 @@ const getCategoryLabel = (value: number | string | null | undefined) => {
 };
 
 const getCategoryTextStyle = (value: number | string | null | undefined) => {
-  const range = resolveRange(value);
-  const baseColor = range?.color?.trim() || DEFAULT_COLOR;
-  return { color: range ? baseColor : DEFAULT_TEXT_COLOR };
+  const label = getCategoryLabel(value);
+  const color = CATEGORY_COLORS[label] ?? DEFAULT_TEXT_COLOR;
+  return { color };
 };
 
 const getCategoryChipStyle = (value: number | string | null | undefined) => {
-  const range = resolveRange(value);
-  if (!range) return { ...DEFAULT_CHIP_STYLE };
-  const baseColor = range.color?.trim() || DEFAULT_COLOR;
+  const label = getCategoryLabel(value);
+  const baseColor = CATEGORY_COLORS[label];
+  if (!baseColor) return { ...DEFAULT_CHIP_STYLE };
   const background =
     toTranslucent(baseColor, 0.18) ?? DEFAULT_CHIP_STYLE.backgroundColor;
   return {
@@ -663,8 +660,8 @@ const getCategoryChipStyle = (value: number | string | null | undefined) => {
 };
 
 const getCategoryDotStyle = (value: number | string | null | undefined) => {
-  const range = resolveRange(value);
-  const baseColor = range?.color?.trim() || DEFAULT_COLOR;
+  const label = getCategoryLabel(value);
+  const baseColor = CATEGORY_COLORS[label] ?? DEFAULT_TEXT_COLOR;
   return { backgroundColor: baseColor };
 };
 

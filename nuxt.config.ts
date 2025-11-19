@@ -47,6 +47,9 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    server: {
+      allowedHosts: ["unreined-pseudomonastical-bethel.ngrok-free.dev"],
+    },
     ssr: {
       noExternal: [
         "destr",
