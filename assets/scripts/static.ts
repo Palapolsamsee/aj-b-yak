@@ -37,7 +37,7 @@ const DEFAULT_CHIP_STYLE = {
   color: "#374151",
 };
 
-type StaticProps = { address?: string };
+type StaticProps = { address?: string; place?: string };
 type StaticEmit = (event: "change-address", address: string) => void;
 
 const toNumber = (value: unknown): number | null => {

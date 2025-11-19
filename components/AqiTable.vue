@@ -453,7 +453,16 @@ const searchTerm = ref("");
 const pageSize = ref(PAGE_OPTIONS[0]);
 const currentPage = ref(1);
 const colorRanges = ref<ColorRange[]>([]);
-const heatmapProps = reactive<{ address?: string }>({ address: undefined });
+const heatmapProps = reactive<{ address?: string; place?: string }>({
+  address: undefined,
+  place: undefined,
+});
+
+const hasHeatmapTarget = () => {
+  const place = (heatmapProps.place ?? "").toString().trim();
+  const address = (heatmapProps.address ?? "").toString().trim();
+  return Boolean(place || address);
+};
 
 const {
   VChart,
@@ -534,7 +543,11 @@ const canPrev = computed(() => currentPage.value > 1);
 const canNext = computed(() => currentPage.value < totalPages.value);
 
 const popupAddress = computed(
-  () => decodedAddress.value || selectedStation.value?.address || "-"
+  () =>
+    decodedAddress.value ||
+    selectedStation.value?.place ||
+    selectedStation.value?.address ||
+    "-"
 );
 
 const loadColorRanges = async () => {
@@ -544,7 +557,7 @@ const loadColorRanges = async () => {
     console.error("[AqiTable] Failed to load color ranges:", err);
     colorRanges.value = [];
   }
-  if (process.client && heatmapProps.address) {
+  if (process.client && hasHeatmapTarget()) {
     await fetchHeatmapData();
     updateChart();
   } else if (chartOptions.value) {
@@ -710,6 +723,7 @@ const trendClass = (trend?: string | null) => {
 
 const openHeatmap = async (item: ApiItem) => {
   selectedStation.value = item;
+  heatmapProps.place = item.place ?? undefined;
   heatmapProps.address = item.address ?? undefined;
   if (process.client) {
     await fetchHeatmapData();
@@ -719,6 +733,7 @@ const openHeatmap = async (item: ApiItem) => {
 
 const closeHeatmap = () => {
   selectedStation.value = null;
+  heatmapProps.place = undefined;
   heatmapProps.address = undefined;
   chartOptions.value = null;
   availableYears.value = [];

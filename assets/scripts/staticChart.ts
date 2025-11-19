@@ -1,7 +1,14 @@
-import { ref, computed, defineAsyncComponent, watch, onMounted, type Ref } from "vue";
+import {
+  ref,
+  computed,
+  defineAsyncComponent,
+  watch,
+  onMounted,
+  type Ref,
+} from "vue";
 import type { ColorRange } from "@/utils/api/colorRanges";
 
-type StaticProps = { address?: string };
+type StaticProps = { address?: string; place?: string };
 type Point = { timestamp: number; pm25?: number };
 
 const DEFAULT_VISUAL_COLORS = [
@@ -32,12 +39,25 @@ export function useStaticChart(options: {
         })
   );
 
+  const activeQuery = computed(() => {
+    const place = (props.place ?? "").toString().trim();
+    if (place) {
+      return { key: "address", value: place };
+    }
+    const address = (props.address ?? "").toString().trim();
+    if (address) {
+      return { key: "address", value: address };
+    }
+    return null;
+  });
+
   const decodedAddress = computed(() => {
-    if (!props.address) return "";
+    const source = activeQuery.value?.value;
+    if (!source) return "";
     try {
-      return decodeURIComponent(props.address);
+      return decodeURIComponent(source);
     } catch {
-      return props.address;
+      return source;
     }
   });
 
@@ -129,15 +149,16 @@ export function useStaticChart(options: {
   };
 
   const fetchHeatmapData = async () => {
-    if (!props.address || !baseAirApi) {
+    const query = activeQuery.value;
+    if (!query || !baseAirApi) {
       chartOptions.value = null;
       return;
     }
     await ensureEchartsReady();
     try {
-      const url = `${baseAirApi}/one_year_series?address=${encodeURIComponent(
-        props.address
-      )}`;
+      const url = `${baseAirApi}/one_year_series?${
+        query.key
+      }=${encodeURIComponent(query.value)}`;
       const res = await $fetch<any>(url);
       const rows: Point[] = Array.isArray(res) ? res : res?.data ?? [];
       allData.value = rows
@@ -188,28 +209,25 @@ export function useStaticChart(options: {
   };
 
   const bootstrapChart = async () => {
-    if (!process.client) return;
+    if (!process.client || !activeQuery.value) return;
     await ensureEchartsReady();
     await fetchHeatmapData();
   };
 
   onMounted(() => {
-    if (props.address) {
+    if (activeQuery.value) {
       bootstrapChart();
     }
   });
 
-  watch(
-    () => props.address,
-    async (val) => {
-      if (!process.client) return;
-      if (val) {
-        await fetchHeatmapData();
-      } else {
-        chartOptions.value = null;
-      }
+  watch(activeQuery, async (query) => {
+    if (!process.client) return;
+    if (query) {
+      await fetchHeatmapData();
+    } else {
+      chartOptions.value = null;
     }
-  );
+  });
 
   watch(selectedYear, () => updateChart());
 
