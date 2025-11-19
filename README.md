@@ -53,14 +53,13 @@ NUXT_FIREBASE_PROJECTID=
 NUXT_FIREBASE_STORAGEBUCKET=
 NUXT_FIREBASE_MESSAGINGSENDERID=
 NUXT_FIREBASE_APPID=
-AIRQUALITY_API_BASE=https://your-api/airquality    # upstream target Nitro proxies to
+AIRQUALITY_API_BASE=https://your-api/airquality    # optional: used only if you wire Nuxt's proxy route
 AIRQUALITY_PROXY_ALLOW_INSECURE=false              # set true only when the upstream uses a self-signed cert
 
 # Public (exposed to client)
 NUXT_API_URL=                 
 WEAK_API_ARI=                 # one-week AQI endpoint
-BASE_API_ARI=                 # legacy direct base URL (also used as a fallback for AIRQUALITY_API_BASE)
-NUXT_PUBLIC_BASE_AIR_API=/proxy/airquality   # relative path handled by Nitro (default)
+BASE_API_ARI=                 # base air API (used directly by the client)
 YEAR_API_ARI=                 # one-year AQI endpoint
 YAKKAW_API=                   # sensors/devices listing endpoint
 GOOGLEMAP=                    # Google Maps JavaScript API key
@@ -68,8 +67,8 @@ GOOGLEMAP=                    # Google Maps JavaScript API key
 
 Notes
 
-- Browser calls now hit `/proxy/airquality/**`, which Nuxt forwards to `AIRQUALITY_API_BASE`, keeping everything same-origin so browsers stop blocking the requests.
-- If you really need the browser to talk to the upstream domain directly, override `NUXT_PUBLIC_BASE_AIR_API`, but then you must manage CORS/TLS on that host.
+- By default the browser calls `BASE_API_ARI` directly, so the upstream must allow CORS for your deployment origin (or serve everything from the same domain/IP).
+- If you want to run requests through the Nuxt proxy (e.g., to avoid CORS headache), set `AIRQUALITY_API_BASE` and point your components to `/api/proxy/airquality`, or customize `nuxt.config.ts` to expose a public proxy base.
 - Dev proxy maps `/api` to `http://localhost:8080` (see `nitro.devProxy` in `nuxt.config.ts`) for the admin/dashboard service.
 - `composables/useApiBase.ts` expects `YAKKAW_API`, `BASE_API_ARI`, `WEAK_API_ARI`, `YEAR_API_ARI`, and `GOOGLEMAP` to be defined.
 

@@ -4,7 +4,9 @@ const upstreamAirqualityBase =
   "http://localhost:8080/api/airquality";
 
 const publicAirqualityBase =
-  process.env.NUXT_PUBLIC_BASE_AIR_API ?? "/proxy/airquality";
+  process.env.BASE_API_ARI ??
+  process.env.NUXT_API_URL ??
+  upstreamAirqualityBase;
 
 const allowInsecureAirqualityProxy =
   (process.env.AIRQUALITY_PROXY_ALLOW_INSECURE ?? "").toLowerCase() === "true";
