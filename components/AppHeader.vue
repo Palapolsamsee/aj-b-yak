@@ -24,6 +24,7 @@
           :key="item.href"
           :href="item.href"
           class="rounded-full px-4 py-2 transition hover:bg-blue-50 hover:text-blue-700"
+          @click.prevent="handleNavClick(item.href)"
         >
           {{ item.label }}
         </a>
@@ -72,7 +73,7 @@
             :key="item.label"
             :href="item.href"
             class="rounded-2xl px-4 py-3 transition hover:bg-blue-50 hover:text-blue-700"
-            @click="closeMobileMenu"
+            @click.prevent="handleNavClick(item.href)"
           >
             {{ item.label }}
           </a>
@@ -83,7 +84,10 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { nextTick, ref } from "vue";
+
+const router = useRouter();
+const route = useRoute();
 
 const mobileMenuOpen = ref(false);
 
@@ -103,6 +107,36 @@ const toggleMobileMenu = () => {
 
 const closeMobileMenu = () => {
   mobileMenuOpen.value = false;
+};
+
+const scrollToSection = (hash) => {
+  const target = document.querySelector(hash);
+  if (!target) return;
+
+  const headerOffset = 96; // keep section visible under the sticky header
+  const elementPosition = target.getBoundingClientRect().top + window.scrollY;
+  const offsetPosition = elementPosition - headerOffset;
+
+  window.scrollTo({
+    top: offsetPosition,
+    behavior: "smooth",
+  });
+};
+
+const handleNavClick = async (href) => {
+  closeMobileMenu();
+
+  if (!href.startsWith("#")) {
+    await router.push(href);
+    return;
+  }
+
+  if (route.path !== "/") {
+    await router.push({ path: "/", hash: href });
+    await nextTick();
+  }
+
+  scrollToSection(href);
 };
 </script>
 

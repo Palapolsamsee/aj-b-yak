@@ -42,7 +42,7 @@ const fetchData = async () => {
 
     // Assuming the API returns an array, we'll take the first item as an example
     if (data && data.length > 0) {
-      device.value = data[0] 
+      device.value = data[0]
     } else {
       error.value = new Error('ไม่พบข้อมูลอุปกรณ์')
     }

@@ -35,6 +35,7 @@ const submitForm = () => {
 </script>
 
 <template>
+  <section id="contact">
   <div class="flex justify-center items-center min-h-screen bg-[#070d22] px-4">
     <div
       class="bg-white shadow-xl rounded-lg p-8 max-w-3xl w-full flex gap-6 flex-col md:flex-row"
@@ -115,7 +116,10 @@ const submitForm = () => {
       </div>
     </div>
   </div>
+  </section>
 </template>
+
+
 <style scoped>
 .input-field {
   width: 100%;
