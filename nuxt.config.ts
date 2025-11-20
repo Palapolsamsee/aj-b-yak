@@ -47,7 +47,7 @@ export default defineNuxtConfig({
   nitro: {
     devProxy: {
       "/api": {
-        target: "http://localhost:8080", //dont forgot this
+        target: "http://34.66.46.86:8080", //dont forgot this
         changeOrigin: true,
         prependPath: true,
         secure: false,
