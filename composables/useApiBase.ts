@@ -1,16 +1,17 @@
 export const useApiBase = () => {
-  const config = useRuntimeConfig()
+  const config = useRuntimeConfig();
 
   return {
-    //อย่าลืม public 
+    //อย่าลืม public
     yakkawApi: config.public.yakkaw_api,
     baseAirApi: config.public.baseAirApi,
     oneYearApi: config.public.oneyear,
-    oneWeekApi: config.public.aqiweek, 
+    oneWeekApi: config.public.aqiweek,
     colorRangeApi: config.colorange,
-    googlemap_key: config.public.GOOGLEMAPAPI
-  }
-}
+    googlemap_key: config.public.GOOGLEMAPAPI,
+    newsApi: config.public.newsApi,
+  };
+};
 
 // import { initializeApp } from "firebase/app"
 // import { getFirestore, collection, getDocs } from "firebase/firestore"

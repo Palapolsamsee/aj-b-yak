@@ -62,6 +62,7 @@ WEAK_API_ARI=                 # one-week AQI endpoint
 BASE_API_ARI=                 # base air API (used directly by the client)
 YEAR_API_ARI=                 # one-year AQI endpoint
 YAKKAW_API=                   # sensors/devices listing endpoint
+NEWS_API=                     # news feed endpoint
 GOOGLEMAP=                    # Google Maps JavaScript API key
 ```
 
@@ -70,7 +71,7 @@ Notes
 - By default the browser calls `BASE_API_ARI` directly, so the upstream must allow CORS for your deployment origin (or serve everything from the same domain/IP).
 - If you want to run requests through the Nuxt proxy (e.g., to avoid CORS headache), set `AIRQUALITY_API_BASE` and point your components to `/api/proxy/airquality`, or customize `nuxt.config.ts` to expose a public proxy base.
 - Dev proxy maps `/api` to `http://localhost:8080` (see `nitro.devProxy` in `nuxt.config.ts`) for the admin/dashboard service.
-- `composables/useApiBase.ts` expects `YAKKAW_API`, `BASE_API_ARI`, `WEAK_API_ARI`, `YEAR_API_ARI`, and `GOOGLEMAP` to be defined.
+- `composables/useApiBase.ts` expects `YAKKAW_API`, `BASE_API_ARI`, `WEAK_API_ARI`, `YEAR_API_ARI`, `NEWS_API`, and `GOOGLEMAP` to be defined.
 
 ## Scripts
 

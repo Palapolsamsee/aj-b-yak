@@ -37,6 +37,7 @@ export default defineNuxtConfig({
       yakkaw_api: process.env.YAKKAW_API,
       GOOGLEMAPAPI: process.env.GOOGLEMAP,
       COLOUR: process.env.NUXT_API_URL_COLORRANGE,
+      newsApi: process.env.NEWS_API,
     },
   },
   css: ["@/assets/css/main.css", "leaflet/dist/leaflet.css"],

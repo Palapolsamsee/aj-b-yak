@@ -55,8 +55,10 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useApiBase } from "@/composables/useApiBase";
 
-const API_URL = "http://localhost:8080/news";
+const { newsApi } = useApiBase();
+const API_URL = newsApi || "/news";
 const news = ref([]);
 const pending = ref(true);
 const error = ref(null);
