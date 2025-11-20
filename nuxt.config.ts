@@ -1,7 +1,7 @@
 const upstreamAirqualityBase =
   process.env.AIRQUALITY_API_BASE ??
   process.env.BASE_API_ARI ??
-  "http://localhost:8080/api/airquality";
+  "http://34.66.46.86:8080/api/airquality";
 
 const publicAirqualityBase =
   process.env.BASE_API_ARI ??
