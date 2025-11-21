@@ -138,6 +138,7 @@ export const fetchColorRanges = async (force = false): Promise<ColorRange[]> => 
       (runtimeConfig.public as any)?.colour,
       (runtimeConfig.public as any)?.colorange,
       (runtimeConfig.public as any)?.colorRange,
+      "/api/cache/color-ranges",
     ].find(
       (candidate): candidate is string =>
         typeof candidate === "string" && candidate.trim().length > 0

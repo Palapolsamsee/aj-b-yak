@@ -1,7 +1,0 @@
-
-<template>
-  <Header />
-  <news />
-
-</template>
-

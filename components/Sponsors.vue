@@ -26,63 +26,63 @@ import { ref } from "vue";
 const sponsors = ref([
   {
     image: "https://yakkaw.mfu.ac.th/img/gallery/1.jpg",
-    name: "สมาคมยักษ์ขาว",
+    name: "สมาคมยักษ์ขาว"
   },
   {
     image:
       "https://e-cms.rmutl.ac.th/assets/upload/images/2018/11/55_20181114104824.png",
-    name: "มหาวิทยาลัยเทคโนโลยีราชมงคลล้านนาเชียงราย",
+    name: "มหาวิทยาลัยเทคโนโลยีราชมงคลล้านนาเชียงราย"
   },
   {
     image:
       "https://crru.ac.th/wp-content/uploads/2023/10/%E0%B8%A1%E0%B8%A3%E0%B8%8A%E0%B8%A3.webp",
-    name: "มหาวิทยาลัยราชภัฏเชียงราย",
+    name: "มหาวิทยาลัยราชภัฏเชียงราย"
   },
   {
     image:
       "https://upload.wikimedia.org/wikipedia/th/d/da/%E0%B8%AA%E0%B8%B1%E0%B8%8D%E0%B8%A5%E0%B8%B1%E0%B8%81%E0%B8%A9%E0%B8%93%E0%B9%8C%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%88%E0%B8%B3%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%A7%E0%B8%B4%E0%B8%97%E0%B8%A2%E0%B8%B2%E0%B8%A5%E0%B8%B1%E0%B8%A2%E0%B9%81%E0%B8%A1%E0%B9%88%E0%B8%9F%E0%B9%89%E0%B8%B2%E0%B8%AB%E0%B8%A5%E0%B8%A7%E0%B8%87.png",
-    name: "มหาวิทยาลัยแม่ฟ้าหลวง",
+    name: "มหาวิทยาลัยแม่ฟ้าหลวง"
   },
   {
     image: "http://datascience.mfu.ac.th/LOGO-AIE%20_New.png",
-    name: "ศูนย์วิจัยปัญญาประดิษฐ์และเทคโนโลยี",
+    name: "ศูนย์วิจัยปัญญาประดิษฐ์และเทคโนโลยี"
   },
   {
     image:
       "https://cen-ffh.mfu.ac.th/fileadmin/MFUTemplateStandard/Assets/images/logo/logo_CEN-FFH.png",
-    name: "ศูนย์ศึกษา วิจัยและปฏิบัติการเพื่อลดปัญหาการเกิดไฟป่า หมอกควันในประเทศไทยและในภูมิภาค",
+    name:
+      "ศูนย์ศึกษา วิจัยและปฏิบัติการเพื่อลดปัญหาการเกิดไฟป่า หมอกควันในประเทศไทยและในภูมิภาค"
   },
   {
     image:
       "https://childimpact.s3.ap-southeast-1.amazonaws.com/campaign-img/campaign-1-1.jpg",
-    name: "ห้องเรียนสู้ฝุ่น",
+    name: "ห้องเรียนสู้ฝุ่น"
   },
   {
     image:
       "https://ird.rmutp.ac.th/wp-content/uploads/%E0%B8%82%E0%B8%99%E0%B8%B2%E0%B8%94-5057-1.png",
-    name: "สำนักงานกองทุนสนับสนุนการสร้างเสริมสุขภาพ (สสส.)",
+    name: "สำนักงานกองทุนสนับสนุนการสร้างเสริมสุขภาพ (สสส.)"
   },
   {
     image:
       "https://thaipublica.org/wp-content/uploads/2022/11/logo-set-1000x600-1.jpg",
-    name: "ตลาดหลักทรัพย์แห่งประเทศไทย",
+    name: "ตลาดหลักทรัพย์แห่งประเทศไทย"
   },
   {
     image: "https://www.srithat-ud.go.th/index/add_file/rPNgLItFri24523.png",
-    name: "เทศบาลตำบลศรีธาตุ",
+    name: "เทศบาลตำบลศรีธาตุ"
   },
   {
     image:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFohZP9a0qrVv-C7uQrdASgFLTjmUtKM2hB87Lf8lUEbiZO1MF_sRmmojvw1ZD3SYwHUU&usqp=CAU",
-    name: "AIS NB-IoT",
+    name: "AIS NB-IoT"
   },
   {
     image:
       "https://www.setsocialimpact.com/upload/SET/w87pYJbHfF6Bg35lOGaM_full.png",
-    name: "ห้างหุ้นส่วนจำกัด เติมเต็มวิสาหกิจเพื่อสังคม",
-  },
+    name: "ห้างหุ้นส่วนจำกัด เติมเต็มวิสาหกิจเพื่อสังคม"
+  }
 ]);
-console.log(sponsors.value);
 </script>
 
 <style scoped>

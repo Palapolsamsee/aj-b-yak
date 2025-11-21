@@ -1,7 +1,9 @@
+import { resolve } from "node:path";
+
 const upstreamAirqualityBase =
   process.env.AIRQUALITY_API_BASE ??
   process.env.BASE_API_ARI ??
-  "http://34.66.46.86:8080/api/airquality";
+  "http://localhost:8080/api/airquality";
 
 const publicAirqualityBase =
   process.env.BASE_API_ARI ??
@@ -45,9 +47,16 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   nitro: {
+    alias: {
+      // Force crossws to resolve from the root node_modules so import protection doesn't block the nested nitropack copy.
+      crossws: resolve("./node_modules/crossws"),
+      "crossws/adapters/node": resolve(
+        "./node_modules/crossws/dist/adapters/node.mjs"
+      ),
+    },
     devProxy: {
       "/api": {
-        target: "http://34.66.46.86:8080", //dont forgot this
+        target: "http://localhost:8080", //dont forgot this
         changeOrigin: true,
         prependPath: true,
         secure: false,

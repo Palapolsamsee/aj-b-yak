@@ -20,7 +20,7 @@ const resolveBaseUrl = () => {
     return apiFromEnv.replace(/\/$/, "");
   }
 
-  return "/api/devices";
+  return "/api/cache/devices";
 };
 
 const request = async <T>(path = "", options: Parameters<typeof $fetch>[1] = {}) => {
