@@ -14,13 +14,16 @@ type DevicePayload = Partial<Omit<Device, "id">>;
 
 const resolveBaseUrl = () => {
   const config = useRuntimeConfig();
-  const apiFromEnv = config.public?.yakkaw_api;
+  const apiFromEnv = config.public?.YAKKAW_API;
 
   if (apiFromEnv && typeof apiFromEnv === "string" && apiFromEnv.trim().length) {
     return apiFromEnv.replace(/\/$/, "");
   }
 
-  return "/api/cache/devices";
+  // Explicitly fail fast when misconfigured so we don't silently hit the app origin.
+  throw new Error(
+    "[deviceService] Missing public.YAKKAW_API. Set YAKKAW_API (or NUXT_PUBLIC_YAKKAW_API) to your devices API base URL."
+  );
 };
 
 const request = async <T>(path = "", options: Parameters<typeof $fetch>[1] = {}) => {

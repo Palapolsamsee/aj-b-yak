@@ -2,7 +2,7 @@
   <section
     id="home"
     class="relative py-20 bg-cover bg-center bg-no-repeat"
-    style="background-image: url('https://scontent.fbkk5-5.fna.fbcdn.net/v/t39.30808-6/583902925_4322211878101893_3146237677671950330_n.jpg?stp=cp6_dst-jpg_tt6&_nc_cat=104&ccb=1-7&_nc_sid=127cfc&_nc_ohc=Hx7ct85GAmkQ7kNvwEYwYpR&_nc_oc=AdluvClongG_NXYiMTc3MR12BPK_WEDmOOoeJJlGX8b9nFoQin3sVJuR6Y3NTkrua7rWQLom4Ni5g44o1Z4UwYp9&_nc_zt=23&_nc_ht=scontent.fbkk5-5.fna&_nc_gid=-FkMeguaEmxIxpFNx_tuqg&oh=00_AfjdJS6ijfew7dl44LAhfMFZ4bGAG9JrGcE1hf9Ibv7utw&oe=691F79EA');"
+    style="background-image: url('/assets/images/sky.jpg');"
   >
     <div class="absolute inset-0 bg-black/20"></div>
 

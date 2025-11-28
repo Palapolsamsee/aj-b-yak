@@ -93,7 +93,7 @@ const getAqiLevel = (value: number | string | null | undefined) => {
 };
 
 export function useStatic(props: StaticProps, emit: StaticEmit) {
-  const { yakkawApi, baseAirApi } = useApiBase();
+  const { YAKKAW_API, baseAirApi } = useApiBase();
 
   const airQualityData = ref<AirQualityItem[]>([]);
   const error = ref<string | null>(null);
@@ -199,7 +199,7 @@ export function useStatic(props: StaticProps, emit: StaticEmit) {
     loading.value = true;
     error.value = null;
     try {
-      const resp = await fetch(yakkawApi);
+      const resp = await fetch(YAKKAW_API);
       if (!resp.ok) {
         throw new Error(`HTTP error! status: ${resp.status}`);
       }

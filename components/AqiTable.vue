@@ -440,7 +440,7 @@ type ApiItem = {
   [key: string]: unknown;
 };
 
-const { yakkawApi, baseAirApi } = useApiBase();
+const { YAKKAW_API, baseAirApi } = useApiBase();
 
 const PAGE_OPTIONS = [5, 10, 20];
 
@@ -569,7 +569,7 @@ const fetchData = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const resp = await fetch(yakkawApi);
+    const resp = await fetch(YAKKAW_API);
     if (!resp.ok) {
       throw new Error(`HTTP ${resp.status}`);
     }

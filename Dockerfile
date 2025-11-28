@@ -1,15 +1,22 @@
-FROM node:20-alpine AS runtime
-
+# 1. Build Stage (Bun for install + build)
+FROM oven/bun:1 AS builder
 WORKDIR /app
 
-ENV NODE_ENV=production \
-    PORT=3000 \
-    NITRO_PORT=3000 \
-    HOST=0.0.0.0
+COPY package.json bun.lock* ./
+RUN bun install --frozen-lockfile
 
-# Copy only the Nuxt output assets; the project is assumed to be built already.
-COPY .output ./.output
+COPY . .
+RUN bun run build
 
-EXPOSE 3000
+# 2. Run Stage (Node runtime)
+FROM node:20-alpine
+WORKDIR /app
 
-CMD ["node", ".output/server/index.mjs"]
+COPY --from=builder /app/.output ./
+
+ENV NITRO_PORT=8080
+ENV PORT=8080
+ENV HOST=0.0.0.0
+
+EXPOSE 8080
+CMD ["node", "server/index.mjs"]

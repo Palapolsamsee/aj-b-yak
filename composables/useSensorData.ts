@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import axios from 'axios'
 
 import { useApiBase } from '@/composables/useApiBase'
-const { yakkawApi, googlemap_key } = useApiBase()
+const { YAKKAW_API, googlemap_key } = useApiBase()
 
 interface Device {
   deviceid: string | null
@@ -25,7 +25,7 @@ export function useSensorData() {
     pending.value = true
     error.value = null
     try {
-      const res = await axios.get<Device[]>(yakkawApi)
+      const res = await axios.get<Device[]>(YAKKAW_API)
       raw.value = res.data.map(d => ({
         deviceid: d.deviceid,
         place: d.place,

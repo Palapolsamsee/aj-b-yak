@@ -42,7 +42,7 @@ export function useStaticChart(options: {
   const activeQuery = computed(() => {
     const place = (props.place ?? "").toString().trim();
     if (place) {
-      return { key: "address", value: place };
+      return { key: "place", value: place };
     }
     const address = (props.address ?? "").toString().trim();
     if (address) {

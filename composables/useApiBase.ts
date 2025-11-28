@@ -3,13 +3,13 @@ export const useApiBase = () => {
 
   return {
     //อย่าลืม public
-    yakkawApi: config.public.yakkaw_api || "/api/cache/devices",
-    baseAirApi: config.public.baseAirApi || "/api/proxy/airquality",
+    YAKKAW_API: config.public.YAKKAW_API ,
+    baseAirApi: config.public.baseAirApi ,
     oneYearApi: config.public.oneyear,
     oneWeekApi: config.public.aqiweek,
-    colorRangeApi: config.colorange || "/api/cache/color-ranges",
+    colorRangeApi: config.colorange,
     googlemap_key: config.public.GOOGLEMAPAPI,
-    newsApi: config.public.newsApi || "/api/cache/news",
+    newsApi: config.public.newsApi || "/api/news",
   };
 };
 

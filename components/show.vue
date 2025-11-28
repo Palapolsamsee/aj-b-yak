@@ -318,7 +318,7 @@ const expandedRow = ref<string | null>(null);
 const selectedDevice = ref<Device | null>(null);
 
 import { useApiBase } from '@/composables/useApiBase'
-const {yakkawApi} = useApiBase()
+const { YAKKAW_API } = useApiBase()
 
 // Color settings and filter function
 const { colorRanges } = useColorSettings();
@@ -353,7 +353,7 @@ const closeDeviceModal = () => {
 // API call to fetch devices
 onMounted(async () => {
   try {
-    const response = await fetch(`{yakkawApi}`);
+    const response = await fetch(YAKKAW_API);
     const res1 = await response.json();
     devices.value = Array.isArray(res1.response) ? res1.response : [];
   } catch (err) {

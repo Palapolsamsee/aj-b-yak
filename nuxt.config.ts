@@ -33,10 +33,11 @@ export default defineNuxtConfig({
     public: {
       apiUrl: process.env.NUXT_API_URL,
       aqiweek: process.env.WEAK_API_ARI,
-      baseair: publicAirqualityBase,
+      baseair: process.env.NUXT_API_URL,
       baseAirApi: publicAirqualityBase,
       oneyear: process.env.YEAR_API_ARI,
-      yakkaw_api: process.env.YAKKAW_API,
+      // Devices API base (match env name exactly for clarity)
+      YAKKAW_API: process.env.YAKKAW_API ?? process.env.NUXT_PUBLIC_YAKKAW_API,
       GOOGLEMAPAPI: process.env.GOOGLEMAP,
       COLOUR: process.env.NUXT_API_URL_COLORRANGE,
       newsApi: process.env.NEWS_API,

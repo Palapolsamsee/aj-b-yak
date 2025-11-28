@@ -31,10 +31,10 @@ import { useApiBase } from '@/composables/useApiBase'
 const device = ref(null)
 const error = ref(null)
  
-const { yakkawApi } = useApiBase()
+const { YAKKAW_API } = useApiBase()
 const fetchData = async () => {
   try {
-    const response = await fetch(yakkawApi)
+    const response = await fetch(YAKKAW_API)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
