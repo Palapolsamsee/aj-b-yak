@@ -1,23 +1,45 @@
 import { resolve } from "node:path";
 
+const pickEnv = (...keys: string[]) =>
+  keys
+    .map((key) => process.env[key])
+    .find((value) => typeof value === "string" && value.trim().length > 0);
+
 const upstreamAirqualityBase =
-  process.env.AIRQUALITY_API_BASE ??
-  process.env.BASE_API_ARI ??
+  pickEnv("AIRQUALITY_API_BASE", "BASE_API_ARI", "NUXT_API_URL") ??
   "http://localhost:8080/api/airquality";
 
-const publicAirqualityBase =
-  process.env.BASE_API_ARI ??
-  process.env.NUXT_API_URL ??
-  upstreamAirqualityBase;
+const baseAirApi =
+  pickEnv(
+    "NUXT_PUBLIC_BASE_API_ARI",
+    "BASE_API_ARI",
+    "NUXT_PUBLIC_API_URL",
+    "NUXT_API_URL"
+  ) ?? upstreamAirqualityBase;
 
-const allowInsecureAirqualityProxy =
-  (process.env.AIRQUALITY_PROXY_ALLOW_INSECURE ?? "").toLowerCase() === "true";
+const apiUrl = pickEnv("NUXT_PUBLIC_API_URL", "NUXT_API_URL") ?? baseAirApi;
+const aqiWeekApi = pickEnv("NUXT_PUBLIC_WEAK_API_ARI", "WEAK_API_ARI");
+const oneYearApi = pickEnv("NUXT_PUBLIC_YEAR_API_ARI", "YEAR_API_ARI");
+const yakkawApi = pickEnv("NUXT_PUBLIC_YAKKAW_API", "YAKKAW_API");
+const googleMapKey = pickEnv("NUXT_PUBLIC_GOOGLEMAP", "GOOGLEMAP");
+const colourApi = pickEnv(
+  "NUXT_PUBLIC_COLORANGE",
+  "NUXT_PUBLIC_COLOUR",
+  "NUXT_PUBLIC_API_URL_COLORRANGE",
+  "NUXT_API_URL_COLORRANGE"
+);
+const newsApi = pickEnv("NUXT_PUBLIC_NEWS_API", "NEWS_API");
+
+const allowInsecureAirqualityProxy = ["true", "1", "yes"].includes(
+  (process.env.AIRQUALITY_PROXY_ALLOW_INSECURE ?? "").toLowerCase()
+);
 
 export default defineNuxtConfig({
   runtimeConfig: {
     //private for test
 
-    colorange: process.env.NUXT_API_URL_COLORRANGE,
+    // expose color range URL on both private/public to stay backward compatible with helpers
+    colorange: colourApi,
     airqualityProxyTarget: upstreamAirqualityBase,
     airqualityProxyAllowInsecure: allowInsecureAirqualityProxy,
 
@@ -31,16 +53,17 @@ export default defineNuxtConfig({
 
     //public for deploy
     public: {
-      apiUrl: process.env.NUXT_API_URL,
-      aqiweek: process.env.WEAK_API_ARI,
-      baseair: process.env.NUXT_API_URL,
-      baseAirApi: publicAirqualityBase,
-      oneyear: process.env.YEAR_API_ARI,
-      // Devices API base (match env name exactly for clarity)
-      YAKKAW_API: process.env.YAKKAW_API ?? process.env.NUXT_PUBLIC_YAKKAW_API,
-      GOOGLEMAPAPI: process.env.GOOGLEMAP,
-      COLOUR: process.env.NUXT_API_URL_COLORRANGE,
-      newsApi: process.env.NEWS_API,
+      apiUrl,
+      aqiweek: aqiWeekApi ?? baseAirApi,
+      baseair: baseAirApi,
+      baseAirApi,
+      oneyear: oneYearApi ?? baseAirApi,
+      // Devices API base (allow both modern/public and legacy names)
+      YAKKAW_API: yakkawApi,
+      GOOGLEMAPAPI: googleMapKey,
+      COLOUR: colourApi,
+      colorange: colourApi,
+      newsApi: newsApi ?? "/api/news",
     },
   },
   css: ["@/assets/css/main.css", "leaflet/dist/leaflet.css"],

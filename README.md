@@ -42,28 +42,37 @@ npm run preview  # or: bun run preview
 
 ## Environment Variables
 
-Create a `.env` file in the project root. The app reads values via `runtimeConfig` in `nuxt.config.ts`.
+Create a `.env` file in the project root. The app reads values via `runtimeConfig` in `nuxt.config.ts`. Prefer the `NUXT_PUBLIC_*` keys because they can be injected at runtime (Cloud Run/VM) and are automatically exposed to the browser.
 
 ```env
 # Private (server-side)
-NUXT_API_URL_COLORRANGE=https://your-api/color-ranges
+AIRQUALITY_API_BASE=https://your-api/airquality    # optional: used only if you wire Nuxt's proxy route
+AIRQUALITY_PROXY_ALLOW_INSECURE=false              # set true only when the upstream uses a self-signed cert
 NUXT_FIREBASE_APIKEY=
 NUXT_FIREBASE_AUTHDOMAIN=
 NUXT_FIREBASE_PROJECTID=
 NUXT_FIREBASE_STORAGEBUCKET=
 NUXT_FIREBASE_MESSAGINGSENDERID=
 NUXT_FIREBASE_APPID=
-AIRQUALITY_API_BASE=https://your-api/airquality    # optional: used only if you wire Nuxt's proxy route
-AIRQUALITY_PROXY_ALLOW_INSECURE=false              # set true only when the upstream uses a self-signed cert
 
-# Public (exposed to client)
-NUXT_API_URL=                 
-WEAK_API_ARI=                 # one-week AQI endpoint
-BASE_API_ARI=                 # base air API (used directly by the client)
-YEAR_API_ARI=                 # one-year AQI endpoint
-YAKKAW_API=                   # sensors/devices listing endpoint
-NEWS_API=                     # news feed endpoint
-GOOGLEMAP=                    # Google Maps JavaScript API key
+# Public (exposed to client) — set these in Cloud Run/VM env
+NUXT_PUBLIC_API_URL=                 
+NUXT_PUBLIC_BASE_API_ARI=            # base air API (used directly by the client)
+NUXT_PUBLIC_WEAK_API_ARI=            # one-week AQI endpoint
+NUXT_PUBLIC_YEAR_API_ARI=            # one-year AQI endpoint
+NUXT_PUBLIC_YAKKAW_API=              # sensors/devices listing endpoint
+NUXT_PUBLIC_API_URL_COLORRANGE=      # color range endpoint
+NUXT_PUBLIC_NEWS_API=                # news feed endpoint
+NUXT_PUBLIC_GOOGLEMAP=               # Google Maps JavaScript API key
+
+# Legacy names that still work (avoid using in new deploys)
+NUXT_API_URL=
+BASE_API_ARI=
+WEAK_API_ARI=
+YEAR_API_ARI=
+YAKKAW_API=
+NEWS_API=
+GOOGLEMAP=
 ```
 
 Notes
@@ -109,6 +118,30 @@ Common options
 
 - Static hosting: `npm run generate`
 - Node server (SSR): build with `npm run build` and start via your chosen process manager
+
+### Cloud Run / VM notes
+
+- `.dockerignore` excludes `.env` files, so secrets in your local `.env` are **not** baked into the container. Set environment variables on the service instead (or pass `--env-file` when running the image yourself).
+- Example Cloud Run deploy with envs:
+
+  ```bash
+  gcloud run deploy aj-b-yak \
+    --source . \
+    --region <REGION> \
+    --set-env-vars NUXT_PUBLIC_API_URL=https://your-api \
+    --set-env-vars NUXT_PUBLIC_YAKKAW_API=https://your-api/devices \
+    --set-env-vars NUXT_PUBLIC_API_URL_COLORRANGE=https://your-api/color-ranges
+  ```
+
+- On a VM, export the same `NUXT_PUBLIC_*` vars before starting the server:
+
+  ```bash
+  npm run build
+  NUXT_PUBLIC_API_URL=https://your-api \
+  NUXT_PUBLIC_YAKKAW_API=https://your-api/devices \
+  NUXT_PUBLIC_API_URL_COLORRANGE=https://your-api/color-ranges \
+  node .output/server/index.mjs
+  ```
 
 ## License
 
