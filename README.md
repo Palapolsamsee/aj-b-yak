@@ -143,6 +143,9 @@ Common options
   node .output/server/index.mjs
   ```
 
+- Debug runtime config in a running container at `/api/runtime-config` (returns only public values).
+- The browser now calls same-origin proxies `/api/color-ranges` and `/api/news`, which fetch upstream URLs from your env vars to avoid CORS issues.
+
 ## License
 
 ISC (see `package.json`).

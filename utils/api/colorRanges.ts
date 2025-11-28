@@ -132,11 +132,14 @@ export const fetchColorRanges = async (force = false): Promise<ColorRange[]> => 
   const runtimeConfig = useRuntimeConfig();
   const configuredUrl =
     [
+      "/api/color-ranges",
       (runtimeConfig as any)?.colorange,
       (runtimeConfig as any)?.COLOUR,
       (runtimeConfig.public as any)?.COLOUR,
       (runtimeConfig.public as any)?.colour,
       (runtimeConfig.public as any)?.colorange,
+      (runtimeConfig.public as any)?.apiUrlColorrange,
+      (runtimeConfig.public as any)?.apiUrlColorRange,
       (runtimeConfig.public as any)?.colorRange,
       "/api/cache/color-ranges",
     ].find(

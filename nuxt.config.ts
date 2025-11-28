@@ -9,26 +9,29 @@ const upstreamAirqualityBase =
   pickEnv("AIRQUALITY_API_BASE", "BASE_API_ARI", "NUXT_API_URL") ??
   "http://localhost:8080/api/airquality";
 
-const baseAirApi =
-  pickEnv(
-    "NUXT_PUBLIC_BASE_API_ARI",
-    "BASE_API_ARI",
-    "NUXT_PUBLIC_API_URL",
-    "NUXT_API_URL"
-  ) ?? upstreamAirqualityBase;
+const runtimeDefaults = {
+  apiUrl: pickEnv("NUXT_PUBLIC_API_URL", "NUXT_API_URL"),
+  baseApiAri: pickEnv("NUXT_PUBLIC_BASE_API_ARI", "BASE_API_ARI"),
+  aqiWeekApi: pickEnv("NUXT_PUBLIC_WEAK_API_ARI", "WEAK_API_ARI"),
+  yearApiAri: pickEnv("NUXT_PUBLIC_YEAR_API_ARI", "YEAR_API_ARI"),
+  yakkawApi: pickEnv("NUXT_PUBLIC_YAKKAW_API", "YAKKAW_API"),
+  googlemap: pickEnv("NUXT_PUBLIC_GOOGLEMAP", "GOOGLEMAP"),
+  apiUrlColorrange: pickEnv(
+    "NUXT_PUBLIC_API_URL_COLORRANGE",
+    "NUXT_PUBLIC_COLORANGE",
+    "NUXT_PUBLIC_COLOUR",
+    "NUXT_API_URL_COLORRANGE"
+  ),
+  newsApi: pickEnv("NUXT_PUBLIC_NEWS_API", "NEWS_API"),
+};
 
-const apiUrl = pickEnv("NUXT_PUBLIC_API_URL", "NUXT_API_URL") ?? baseAirApi;
-const aqiWeekApi = pickEnv("NUXT_PUBLIC_WEAK_API_ARI", "WEAK_API_ARI");
-const oneYearApi = pickEnv("NUXT_PUBLIC_YEAR_API_ARI", "YEAR_API_ARI");
-const yakkawApi = pickEnv("NUXT_PUBLIC_YAKKAW_API", "YAKKAW_API");
-const googleMapKey = pickEnv("NUXT_PUBLIC_GOOGLEMAP", "GOOGLEMAP");
-const colourApi = pickEnv(
-  "NUXT_PUBLIC_COLORANGE",
-  "NUXT_PUBLIC_COLOUR",
-  "NUXT_PUBLIC_API_URL_COLORRANGE",
-  "NUXT_API_URL_COLORRANGE"
-);
-const newsApi = pickEnv("NUXT_PUBLIC_NEWS_API", "NEWS_API");
+const baseAirApi =
+  runtimeDefaults.baseApiAri ??
+  runtimeDefaults.apiUrl ??
+  upstreamAirqualityBase;
+
+const colorangeUpstream = runtimeDefaults.apiUrlColorrange;
+const newsApiUpstream = runtimeDefaults.newsApi;
 
 const allowInsecureAirqualityProxy = ["true", "1", "yes"].includes(
   (process.env.AIRQUALITY_PROXY_ALLOW_INSECURE ?? "").toLowerCase()
@@ -38,8 +41,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     //private for test
 
-    // expose color range URL on both private/public to stay backward compatible with helpers
-    colorange: colourApi,
+    // expose color range URL on both private/public; runtime env `NUXT_PUBLIC_API_URL_COLORRANGE` can override
+    colorange: colorangeUpstream,
+    newsApiUpstream,
     airqualityProxyTarget: upstreamAirqualityBase,
     airqualityProxyAllowInsecure: allowInsecureAirqualityProxy,
 
@@ -53,17 +57,23 @@ export default defineNuxtConfig({
 
     //public for deploy
     public: {
-      apiUrl,
-      aqiweek: aqiWeekApi ?? baseAirApi,
+      apiUrl: runtimeDefaults.apiUrl,
+      baseApiAri: runtimeDefaults.baseApiAri,
       baseair: baseAirApi,
       baseAirApi,
-      oneyear: oneYearApi ?? baseAirApi,
-      // Devices API base (allow both modern/public and legacy names)
-      YAKKAW_API: yakkawApi,
-      GOOGLEMAPAPI: googleMapKey,
-      COLOUR: colourApi,
-      colorange: colourApi,
-      newsApi: newsApi ?? "/api/news",
+      aqiWeekApi: runtimeDefaults.aqiWeekApi,
+      oneyear: runtimeDefaults.yearApiAri ?? baseAirApi,
+      yearApiAri: runtimeDefaults.yearApiAri,
+      // Devices API base (camelCase so `NUXT_PUBLIC_YAKKAW_API` overrides correctly)
+      yakkawApi: runtimeDefaults.yakkawApi,
+      // Google maps key
+      googlemap: runtimeDefaults.googlemap,
+      // Color ranges (allow multiple names)
+      apiUrlColorrange: "/api/color-ranges",
+      colorange: "/api/color-ranges",
+      COLOUR: "/api/color-ranges",
+      // News feed
+      newsApi: "/api/news",
     },
   },
   css: ["@/assets/css/main.css", "leaflet/dist/leaflet.css"],
@@ -78,15 +88,15 @@ export default defineNuxtConfig({
         "./node_modules/crossws/dist/adapters/node.mjs"
       ),
     },
-    devProxy: {
+    Proxy: {
       "/api": {
-        target: "http://localhost:8080", //dont forgot this
+        target: "https://yakkaw-administration.up.railway.app", //dont forgot this
         changeOrigin: true,
         prependPath: true,
         secure: false,
         ws: true,
         headers: {
-          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Origin": "*,https://yakkaw-administration.up.railway.app,https://yakkaw-administration.up.railway.app*",
           "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
           "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept",
           "Access-Control-Max-Age": "86400",

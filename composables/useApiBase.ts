@@ -1,18 +1,33 @@
 export const useApiBase = () => {
   const config = useRuntimeConfig();
+  const publicConfig = config.public as any;
+
+  const baseAirApi =
+    publicConfig.baseApiAri ??
+    publicConfig.apiUrl ??
+    publicConfig.baseAirApi ??
+    publicConfig.baseair ??
+    (config as any).airqualityProxyTarget;
 
   return {
     //อย่าลืม public
-    YAKKAW_API: config.public.YAKKAW_API,
-    baseAirApi: config.public.baseAirApi || config.public.apiUrl,
-    oneYearApi: config.public.oneyear,
-    oneWeekApi: config.public.aqiweek,
+    YAKKAW_API: publicConfig.yakkawApi ?? publicConfig.YAKKAW_API,
+    baseAirApi,
+    oneYearApi:
+      publicConfig.yearApiAri ??
+      publicConfig.oneyear ??
+      baseAirApi,
+    oneWeekApi:
+      publicConfig.aqiWeekApi ??
+      publicConfig.aqiweek ??
+      baseAirApi,
     colorRangeApi:
-      (config.public as any).colorange ??
-      (config.public as any).COLOUR ??
+      publicConfig.apiUrlColorrange ??
+      publicConfig.colorange ??
+      publicConfig.COLOUR ??
       (config as any).colorange,
-    googlemap_key: config.public.GOOGLEMAPAPI,
-    newsApi: config.public.newsApi || "/api/news",
+    googlemap_key: publicConfig.googlemap ?? publicConfig.GOOGLEMAPAPI,
+    newsApi: publicConfig.newsApi || "/api/news",
   };
 };
 

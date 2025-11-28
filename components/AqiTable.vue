@@ -164,7 +164,7 @@
               aria-label="ดู Heatmap"
             >
               Heatmap
-              <svg
+      <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="none"
@@ -267,18 +267,11 @@
                     @click="openHeatmap(item)"
                     aria-label="ดู Heatmap"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      class="h-4 w-4"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M2.25 4.5A2.25 2.25 0 0 1 4.5 2.25h5.325c.44 0 .868.176 1.182.49l1.253 1.254c.313.313.742.49 1.182.49H19.5A2.25 2.25 0 0 1 21.75 6.75v12a2.25 2.25 0 0 1-2.25 2.25h-15A2.25 2.25 0 0 1 2.25 18.75v-14.25ZM12 17.25a.75.75 0 0 0 .75-.75v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V10.5a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V16.5a.75.75 0 0 0 .75.75Z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
+                  <svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1 1V15H15V13H3V1H1Z" fill="#000000"/>
+<path d="M5 7L7 5L10 8L15 3V11H5V7Z" fill="#000000"/>
+</svg>
+                   
                   </button>
                 </td>
               </tr>
