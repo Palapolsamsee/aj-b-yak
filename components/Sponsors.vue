@@ -44,7 +44,7 @@ const sponsors = ref([
     name: "มหาวิทยาลัยแม่ฟ้าหลวง"
   },
   {
-    image: "http://datascience.mfu.ac.th/LOGO-AIE%20_New.png",
+    image:"/assets/images/LOGO-AIE _New.png",
     name: "ศูนย์วิจัยปัญญาประดิษฐ์และเทคโนโลยี"
   },
   {
